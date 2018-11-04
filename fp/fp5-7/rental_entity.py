@@ -1,4 +1,5 @@
 from datetime import datetime
+from movie_entity import movie
 
 class Rental:
     """Class that describes the Rental entity."""
@@ -6,15 +7,9 @@ class Rental:
     rental_id_counter = 0
 
 
-    def __init__(self, movie_id: int, client_id: int,
-                 rented_date: datetime, due_date: datetime,
-                 returned_date: datetime=None, client_name: str,
-                 movie_name: str):
-         self.movie_id = movie_id
-         self.movie_name = movie_name
-
-         self.client_id = client_id
-         self.client_name = client_name
+    def __init__(self, movie: Movie, rented_date: datetime,
+                 due_date: datetime, returned_date: datetime=None):
+         self.movie = movie
 
          self.rented_date = rented_date
          self.due_date = due_date
@@ -25,4 +20,4 @@ class Rental:
 
 
      def __str__(self):
-         # TODO
+         return '-'.join((str(movie), str(rented_date), str(due_date)))
