@@ -5,11 +5,12 @@ from abstract_dao import AbstractDao
 class MovieDao(AbstractDao):
     """Object that manages and accepts queries for the Movie entities."""
 
+
     def create(self, title: str, description: str, genre: str):
         """Create new movie."""
 
         m = Movie(title=title, description=description, genre=genre)
-        MovieDao.objects[m.movie_id] = m
+        self.objects[m.movie_id] = m
 
 
     def find_id(id: int) -> Movie:
@@ -24,7 +25,7 @@ class MovieDao(AbstractDao):
         """
 
         try:
-            return MovieDao.objects[id]
+            return self.objects[id]
         except KeyError:
             raise KeyError('Invalid movie index {}'.format(id))
 
@@ -37,7 +38,7 @@ class MovieDao(AbstractDao):
         """
 
         try:
-            del MovieDao.objects[id]
+            del self.objects[id]
         except KeyError:
             raise KeyError('Invalid movie index {}'.format(id))
 
@@ -55,7 +56,7 @@ class MovieDao(AbstractDao):
         """
 
         try:
-            MovieDao.objects[id].update(
+            self.objects[id].update(
                 title=title,
                 description=description,
                 genre=genre
@@ -73,6 +74,6 @@ class MovieDao(AbstractDao):
         """
 
         try:
-            return [m for m in MovieDao.objects.values() if m.title == title][0]
+            return [m for m in self.objects.values() if m.title == title][0]
         except IndexError:
             raise IndexError('No movie was found')

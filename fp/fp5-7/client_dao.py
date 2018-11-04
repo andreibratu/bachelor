@@ -9,7 +9,7 @@ class ClientDao(AbstractDao):
         """Create new client."""
 
         c = Client(name=name)
-        ClientDao.objects[c.client_id] = c
+        self.objects[c.client_id] = c
 
 
     def find_id(self, id: int) -> Client:
@@ -24,7 +24,7 @@ class ClientDao(AbstractDao):
         """
 
         try:
-            return ClientDao.objects[id]
+            return self.objects[id]
         except KeyError:
             raise KeyError('Invalid client index {}'.format(id))
 
@@ -37,7 +37,7 @@ class ClientDao(AbstractDao):
         """
 
         try:
-            del ClientDao.objects[id]
+            del self.objects[id]
         except KeyError:
             raise KeyError('Invalid client index {}'.format(id))
 
@@ -53,7 +53,7 @@ class ClientDao(AbstractDao):
         """
 
         try:
-            ClientDao.objects[id].update(name=name)
+            self.objects[id].update(name=name)
         except KeyError:
             raise KeyError('Invalid client index {}'.format(id))
 
@@ -62,7 +62,7 @@ class ClientDao(AbstractDao):
         """Find client by name."""
 
         try:
-            client = [c for c in ClientDao.objects.values() if c.name == name]
+            client = [c for c in self.objects.values() if c.name == name]
             return client[0]
         except IndexError:
             raise ValueError('Could not find a client with given name')

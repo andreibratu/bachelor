@@ -1,6 +1,8 @@
 class AbstractDao:
+    """Class that describes the basic functionality of the other DAOs."""
 
-    objects = {}
+    def __init__(self):
+        self.objects = {}
 
     def create(self):
         raise NotImplementedError
@@ -15,4 +17,4 @@ class AbstractDao:
         raise NotImplementedError
 
     def display(self):
-        print(list(AbstractDao.objects.values()))
+        print(list(self.objects.values()))
