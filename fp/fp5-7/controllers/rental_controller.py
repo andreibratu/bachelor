@@ -3,7 +3,9 @@ from repositories.client_repository import ClientRepository
 from repositories.movie_repository import MovieRepository
 from entities.rental_entity import Rental
 from entities.client_entity import Client
+from helper import str_to_dt
 
+from typing import List
 
 class RentalController:
     """Object that implements Rental features."""
@@ -37,19 +39,22 @@ class RentalController:
            movie = self.movie_repository.get(movie_id)
            client = self.client_repository.get(client_id)
 
-           if self.__can_rent(client):
+           rented = self.__rented_movies(client)
+
+           if rented == []:
                rental = Rental(movie=movie,
                                client=client,
                                rented_date=str_to_dt(rented_date),
                                due_date=str_to_dt(due_date)
                                )
 
-               self.insert(rental)
+               self.rental_repository.insert(rental)
+
            else:
                raise ValueError(
-                    'Client {} has not returned movie {}'.format(
+                    "Client '{}' has not returned movie '{}'".format(
                     client.name,
-                    movie.title)
+                    rented[0].movie.title)
                )
 
        except Exception as e:
@@ -69,8 +74,10 @@ class RentalController:
       self.movie_repository.insert(r)
 
 
-    def __can_rent(self, client: Client) -> bool:
-       rented = [x for x in self.rental_repository.find_all() if x.id \
-                 == client.id and x.due_date is None]
-       print(rented)
-       return rented == []
+    def display(self):
+        print(self.rental_repository.find_all())
+
+
+    def __rented_movies(self, c: Client) -> List[Rental]:
+       return [r for r in self.rental_repository.find_all() if r.client.id \
+            == c.id and r.returned_date == None]
