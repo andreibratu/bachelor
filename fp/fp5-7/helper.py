@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List, T
 
 
 def str_to_dt(date_str: str) -> datetime:
@@ -31,8 +32,37 @@ def pretty_date(dt: datetime) -> str:
     Args:
         dt (datetime): The datetime object.
     Returns:
-        The pretiffied string.
+        The date as string.
     """
 
     FORMAT = '%d %b %Y'
     return dt.strftime(FORMAT)
+
+
+def abstract_search(l: List[T], query: str) -> List[T]:
+    """
+    Return all objects in list that have an attr that partial
+    matches the given query in lowercase.
+
+    Args:
+        l (List): A generic list to iterate through.
+        query (str): The query term.
+    Returns:
+        A list that contains matching items.
+    """
+
+    # Search by id
+    search_id = [
+        o for o in l \
+        if hasattr(o, 'id') \
+        and str(getattr(o, 'id')) == query]
+
+    if search_id != []:
+        return search_id
+
+    # Partial search
+    return list(set([
+        o for o in l for attr in dir(o) \
+        if type(getattr(o, attr)) is str \
+        and query.lower() in getattr(o, attr).lower()
+    ]))

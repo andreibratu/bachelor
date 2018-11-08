@@ -1,5 +1,6 @@
 from repositories.movie_repository import MovieRepository
 from entities.movie_entity import Movie
+from helper import abstract_search
 
 
 class MovieController:
@@ -60,3 +61,13 @@ class MovieController:
 
         except KeyError:
             raise KeyError('Invalid movie index {}'.format(id))
+
+
+    def search(self, query: str):
+        """Return movies that match query."""
+
+        print(abstract_search(
+            self.movie_repository.find_all(),
+            query
+            )
+        )

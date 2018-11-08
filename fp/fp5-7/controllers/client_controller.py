@@ -1,5 +1,6 @@
 from repositories.client_repository import ClientRepository
 from entities.client_entity import Client
+from helper import abstract_search
 
 
 class ClientController:
@@ -21,3 +22,13 @@ class ClientController:
         """Print all __clients in the db."""
 
         print(self.client_repository.find_all())
+
+
+    def search(self, query: str):
+        """Return clients that match query."""
+
+        print(abstract_search(
+            self.client_repository.find_all(),
+            query
+            )
+        )
