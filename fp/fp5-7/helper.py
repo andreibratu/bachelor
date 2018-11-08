@@ -1,7 +1,7 @@
 from datetime import datetime
 
 
-def datetime_from_str(date_str: str) -> datetime:
+def str_to_dt(date_str: str) -> datetime:
     """Utility that parses strings into Python datetime objects.
 
     The strings should respect the %d-%m-%Y format. See
@@ -35,4 +35,4 @@ def pretty_date(dt: datetime) -> str:
     """
 
     FORMAT = '%d %b %Y'
-    return dt.strptime(FORMAT)
+    return dt.strftime(FORMAT)
