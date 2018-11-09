@@ -66,3 +66,11 @@ def abstract_search(l: List[T], query: str) -> List[T]:
         if type(getattr(o, attr)) is str \
         and query.lower() in getattr(o, attr).lower()
     ]))
+
+
+def print_list(l: List[T]):
+    """Print a list of objects in a readable form."""
+
+    print('----')
+    print("\n".join([str(o) for o in l]))
+    print('----')

@@ -3,7 +3,7 @@ from repositories.client_repository import ClientRepository
 from repositories.movie_repository import MovieRepository
 from entities.rental_entity import Rental
 from entities.client_entity import Client
-from helper import str_to_dt
+from helper import str_to_dt, print_list
 from typing import List
 from datetime import datetime
 
@@ -84,7 +84,7 @@ class RentalController:
     def display(self):
         """Print all Rental entities."""
 
-        print(self.rental_repository.get_all())
+        print_list(self.rental_repository.get_all())
 
 
     def stats(self, query: str):
@@ -100,7 +100,7 @@ class RentalController:
 
             stats.sort(key=lambda tup: tup[1], reverse=True)
 
-        elif query in ('times', 'current'):
+        elif query in ('late', 'current'):
             stats = {
                 'current': [
                     r for r in self.rental_repository.get_all()
@@ -116,7 +116,7 @@ class RentalController:
         else:
             raise ValueError('Invalid arg for stats command')
 
-        print(stats)
+        print_list(stats)
 
 
     def __rented_movies(self, c: Client) -> List[Rental]:
