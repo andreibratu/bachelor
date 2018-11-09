@@ -31,7 +31,7 @@ class ClientRepository:
         del ClientRepository.__clients[id]
 
 
-    def find_all(self):
+    def get_all(self):
         """Return all client entities."""
 
         return list(ClientRepository.__clients.values())

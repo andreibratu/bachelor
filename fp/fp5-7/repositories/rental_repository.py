@@ -1,14 +1,17 @@
 from entities.rental_entity import Rental
 from entities.client_entity import Client
+from entities.movie_entity import Movie
 from helper import str_to_dt, pretty_date
-from typing import List
-
+from typing import List, Tuple
+from collections import Counter
 
 class RentalRepository:
     """Object that manages Rental entities."""
 
 
     __rentals = {}
+    __movie_stats_days = Counter()
+    __movie_stats_times = Counter()
     __count = 0
 
 
@@ -19,14 +22,36 @@ class RentalRepository:
             r.id = RentalRepository.__count
             RentalRepository.__count += 1
 
+        RentalRepository.__movie_stats_days[r.movie] += self.__calc_rental_days(r)
+        RentalRepository.__movie_stats_times[r.movie] += 1
         RentalRepository.__rentals[r.id] = r
 
 
-    def get(id: int):
+    def get(self, id: int):
         """"Return Rental entity with given id."""
 
         return RentalRepository.__rentals[id]
 
 
-    def find_all(self) -> List[Rental]:
+    def get_all(self) -> List[Rental]:
+        """Return all Rental entities."""
+
         return list(RentalRepository.__rentals.values())
+
+
+    def get_stats_days(self) -> List[Tuple[Movie, int]]:
+        """Return rental stats by number days rented."""
+
+        return list(self.__movie_stats_days.items())
+
+
+    def get_stats_times(self) -> List[Tuple[Movie, int]]:
+        """Return rental stats by number times rented."""
+
+        return list(self.__movie_stats_times.items())
+
+
+    def __calc_rental_days(self, r: Rental) -> int:
+        """Calculate how many days a rental was made for."""
+
+        return (r.due_date - r.rented_date).days

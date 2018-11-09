@@ -14,7 +14,7 @@ class MovieController:
     def display(self):
         """Print all entities."""
 
-        print(self.movie_repository.find_all())
+        print(self.movie_repository.get_all())
 
 
     def create(self, title: str, description: str, genre: str):
@@ -67,7 +67,7 @@ class MovieController:
         """Return movies that match query."""
 
         print(abstract_search(
-            self.movie_repository.find_all(),
+            self.movie_repository.get_all(),
             query
             )
         )

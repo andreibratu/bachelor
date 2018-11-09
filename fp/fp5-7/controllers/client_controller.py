@@ -21,14 +21,14 @@ class ClientController:
     def display(self):
         """Print all __clients in the db."""
 
-        print(self.client_repository.find_all())
+        print(self.client_repository.get_all())
 
 
     def search(self, query: str):
         """Return clients that match query."""
 
         print(abstract_search(
-            self.client_repository.find_all(),
+            self.client_repository.get_all(),
             query
             )
         )

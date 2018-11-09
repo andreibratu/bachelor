@@ -33,7 +33,7 @@ class MovieRepository:
         return MovieRepository.__movies[id]
 
 
-    def find_all(self) -> List[Movie]:
+    def get_all(self) -> List[Movie]:
         """Return all entities."""
 
         return list(MovieRepository.__movies.values())

@@ -41,11 +41,11 @@ def pretty_date(dt: datetime) -> str:
 
 def abstract_search(l: List[T], query: str) -> List[T]:
     """
-    Return all objects in list that have an attr that partial
+    Return all objects in list that have a string attribute that partial
     matches the given query in lowercase.
 
     Args:
-        l (List): A generic list to iterate through.
+        l (List): A generic list of objects.
         query (str): The query term.
     Returns:
         A list that contains matching items.
