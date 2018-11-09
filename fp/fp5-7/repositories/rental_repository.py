@@ -21,9 +21,12 @@ class RentalRepository:
         if not hasattr(r, 'id'):
             r.id = RentalRepository.__count
             RentalRepository.__count += 1
+            RentalRepository.__movie_stats_times[r.movie] += 1
 
-        RentalRepository.__movie_stats_days[r.movie] += self.__calc_rental_days(r)
-        RentalRepository.__movie_stats_times[r.movie] += 1
+        else:
+            RentalRepository.__movie_stats_days[r.movie] += \
+                self.__calc_rental_days(r)
+
         RentalRepository.__rentals[r.id] = r
 
 
@@ -54,4 +57,6 @@ class RentalRepository:
     def __calc_rental_days(self, r: Rental) -> int:
         """Calculate how many days a rental was made for."""
 
-        return (r.due_date - r.rented_date).days
+        assert r.returned_date is not None
+
+        return (r.returned_date - r.rented_date).days
