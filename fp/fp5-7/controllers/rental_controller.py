@@ -28,11 +28,6 @@ class RentalController:
                rented_date: str, due_date: str):
     """Implement the movie rental behaviour.
 
-    Args:
-        client_id (str): The id of the renting client.
-        movie_id (str): The id of the rented movie.
-        rent_date (datetime): The date at which the movie has been rented.
-        due_date (datetime): The date at which the rental is due.
     Raises:
         ValueError: Ids could not be parsed.
         KeyError: No entity with given id exists.
@@ -43,7 +38,7 @@ class RentalController:
           movie_id = int(movie_id)
           client_id = int(client_id)
 
-       except ValueError as e:
+       except ValueError:
           raise ValueError('Could not parse given ids')
 
        try:
@@ -92,7 +87,7 @@ class RentalController:
     def display(self):
         """Print all Rental entities."""
 
-        print(self.rental_repository.get_all())
+        print_list(self.rental_repository.get_all())
 
 
     def stats(self, query: str):
@@ -108,7 +103,7 @@ class RentalController:
 
             stats.sort(key=lambda tup: tup[1], reverse=True)
 
-        elif query in ('times', 'current'):
+        elif query in ('late', 'current'):
             stats = {
                 'current': [
                     r for r in self.rental_repository.get_all()
@@ -124,7 +119,7 @@ class RentalController:
         else:
             raise ValueError('Invalid arg for stats command')
 
-        print(stats)
+        print_list(stats)
 
 
     def __client_rented_movies(self, c: Client) -> List[Rental]:

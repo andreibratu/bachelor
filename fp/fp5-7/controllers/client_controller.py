@@ -21,7 +21,7 @@ class ClientController:
     def display(self):
         """Print all __clients in the db."""
 
-        print(self.client_repository.get_all())
+        print_list(self.client_repository.get_all())
 
 
     def search(self, query: str):

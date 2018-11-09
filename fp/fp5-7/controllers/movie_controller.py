@@ -1,6 +1,6 @@
 from repositories.movie_repository import MovieRepository
 from entities.movie_entity import Movie
-from helper import abstract_search
+from helper import abstract_search, print_list
 
 
 class MovieController:
@@ -14,7 +14,7 @@ class MovieController:
     def display(self):
         """Print all entities."""
 
-        print(self.movie_repository.get_all())
+        print_list(self.movie_repository.get_all())
 
 
     def create(self, title: str, description: str, genre: str):
