@@ -1,11 +1,17 @@
+from typing import List
+from datetime import datetime
+
+from helper import str_to_dt
+
+from entities.rental_entity import Rental
+from entities.client_entity import Client
+
 from repositories.rental_repository import RentalRepository
 from repositories.client_repository import ClientRepository
 from repositories.movie_repository import MovieRepository
-from entities.rental_entity import Rental
-from entities.client_entity import Client
-from helper import str_to_dt
-from typing import List
-from datetime import datetime
+
+from exceptions.conflict_error import ConflictError
+from exceptions.arguement_error import ArguementError
 
 
 class RentalController:
@@ -20,14 +26,18 @@ class RentalController:
 
     def rent(self, movie_id: str, client_id: str,
                rented_date: str, due_date: str):
-       """Implement the movie rental behaviour.
+    """Implement the movie rental behaviour.
 
-       Args:
-            client_id (str): The id of the renting client.
-            movie_id (str): The id of the rented movie.
-            rent_date (datetime): The date at which the movie has been rented.
-            due_date (datetime): The date at which the rental is due.
-       """
+    Args:
+        client_id (str): The id of the renting client.
+        movie_id (str): The id of the rented movie.
+        rent_date (datetime): The date at which the movie has been rented.
+        due_date (datetime): The date at which the rental is due.
+    Raises:
+        ValueError: Ids could not be parsed.
+        KeyError: No entity with given id exists.
+        ConflictError: Client already has a rental on roll.
+    """
 
        try:
           movie_id = int(movie_id)
@@ -38,44 +48,42 @@ class RentalController:
 
        try:
            movie = self.movie_repository.get(movie_id)
+
+       except KeyError:
+           raise KeyError('Invalid movie id: {}'.format(movie_id))
+
+       try:
            client = self.client_repository.get(client_id)
 
-           rented = self.__rented_movies(client)
+       except KeyError:
+           raise KeyError('Invalid client id: {}'.format(client_id))
 
-           if rented == []:
-               self.movie_repository.delete(movie_id)
-               rental = Rental(movie=movie,
-                               client=client,
-                               rented_date=str_to_dt(rented_date),
-                               due_date=str_to_dt(due_date)
-                               )
+       if self.__client_rented_movies(client) == []:
+           self.movie_repository.delete(movie_id)
+           rental = Rental(
+                movie=movie,
+                client=client,
+                rented_date=str_to_dt(rented_date),
+                due_date=str_to_dt(due_date)
+           )
 
-               self.rental_repository.insert(rental)
+           self.rental_repository.insert(rental)
 
-
-           else:
-               raise ValueError(
-                    "Client '{}' has not returned movie '{}'".format(
-                    client.name,
-                    rented[0].movie.title)
-               )
-
-       except Exception as e:
-           raise e
+       else:
+           raise ConflictError(
+                "Client '{}' has not returned movie '{}'".format(
+                client.name,
+                rented[0].movie.title)
+           )
 
 
-    def resolve(self, r_id: str, r_date: str):
-      """Marks a movie as being returned.
+    def resolve(self, rental_id: str, return_date: str):
+      """Return a movie."""
 
-      Args:
-           r_id (str): The rental to be resolved.
-           r_date (str): The date at which the movie has been returned.
-      """
+      rental_id = int(rental_id)
 
-      r_id = int(r_id)
-
-      r = self.rental_repository.get(r_id)
-      r.returned_date = str_to_dt(r_date)
+      r = self.rental_repository.get(rental_id)
+      r.returned_date = str_to_dt(return_date)
 
       self.rental_repository.insert(r)
       self.movie_repository.insert(r.movie)
@@ -119,7 +127,7 @@ class RentalController:
         print(stats)
 
 
-    def __rented_movies(self, c: Client) -> List[Rental]:
+    def __client_rented_movies(self, c: Client) -> List[Rental]:
         """Return list of movies currently rented by a client."""
 
         return [r for r in self.rental_repository.get_all() if r.client.id \
