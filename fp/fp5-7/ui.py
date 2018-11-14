@@ -1,7 +1,9 @@
+import shlex
+
 from controllers.client_controller import ClientController
 from controllers.movie_controller import MovieController
 from controllers.rental_controller import RentalController
-import shlex
+
 
 class CommandUI:
     """Object that handles user input."""

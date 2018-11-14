@@ -68,6 +68,5 @@ class MovieController:
 
         print(abstract_search(
             self.movie_repository.get_all(),
-            query
-            )
+            query)
         )

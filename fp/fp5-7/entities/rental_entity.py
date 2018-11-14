@@ -10,30 +10,29 @@ class Rental:
 
     def __init__(self, movie: Movie, client: Client,
                  rented_date: datetime, due_date: datetime,
-                 returned_date: datetime=None):
-         self.movie = movie
-         self.client = client
+                 returned_date: datetime = None):
+        self.movie = movie
+        self.client = client
 
-         self.rented_date = rented_date
-         self.due_date = due_date
-         self.returned_date = returned_date
+        self.rented_date = rented_date
+        self.due_date = due_date
+        self.returned_date = returned_date
 
 
     def __str__(self):
         returned_date = self.returned_date
-        if self.returned_date == None:
+        if self.returned_date is None:
             returned_date = 'To be returned'
         else:
             returned_date = pretty_date(self.returned_date)
 
-        return ' -- '.join(
-        (str(self.id),
-         str(self.movie.title),
-         str(self.client.name),
-         pretty_date(self.rented_date),
-         pretty_date(self.due_date),
-         returned_date
-         )
+        return ' -- '.join((
+            str(self.id),
+            str(self.movie.title),
+            str(self.client.name),
+            pretty_date(self.rented_date),
+            pretty_date(self.due_date),
+            returned_date)
         )
 
 

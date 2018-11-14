@@ -1,7 +1,7 @@
 from typing import List
 from datetime import datetime
 
-from helper import str_to_dt
+from helper import str_to_dt, print_list
 
 from entities.rental_entity import Rental
 from entities.client_entity import Client
@@ -11,7 +11,6 @@ from repositories.client_repository import ClientRepository
 from repositories.movie_repository import MovieRepository
 
 from exceptions.conflict_error import ConflictError
-from exceptions.arguement_error import ArguementError
 
 
 class RentalController:
@@ -25,63 +24,63 @@ class RentalController:
 
 
     def rent(self, movie_id: str, client_id: str,
-               rented_date: str, due_date: str):
-    """Implement the movie rental behaviour.
+             rented_date: str, due_date: str):
+        """Implement the movie rental behaviour.
 
-    Raises:
-        ValueError: Ids could not be parsed.
-        KeyError: No entity with given id exists.
-        ConflictError: Client already has a rental on roll.
-    """
+        Raises:
+            ValueError: Ids could not be parsed.
+            KeyError: No entity with given id exists.
+            ConflictError: Client already has a rental on roll.
+        """
 
-       try:
-          movie_id = int(movie_id)
-          client_id = int(client_id)
+        try:
+            movie_id = int(movie_id)
+            client_id = int(client_id)
 
-       except ValueError:
-          raise ValueError('Could not parse given ids')
+        except ValueError:
+            raise ValueError('Could not parse given ids')
 
-       try:
-           movie = self.movie_repository.get(movie_id)
+        try:
+            movie = self.movie_repository.get(movie_id)
 
-       except KeyError:
-           raise KeyError('Invalid movie id: {}'.format(movie_id))
+        except KeyError:
+            raise KeyError('Invalid movie id: {}'.format(movie_id))
 
-       try:
-           client = self.client_repository.get(client_id)
+        try:
+            client = self.client_repository.get(client_id)
 
-       except KeyError:
-           raise KeyError('Invalid client id: {}'.format(client_id))
+        except KeyError:
+            raise KeyError('Invalid client id: {}'.format(client_id))
 
-       if self.__client_rented_movies(client) == []:
-           self.movie_repository.delete(movie_id)
-           rental = Rental(
+        try:
+            current_rental = self.__client_rented_movies(client)[0]
+            raise ConflictError(
+                "Client '{}' has not returned movie '{}'".format(
+                    client.name,
+                    current_rental.movie.title)
+            )
+
+        except IndexError:
+            self.movie_repository.delete(movie_id)
+            rental = Rental(
                 movie=movie,
                 client=client,
                 rented_date=str_to_dt(rented_date),
-                due_date=str_to_dt(due_date)
-           )
+                due_date=str_to_dt(due_date))
 
-           self.rental_repository.insert(rental)
-
-       else:
-           raise ConflictError(
-                "Client '{}' has not returned movie '{}'".format(
-                client.name,
-                rented[0].movie.title)
-           )
+            self.rental_repository.insert(rental)
 
 
     def resolve(self, rental_id: str, return_date: str):
-      """Return a movie."""
+        """Return a movie."""
 
-      rental_id = int(rental_id)
+        rental_id = int(rental_id)
 
-      r = self.rental_repository.get(rental_id)
-      r.returned_date = str_to_dt(return_date)
+        r = self.rental_repository.get(rental_id)
+        r.returned_date = str_to_dt(return_date)
 
-      self.rental_repository.insert(r)
-      self.movie_repository.insert(r.movie)
+        self.rental_repository.insert(r)
+        self.movie_repository.insert(r.movie)
 
 
     def display(self):
@@ -107,7 +106,7 @@ class RentalController:
             stats = {
                 'current': [
                     r for r in self.rental_repository.get_all()
-                    if r.returned_date == None],
+                    if r.returned_date is None],
                 'late': [
                     r for r in self.rental_repository.get_all()
                     if r.due_date < datetime.now()
@@ -125,5 +124,5 @@ class RentalController:
     def __client_rented_movies(self, c: Client) -> List[Rental]:
         """Return list of movies currently rented by a client."""
 
-        return [r for r in self.rental_repository.get_all() if r.client.id \
-            == c.id and r.returned_date == None]
+        return [r for r in self.rental_repository.get_all()
+                if r.client.id == c.id and r.returned_date is None]

@@ -53,8 +53,8 @@ def abstract_search(l: List[T], query: str) -> List[T]:
 
     # Search by id
     search_id = [
-        o for o in l \
-        if hasattr(o, 'id') \
+        o for o in l
+        if hasattr(o, 'id')
         and str(getattr(o, 'id')) == query]
 
     if search_id != []:
@@ -62,8 +62,8 @@ def abstract_search(l: List[T], query: str) -> List[T]:
 
     # Partial search
     return list(set([
-        o for o in l for attr in dir(o) \
-        if type(getattr(o, attr)) is str \
+        o for o in l for attr in dir(o)
+        if type(getattr(o, attr)) is str
         and query.lower() in getattr(o, attr).lower()
     ]))
 

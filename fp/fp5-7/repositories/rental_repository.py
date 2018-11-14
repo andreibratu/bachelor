@@ -1,9 +1,9 @@
-from entities.rental_entity import Rental
-from entities.client_entity import Client
-from entities.movie_entity import Movie
-from helper import str_to_dt, pretty_date
 from typing import List, Tuple
 from collections import Counter
+
+from entities.rental_entity import Rental
+from entities.movie_entity import Movie
+
 
 class RentalRepository:
     """Object that manages Rental entities."""

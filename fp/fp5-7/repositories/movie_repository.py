@@ -1,5 +1,6 @@
-from entities.movie_entity import Movie
 from typing import List
+
+from entities.movie_entity import Movie
 
 
 class MovieRepository:
