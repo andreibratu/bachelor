@@ -24,7 +24,24 @@ segment code use32 class=code
         qw:
             ; lodsd ; eax <- [esi]
             ; stosd ; [edi] <- eax
-            movsd
+            movsdbits 32 ; assembling for the 32 bits architecture
+
+global start        
+
+extern exit
+import exit msvcrt.dll
+
+
+segment data use32 class=data
+
+
+
+segment code use32 class=code
+    start:
+    
+        push    dword 0
+        call    [exit]
+
             loop qw
         
         push    dword 0
