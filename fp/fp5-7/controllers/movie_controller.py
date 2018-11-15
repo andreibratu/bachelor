@@ -7,21 +7,21 @@ class MovieController:
     """Object that implements Movie related features."""
 
 
-    def __init__(self):
-        self.movie_repository = MovieRepository()
+    def __init__(self, movie_repository: MovieRepository):
+        self.__movie_repository = movie_repository
 
 
     def display(self):
         """Print all entities."""
 
-        print_list(self.movie_repository.get_all())
+        print_list(self.__movie_repository.get_all())
 
 
     def create(self, title: str, description: str, genre: str):
         """Create and insert new entity."""
 
         m = Movie(title=title, description=description, genre=genre)
-        self.movie_repository.insert(m)
+        self.__movie_repository.insert(m)
 
 
     def delete(self, id: int):
@@ -34,7 +34,7 @@ class MovieController:
 
         try:
             id = int(id)
-            self.movie_repository.delete(id)
+            self.__movie_repository.delete(id)
 
         except KeyError:
             raise KeyError('Invalid movie index {}'.format(id))
@@ -51,13 +51,13 @@ class MovieController:
         """
 
         try:
-            m = self.movie_repository.get(id)
+            m = self.__movie_repository.get(id)
             m.update(
                 title=title,
                 description=description,
                 genre=genre
             )
-            self.movie_repository.insert(m)
+            self.__movie_repository.insert(m)
 
         except KeyError:
             raise KeyError('Invalid movie index {}'.format(id))
@@ -67,6 +67,6 @@ class MovieController:
         """Return movies that match query."""
 
         print(abstract_search(
-            self.movie_repository.get_all(),
+            self.__movie_repository.get_all(),
             query)
         )

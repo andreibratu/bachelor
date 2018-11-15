@@ -1,11 +1,24 @@
-from ui import CommandUI
+from repositories.client_repository import ClientRepository
+from repositories.movie_repository import MovieRepository
+from repositories.rental_repository import RentalRepository
+
 from controllers.client_controller import ClientController
 from controllers.movie_controller import MovieController
+from controllers.rental_controller import RentalController
+
+from ui import CommandUI
 
 
-client_controller = ClientController()
-movie_controller = MovieController()
+client_repository = ClientRepository()
+movie_repository = MovieRepository()
+rental_repository = RentalRepository()
 
+client_controller = ClientController(client_repository=client_repository)
+movie_controller = MovieController(movie_repository=movie_repository)
+rental_controller = RentalController(
+    client_repository=client_repository,
+    movie_repository=movie_repository,
+    rental_repository=rental_repository)
 
 client_controller.create('Mary')
 client_controller.create('John')
@@ -32,6 +45,9 @@ movie_controller.create(
     genre="SciFi"
 )
 
-
-ui = CommandUI()
+ui = CommandUI(
+    client_controller=client_controller,
+    movie_controller=movie_controller,
+    rental_controller=rental_controller
+)
 ui.loop()

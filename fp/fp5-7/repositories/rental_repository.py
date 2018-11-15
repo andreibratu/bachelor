@@ -9,37 +9,38 @@ class RentalRepository:
     """Object that manages Rental entities."""
 
 
-    __rentals = {}
-    __movie_stats_days = Counter()
-    __movie_stats_times = Counter()
-    __count = 0
+    def __init__(self):
+        self.__rentals = {}
+        self.__movie_stats_days = Counter()
+        self.__movie_stats_times = Counter()
+        self.__count = 0
 
 
     def insert(self, r: Rental):
         """Inserts a Rental object into the DAO."""
 
         if not hasattr(r, 'id'):
-            r.id = RentalRepository.__count
-            RentalRepository.__count += 1
-            RentalRepository.__movie_stats_times[r.movie] += 1
+            r.id = self.__count
+            self.__count += 1
+            self.__movie_stats_times[r.movie] += 1
 
         else:
-            RentalRepository.__movie_stats_days[r.movie] += \
+            self.__movie_stats_days[r.movie] += \
                 self.__calc_rental_days(r)
 
-        RentalRepository.__rentals[r.id] = r
+        self.__rentals[r.id] = r
 
 
     def get(self, id: int):
         """"Return Rental entity with given id."""
 
-        return RentalRepository.__rentals[id]
+        return self.__rentals[id]
 
 
     def get_all(self) -> List[Rental]:
         """Return all Rental entities."""
 
-        return list(RentalRepository.__rentals.values())
+        return list(self.__rentals.values())
 
 
     def get_stats_days(self) -> List[Tuple[Movie, int]]:

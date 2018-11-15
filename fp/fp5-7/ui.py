@@ -8,10 +8,13 @@ from controllers.rental_controller import RentalController
 class CommandUI:
     """Object that handles user input."""
 
-    args = []
-    client_controller = ClientController()
-    movie_controller = MovieController()
-    rental_controller = RentalController()
+
+    def __init__(self, client_controller: ClientController,
+                 movie_controller: MovieController,
+                 rental_controller: RentalController):
+        self.__client_controller = client_controller
+        self.__movie_controller = movie_controller
+        self.__rental_controller = rental_controller
 
 
     def loop(self):
@@ -20,18 +23,16 @@ class CommandUI:
         while True:
             try:
                 # https://docs.python.org/2/library/shlex.html
-                CommandUI.args = shlex.split(input('> '))
-
-                args = CommandUI.args
+                args = shlex.split(input('> '))
 
                 if len(args) == 0:
                     continue
 
                 try:
                     dao = {
-                        'client': CommandUI.client_controller,
-                        'movie': CommandUI.movie_controller,
-                        'rental': CommandUI.rental_controller
+                        'client': self.__client_controller,
+                        'movie': self.__movie_controller,
+                        'rental': self.__rental_controller
                     }[args[0]]
 
                     if len(args[2:]) > 0:
