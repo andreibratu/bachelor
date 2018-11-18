@@ -1,8 +1,18 @@
 class Observable:
     """Abstract class implementation of Observable side of the pattern."""
 
-    def subscribe(self):
-        raise NotImplementedError
+    def __init__(self):
+        self.__observers = set()
 
-    def notify(self):
-        raise NotImplementedError
+
+    def subscribe(self, observer):
+        self.__observers.add(observer)
+
+
+    def unsubscribe(self, observer):
+        self.__observers.unsubscribe(observer)
+
+
+    def notify(self, message):
+        for o in self.__observers:
+            o.update(message)

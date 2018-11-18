@@ -1,7 +1,8 @@
 from typing import List
 from datetime import datetime
+from copy import copy
 
-from helper import str_to_dt, print_list
+from abstract.observable import Observable
 
 from entities.rental_entity import Rental
 from entities.client_entity import Client
@@ -12,14 +13,17 @@ from repositories.movie_repository import MovieRepository
 
 from exceptions.conflict_error import ConflictError
 
+from helper import str_to_dt, print_list
 
-class RentalController:
-    """Object that implements Rental features."""
+
+class RentalController(Observable):
+    """object that implements Rental features."""
 
 
     def __init__(self, rental_repository: RentalRepository,
                  client_repository: ClientRepository,
                  movie_repository: MovieRepository):
+        Observable.__init__(self)
         self.__rental_repository = rental_repository
         self.__client_repository = client_repository
         self.__movie_repository = movie_repository
@@ -30,7 +34,6 @@ class RentalController:
         """Implement the movie rental behaviour.
 
         Raises:
-            ValueError: Ids could not be parsed.
             KeyError: No entity with given id exists.
             ConflictError: Client already has a rental on roll.
         """
@@ -61,14 +64,49 @@ class RentalController:
             )
 
         else:
+            change_movie = {
+                'undo': {
+                    'ref': self.__movie_repository,
+                    'o': movie,
+                    'op': 'insert'},
+                'redo': {
+                    'ref': self.__movie_repository,
+                    'o': movie_id,
+                    'op': 'delete'},
+            }
+
             self.__movie_repository.delete(movie_id)
+
             rental = Rental(
                 movie=movie,
                 client=client,
                 rented_date=str_to_dt(rented_date),
                 due_date=str_to_dt(due_date))
+            id = self.__rental_repository.insert(rental)
 
-            self.__rental_repository.insert(rental)
+            change_times = {
+                'undo': {
+                    'ref': self.__rental_repository,
+                    'o': -1,
+                    'op': 'update_stats_times'},
+                'redo': {
+                    'ref': self.__rental_repository,
+                    'o': 1,
+                    'op': 'update_stats_times'}
+            }
+
+            change_rental = {
+                'undo': {
+                    'ref': self.__rental_repository,
+                    'o': id,
+                    'op': 'delete'},
+                'redo': {
+                    'ref': self.__rental_repository,
+                    'o': rental,
+                    'op': 'insert'}
+            }
+
+            self.notify([change_movie, change_rental, change_times])
 
 
     def resolve(self, rental_id: str, return_date: str):
@@ -77,10 +115,38 @@ class RentalController:
         rental_id = int(rental_id)
 
         r = self.__rental_repository.get(rental_id)
+
+        rental_before_return_change = copy(r)
         r.returned_date = str_to_dt(return_date)
+        rental_after_return_change = copy(r)
+
+        change_rental = {
+            'undo': {
+                'ref': self.__rental_repository,
+                'o': rental_before_return_change,
+                'op': 'insert'},
+            'redo': {
+                'ref': self.__rental_repository,
+                'o': rental_after_return_change,
+                'op': 'insert'}
+        }
 
         self.__rental_repository.insert(r)
-        self.__movie_repository.insert(r.movie)
+
+        days_rented = self.__rental_repository.calc_rental_days(r)
+
+        change_days = {
+            'undo': {
+                'ref': self.__rental_repository,
+                'o': -days_rented,
+                'op': 'update_stats_days'},
+            'redo': {
+                'ref': self.__rental_repository,
+                'o': days_rented,
+                'op': 'update_stats_days'}
+        }
+
+        self.notify([change_rental, change_days])
 
 
     def display(self):

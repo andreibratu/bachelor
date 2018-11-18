@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, T
+from typing import List
 
 
 def str_to_dt(date_str: str) -> datetime:
@@ -9,10 +9,6 @@ def str_to_dt(date_str: str) -> datetime:
     docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior
     for further reference.
 
-    Args:
-        date_str (str): The string to be parsed.
-    Returns:
-        A datetime object.
     Raises:
         ValueError: String does not match the expected format.
     """
@@ -28,18 +24,13 @@ def pretty_date(dt: datetime) -> str:
     """Return a human readable representation of a datetime object.
 
     The string is displayed using the %d %b %Y format.
-
-    Args:
-        dt (datetime): The datetime object.
-    Returns:
-        The date as string.
     """
 
     FORMAT = '%d %b %Y'
     return dt.strftime(FORMAT)
 
 
-def abstract_search(l: List[T], query: str) -> List[T]:
+def abstract_search(l: List, query: str) -> List:
     """
     Return all objects in list that have a string attribute that partial
     matches the given query in lowercase.
@@ -67,7 +58,7 @@ def abstract_search(l: List[T], query: str) -> List[T]:
     ]))
 
 
-def print_list(l: List[T]):
+def print_list(l: List):
     """Print a list of objects in a readable form."""
 
     print('----')

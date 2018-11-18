@@ -1,20 +1,22 @@
-from entities.client_entity import Client
-from abstract.observable import Observable
 from typing import List
 
+from entities.client_entity import Client
 
-class ClientRepository(Observable):
-    """Object that manages Client entities."""
+
+class ClientRepository:
+    """object that manages Client entities."""
 
 
     def __init__(self):
         self.__clients = {}
         self.__counter = 0
-        self.__observers = []
 
 
-    def insert(self, c: Client):
-        """Insert client into repository."""
+    def insert(self, c: Client) -> int:
+        """Insert client.
+
+        If added for the first time, an id will be assigned.
+        """
 
         if not hasattr(c, 'id'):
             c.id = self.__counter
@@ -22,20 +24,22 @@ class ClientRepository(Observable):
 
         self.__clients[c.id] = c
 
+        return c.id
+
 
     def get(self, id: int) -> Client:
-        """Return a client by id."""
+        """Return client by id."""
 
         return self.__clients[id]
+
+
+    def get_all(self) -> List[Client]:
+        """Return all clients."""
+
+        return list(self.__clients.values())
 
 
     def delete(self, id: int):
         """Delete client by id."""
 
         del self.__clients[id]
-
-
-    def get_all(self) -> List:
-        """Return all client entities."""
-
-        return list(self.__clients.values())

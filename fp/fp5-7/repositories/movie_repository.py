@@ -4,7 +4,7 @@ from entities.movie_entity import Movie
 
 
 class MovieRepository:
-    """Object that manages Movie entities."""
+    """object that manages Movie entities."""
 
 
     def __init__(self):
@@ -12,11 +12,10 @@ class MovieRepository:
         self.__count = 0
 
 
-    def insert(self, m: Movie):
-        """Insert a movie.
+    def insert(self, m: Movie) -> int:
+        """Insert movie.
 
-        If the object is inserted for the first time, the repo
-        will assign an id.
+        If added for the first time, an id will be assigned.
         """
 
         if not hasattr(m, 'id'):
@@ -24,6 +23,8 @@ class MovieRepository:
             self.__count += 1
 
         self.__movies[m.id] = m
+
+        return m.id
 
 
     def get(self, id: str) -> Movie:
