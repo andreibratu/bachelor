@@ -15,7 +15,6 @@ class HistoryController(Observer):
 
         self.__redo_stack = []
         self.__redo_reserve = []
-        self.__available_redos = 0
 
 
     def __apply_change(self, change: Dict):
@@ -40,7 +39,6 @@ class HistoryController(Observer):
                 self.__redo_stack.append(self.__redo_reserve.pop())
             for action in last_undo:
                 self.__apply_change(action)
-                self.__available_redos += 1
             # If a redo will be applied, this undo must be applied again.
             self.__undo_reserve.append(last_undo)
 

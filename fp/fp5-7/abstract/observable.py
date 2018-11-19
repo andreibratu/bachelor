@@ -10,7 +10,7 @@ class Observable:
 
 
     def unsubscribe(self, observer):
-        self.__observers.unsubscribe(observer)
+        self.__observers.discard(observer)
 
 
     def notify(self, message):

@@ -89,7 +89,7 @@ class MovieController(Observable):
                     'ref': self.__movie_repository,
                     'o': m_before_change,
                     'op': 'insert'},
-                'after': {
+                'redo': {
                     'ref': self.__movie_repository,
                     'o': m_after_change,
                     'op': 'insert'}

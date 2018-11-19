@@ -17,7 +17,7 @@ from helper import str_to_dt, print_list
 
 
 class RentalController(Observable):
-    """object that implements Rental features."""
+    """Object that implements Rental features."""
 
 
     def __init__(self, rental_repository: RentalRepository,
@@ -120,6 +120,21 @@ class RentalController(Observable):
         r.returned_date = str_to_dt(return_date)
         rental_after_return_change = copy(r)
 
+        self.__movie_repository.insert(r.movie)
+
+        change_movie_return = {
+            'undo': {
+                'ref': self.__rental_repository,
+                'o': r.movie.id,
+                'op': 'delete'
+            },
+            'redo': {
+                'ref': self.__rental_repository,
+                'o': copy(r.movie),
+                'op': 'insert'
+            }
+        }
+
         change_rental = {
             'undo': {
                 'ref': self.__rental_repository,
@@ -146,7 +161,7 @@ class RentalController(Observable):
                 'op': 'update_stats_days'}
         }
 
-        self.notify([change_rental, change_days])
+        self.notify([change_rental, change_days, change_movie_return])
 
 
     def display(self):
