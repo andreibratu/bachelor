@@ -18,7 +18,7 @@ from controllers.rental_controller import RentalController
 from controllers.history_controller import HistoryController
 
 from exceptions.conflict_error import ConflictError
-from helper import str_to_dt
+from helper.helper import str_to_dt
 
 
 class EntitiesTest(unittest.TestCase):

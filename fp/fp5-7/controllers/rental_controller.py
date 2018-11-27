@@ -13,7 +13,7 @@ from repositories.movie_repository import MovieRepository
 
 from exceptions.conflict_error import ConflictError
 
-from helper import str_to_dt, print_list
+from helper.helper import str_to_dt, print_list
 
 
 class RentalController(Observable):

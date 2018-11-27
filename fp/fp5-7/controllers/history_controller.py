@@ -4,7 +4,7 @@ from abstract.observer import Observer
 
 
 class HistoryController(Observer):
-    """object that implements the undo/redo features."""
+    """Object that implements the undo/redo features."""
 
 
     def __init__(self):

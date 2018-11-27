@@ -7,6 +7,8 @@ from controllers.movie_controller import MovieController
 from controllers.rental_controller import RentalController
 from controllers.history_controller import HistoryController
 
+from helper.helper import generate_movie_from_scraped_page, generate_name
+
 from ui import CommandUI
 
 
@@ -23,30 +25,11 @@ rental_controller = RentalController(
     rental_repository=rental_repository
 )
 
-client_controller.create('Mary')
-client_controller.create('John')
-movie_controller.create(
-    title="Pulp fiction",
-    description="The lives of two mob hitmen, a boxer, a gangster's wife, \
-                 and a pair of diner bandits intertwine in four tales of \
-                 violence and redemption.",
-    genre='Action')
-movie_controller.create(
-    title="Dirty Dancing",
-    description="Spending the summer at a Catskills resort with her family, \
-                 Frances 'Baby Houseman falls in love with the camp's dance \
-                 instructor, Johnny Castle.",
-    genre="Romantic"
-)
-movie_controller.create(
-    title="Blade Runner",
-    description="In the 21st century, a corporation develops human clones to \
-                 be used as slaves in colonies outside the Earth, identified \
-                 as replicants. In 2019, a former police officer is hired to \
-                 hunt down a fugitive group of clones living undercover \
-                 in Los Angeles.",
-    genre="SciFi"
-)
+for n in generate_name():
+    client_controller.create(name=n)
+
+for (t, g, d) in generate_movie_from_scraped_page():
+    movie_controller.create(title=t, genre=g, description=d)
 
 movie_controller.subscribe(history_controller)
 client_controller.subscribe(history_controller)

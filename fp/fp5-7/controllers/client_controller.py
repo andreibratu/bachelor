@@ -6,7 +6,7 @@ from entities.client_entity import Client
 
 from repositories.client_repository import ClientRepository
 
-from helper import abstract_search, print_list
+from helper.helper import abstract_search, print_list
 
 
 class ClientController(Observable):

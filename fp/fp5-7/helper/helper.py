@@ -1,5 +1,7 @@
 from datetime import datetime
 from typing import List
+from bs4 import BeautifulSoup
+from random import sample
 
 
 def str_to_dt(date_str: str) -> datetime:
@@ -64,3 +66,30 @@ def print_list(l: List):
     print('----')
     print("\n".join([str(o) for o in l]))
     print('----')
+
+
+def generate_movie_from_scraped_page():  # pragma: no cover
+    """Generator function that scrapes movie information from local html file.
+
+    Yields:
+        A movie entity.
+    """
+
+    page = BeautifulSoup(open('helper/movies.html'), 'html.parser')
+
+    for div in page.find_all('div', {'class': 'lister-item-content'}):
+        title = div.find('h3').find('a').text
+        genre = div.find('p', {'class': 'text-muted text-small'}) \
+                   .find('span', {'class': 'genre'}).text.split(', ')[0]
+        description = div.find_all('p')[1].text.strip()
+
+        yield (title, genre, description)
+
+
+def generate_name() -> str:  # pragma: no cover
+    """Generator function that returns names."""
+
+    names = open('helper/names.txt', 'r').read().splitlines()
+
+    for name in sample(names, 100):
+        yield name

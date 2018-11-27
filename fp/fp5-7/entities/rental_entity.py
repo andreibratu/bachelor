@@ -1,7 +1,7 @@
 from datetime import datetime
 from entities.movie_entity import Movie
 from entities.client_entity import Client
-from helper import pretty_date
+from helper.helper import pretty_date
 
 
 class Rental:
