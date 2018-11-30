@@ -31,24 +31,24 @@ class CommandUI:
                 if len(args) == 0:
                     continue
 
-                try:
-                    controller = {
-                        'client': self.__client_controller,
-                        'movie': self.__movie_controller,
-                        'rental': self.__rental_controller,
-                        'history': self.__history_controller,
-                    }[args[0]]
+                # try:
+                controller = {
+                    'client': self.__client_controller,
+                    'movie': self.__movie_controller,
+                    'rental': self.__rental_controller,
+                    'history': self.__history_controller,
+                }[args[0]]
 
-                    if len(args[2:]) > 0:
-                        getattr(controller, args[1])(*args[2:])
-                    else:
-                        getattr(controller, args[1])()
+                if len(args[2:]) > 0:
+                    getattr(controller, args[1])(*args[2:])
+                else:
+                    getattr(controller, args[1])()
 
-                    continue
+                continue
 
-                except Exception as e:
-                    print(e)
-                    continue
+                # except Exception as e:
+                #     print(e)
+                #     continue
 
             except (EOFError, KeyboardInterrupt):
                 print('exit')
