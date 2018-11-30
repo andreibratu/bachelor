@@ -7,9 +7,9 @@ from abstract.observable import Observable
 from entities.rental_entity import Rental
 from entities.client_entity import Client
 
-from repositories.rental_repository import RentalRepository
-from repositories.client_repository import ClientRepository
-from repositories.movie_repository import MovieRepository
+from repos.repos.rental_repository import RentalRepository
+from repos.repos.client_repository import ClientRepository
+from repos.repos.movie_repository import MovieRepository
 
 from exceptions.conflict_error import ConflictError
 

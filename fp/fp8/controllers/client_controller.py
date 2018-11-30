@@ -4,7 +4,7 @@ from abstract.observable import Observable
 
 from entities.client_entity import Client
 
-from repositories.client_repository import ClientRepository
+from repos.repos.client_repository import ClientRepository
 
 from helper.helper import abstract_search, print_list
 

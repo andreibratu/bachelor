@@ -6,14 +6,14 @@ from entities.movie_entity import Movie
 
 
 class RentalRepository:
-    """object that manages Rental entities."""
+    """Object that manages Rental entities."""
 
 
     def __init__(self):
-        self.__rentals = {}
-        self.__movie_stats_days = Counter()
-        self.__movie_stats_times = Counter()
-        self.__count = 0
+        self._rentals = {}
+        self._movie_stats_days = Counter()
+        self._movie_stats_times = Counter()
+        self._counter = 0
 
 
     def insert(self, r: Rental) -> id:
@@ -23,39 +23,39 @@ class RentalRepository:
          """
 
         if not hasattr(r, 'id'):
-            r.id = self.__count
-            self.__count += 1
+            r.id = self._counter
+            self._counter += 1
             self.update_stats_times(r.movie, 1)
 
         else:
             # Update op, i.e. movie was returned
             self.update_stats_days(r.movie, self.calc_rental_days(r))
 
-        self.__rentals[r.id] = r
+        self._rentals[r.id] = r
 
 
     def get(self, id: int):
         """"Get rental by id."""
 
-        return self.__rentals[id]
+        return self._rentals[id]
 
 
     def get_all(self) -> List[Rental]:
         """Return all entities."""
 
-        return list(self.__rentals.values())
+        return list(self._rentals.values())
 
 
     def get_stats_days(self) -> List[Tuple[Movie, int]]:
         """Return rental stats by number days rented."""
 
-        return list(self.__movie_stats_days.items())
+        return list(self._movie_stats_days.items())
 
 
     def get_stats_times(self) -> List[Tuple[Movie, int]]:
         """Return rental stats by number times rented."""
 
-        return list(self.__movie_stats_times.items())
+        return list(self._movie_stats_times.items())
 
 
     def calc_rental_days(self, r: Rental) -> int:
@@ -73,7 +73,7 @@ class RentalRepository:
         to modify stats values.
         """
 
-        self.__movie_stats_times[movie] += times
+        self._movie_stats_times[movie] += times
 
 
     def update_stats_days(self, movie: Movie, days: int):
@@ -83,4 +83,4 @@ class RentalRepository:
         to modify stats values.
         """
 
-        self.__movie_stats_days[movie] += days
+        self._movie_stats_days[movie] += days

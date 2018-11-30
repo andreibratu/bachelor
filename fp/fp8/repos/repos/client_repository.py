@@ -4,12 +4,12 @@ from entities.client_entity import Client
 
 
 class ClientRepository:
-    """object that manages Client entities."""
+    """Object that manages Client entities."""
 
 
     def __init__(self):
-        self.__clients = {}
-        self.__counter = 0
+        self._clients = {}
+        self._counter = 0
 
 
     def insert(self, c: Client) -> int:
@@ -19,10 +19,10 @@ class ClientRepository:
         """
 
         if not hasattr(c, 'id'):
-            c.id = self.__counter
-            self.__counter += 1
+            c.id = self._counter
+            self._counter += 1
 
-        self.__clients[c.id] = c
+        self._clients[c.id] = c
 
         return c.id
 
@@ -30,16 +30,16 @@ class ClientRepository:
     def get(self, id: int) -> Client:
         """Return client by id."""
 
-        return self.__clients[id]
+        return self._clients[id]
 
 
     def get_all(self) -> List[Client]:
         """Return all clients."""
 
-        return list(self.__clients.values())
+        return list(self._clients.values())
 
 
     def delete(self, id: int):
         """Delete client by id."""
 
-        del self.__clients[id]
+        del self._clients[id]

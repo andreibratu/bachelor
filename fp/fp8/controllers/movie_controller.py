@@ -4,7 +4,7 @@ from abstract.observable import Observable
 
 from entities.movie_entity import Movie
 
-from repositories.movie_repository import MovieRepository
+from repos.repos.movie_repository import MovieRepository
 
 from helper.helper import abstract_search, print_list
 

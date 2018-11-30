@@ -4,12 +4,12 @@ from entities.movie_entity import Movie
 
 
 class MovieRepository:
-    """object that manages Movie entities."""
+    """Object that manages Movie entities."""
 
 
     def __init__(self):
-        self.__movies = {}
-        self.__count = 0
+        self._movies = {}
+        self._counter = 0
 
 
     def insert(self, m: Movie) -> int:
@@ -19,10 +19,10 @@ class MovieRepository:
         """
 
         if not hasattr(m, 'id'):
-            m.id = self.__count
-            self.__count += 1
+            m.id = self._counter
+            self._counter += 1
 
-        self.__movies[m.id] = m
+        self._movies[m.id] = m
 
         return m.id
 
@@ -30,16 +30,16 @@ class MovieRepository:
     def get(self, id: str) -> Movie:
         """Get movie by id."""
 
-        return self.__movies[id]
+        return self._movies[id]
 
 
     def get_all(self) -> List[Movie]:
         """Return all entities."""
 
-        return list(self.__movies.values())
+        return list(self._movies.values())
 
 
     def delete(self, id: int):
         """Delete movie by id."""
 
-        del self.__movies[id]
+        del self._movies[id]
