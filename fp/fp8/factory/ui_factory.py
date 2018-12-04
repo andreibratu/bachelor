@@ -22,8 +22,9 @@ class UIFactory:
                 raise ValueError('Invalid ui setting')
 
     def build(self, client_controller, movie_controller,
-              rental_controller, history_controller):
+              rental_controller, history_controller, settings):
         return self._ui(client_controller=client_controller,
                         movie_controller=movie_controller,
                         rental_controller=rental_controller,
-                        history_controller=history_controller)
+                        history_controller=history_controller,
+                        settings=settings)

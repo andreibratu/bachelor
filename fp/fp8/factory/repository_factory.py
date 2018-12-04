@@ -12,6 +12,10 @@ from repos.json_repos.client_repository_json import JsonClientRepository
 from repos.json_repos.movie_repository_json import JsonMovieRepository
 from repos.json_repos.rental_repository_json import JsonRentalRepository
 
+from repos.sql_repos.client_repository_sql import SqlClientRepository
+from repos.sql_repos.movie_repository_sql import SqlMovieRepository
+from repos.sql_repos.rental_repository_sql import SqlRentalRepository
+
 
 class RepositoryFactory:
 
@@ -37,6 +41,11 @@ class RepositoryFactory:
                         'client': ClientRepository,
                         'movie': MovieRepository,
                         'rental': RentalRepository
+                    },
+                    'sql': {
+                        'client': SqlClientRepository,
+                        'movie': SqlMovieRepository,
+                        'rental': SqlRentalRepository
                     }
                 }[mode]
 
@@ -44,10 +53,15 @@ class RepositoryFactory:
                 raise ValueError('Invalid repository setting')
 
 
-    def build(self, repository_type):
+    def build(self, repository_type, args):
         """Return instance of repository, depending on the current settings.
 
         Args:
             repository_type (Object): The repository (Client, Movie, Rental)
+            args (Dict): Constructor args to be passed to repo __init__
         """
-        return self._objects[repository_type]()
+
+        if args is None:
+            return self._objects[repository_type]()
+
+        return self._objects[repository_type](**args)

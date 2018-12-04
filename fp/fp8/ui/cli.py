@@ -1,3 +1,4 @@
+from typing import Dict
 import shlex
 
 from controllers.client_controller import ClientController
@@ -13,11 +14,13 @@ class CommandUI:
     def __init__(self, client_controller: ClientController,
                  movie_controller: MovieController,
                  rental_controller: RentalController,
-                 history_controller: HistoryController):
-        self.__client_controller = client_controller
-        self.__movie_controller = movie_controller
-        self.__rental_controller = rental_controller
-        self.__history_controller = history_controller
+                 history_controller: HistoryController,
+                 settings: Dict):
+        self._client_controller = client_controller
+        self._movie_controller = movie_controller
+        self._rental_controller = rental_controller
+        self._history_controller = history_controller
+        self._settings = settings
 
 
     def loop(self):
@@ -31,24 +34,32 @@ class CommandUI:
                 if len(args) == 0:
                     continue
 
-                # try:
-                controller = {
-                    'client': self.__client_controller,
-                    'movie': self.__movie_controller,
-                    'rental': self.__rental_controller,
-                    'history': self.__history_controller,
-                }[args[0]]
+                if args[0] == 'exit':
+                    print('Goodbye')
+                    break
 
-                if len(args[2:]) > 0:
-                    getattr(controller, args[1])(*args[2:])
-                else:
-                    getattr(controller, args[1])()
+                try:
+                    controller = {
+                        'client': self._client_controller,
+                        'movie': self._movie_controller,
+                        'rental': self._rental_controller,
+                        'history': self._history_controller,
+                        'ZAWARUDO': self._history_controller
+                    }[args[0]]
 
-                continue
+                    if len(args[2:]) > 0:
+                        getattr(controller, args[1])(*args[2:])
+                    else:
+                        getattr(controller, args[1])()
 
-                # except Exception as e:
-                #     print(e)
-                #     continue
+                    continue
+
+                except Exception as e:
+                    if self._settings['debug']:
+                        raise e
+                    else:
+                        print(e)
+                        continue
 
             except (EOFError, KeyboardInterrupt):
                 print('exit')
