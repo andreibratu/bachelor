@@ -1,1 +1,1 @@
-{"counter": 0, "objects": {}}
+{"counter": 3, "objects": {"1": {"py/object": "entities.movie_entity.Movie", "description": "asdf", "genre": "asdf", "id": 1, "title": "asdf"}, "2": {"py/object": "entities.movie_entity.Movie", "description": "qwerty", "genre": "qwerty", "id": 2, "title": "qwerty"}}}

@@ -2,6 +2,8 @@ from datetime import datetime
 from typing import List
 from bs4 import BeautifulSoup
 from random import sample
+from pony import orm
+import json
 
 
 def str_to_dt(date_str: str) -> datetime:
@@ -93,3 +95,41 @@ def generate_name() -> str:  # pragma: no cover
 
     for name in sample(names, 100):
         yield name
+
+
+def build_db():
+    """Build the Pony databases object and used entities."""
+
+    db = orm.Database()
+    db.bind(provider='sqlite', filename='../storage/db.sqlite', create_db=True)
+
+    class ClientEntity(db.Entity):
+        id = orm.PrimaryKey(int)
+        name = orm.Required(str)
+        rentals = orm.Set("RentalEntity")
+
+    class MovieEntity(db.Entity):
+        id = orm.PrimaryKey(int)
+        title = orm.Required(str)
+        description = orm.Required(str)
+        genre = orm.Required(str)
+        rentals = orm.Set("RentalEntity")
+
+    class RentalEntity(db.Entity):
+        id = orm.PrimaryKey(int)
+        movie = orm.Required("MovieEntity")
+        client = orm.Required("ClientEntity")
+        rented_date = orm.Required(datetime)
+        due_date = orm.Required(datetime)
+        returned_date = orm.Optional(datetime)
+
+    db.generate_mapping(create_tables=True)
+
+    return (db, ClientEntity, MovieEntity, RentalEntity)
+
+
+def get_settings():
+    """Read the configuration file from settings.json"""
+
+    with open('settings.json', 'r') as f:
+        return json.loads(f.read())

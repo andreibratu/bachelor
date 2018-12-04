@@ -14,7 +14,7 @@ class PickleClientRepository(ClientRepository):
         if os.stat(self._path).st_size != 0:
             with open(self._path, 'rb') as f:
                 db = pickle.load(f)
-                self._clients = db['objects']
+                self._clients = {int(k): v for k, v in db['objects'].items()}
                 self._counter = db['counter']
 
 

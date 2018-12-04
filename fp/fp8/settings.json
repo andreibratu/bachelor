@@ -1,4 +1,5 @@
 {
-  "repository": "inmemory",
-  "ui": "cli"
+  "repository": "sql",
+  "ui": "cli",
+  "debug": true
 }

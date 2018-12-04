@@ -4,6 +4,7 @@ import os
 
 
 class PickleMovieRepository(MovieRepository):
+    """Binary storage implementation of the MovieRepository."""
 
     def __init__(self):
 
@@ -14,7 +15,7 @@ class PickleMovieRepository(MovieRepository):
         if os.stat(self._path).st_size != 0:
             with open(self._path, 'rb') as f:
                 db = pickle.load(f)
-                self._movies = db['objects']
+                self._movies = {int(k): v for k, v in db['objects'].items()}
                 self._counter = db['counter']
 
 

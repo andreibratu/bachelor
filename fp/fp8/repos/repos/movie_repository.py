@@ -9,25 +9,27 @@ class MovieRepository:
 
     def __init__(self):
         self._movies = {}
-        self._counter = 0
+        self._counter = 1
 
 
     def insert(self, m: Movie) -> int:
-        """Insert movie.
+        """Insert movie."""
 
-        If added for the first time, an id will be assigned.
-        """
-
-        if not hasattr(m, 'id'):
-            m.id = self._counter
-            self._counter += 1
-
+        m.id = self._counter
+        self._counter += 1
         self._movies[m.id] = m
 
         return m.id
 
 
-    def get(self, id: str) -> Movie:
+    def update(self, m: Movie) -> int:
+        """Update movie."""
+
+        self._movies[m.id] = m
+        return m.id
+
+
+    def get(self, id: int) -> Movie:
         """Get movie by id."""
 
         return self._movies[id]

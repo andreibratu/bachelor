@@ -13,28 +13,32 @@ class RentalRepository:
         self._rentals = {}
         self._movie_stats_days = Counter()
         self._movie_stats_times = Counter()
-        self._counter = 0
+        self._counter = 1
 
 
     def insert(self, r: Rental) -> id:
-        """Inserts rental.
+        """Insert rental.
 
          If added for the first time, an id will be assigned.
          """
 
-        if not hasattr(r, 'id'):
-            r.id = self._counter
-            self._counter += 1
-            self.update_stats_times(r.movie, 1)
+        r.id = self._counter
+        self._counter += 1
+        self._rentals[r.id] = r
+        self.update_stats_times(r.movie, 1)
 
-        else:
-            # Update op, i.e. movie was returned
-            self.update_stats_days(r.movie, self.calc_rental_days(r))
+        return r.id
+
+
+    def update(self, r: Rental) -> id:
+        """Update rental."""
 
         self._rentals[r.id] = r
+        self.update_stats_days(r.movie, self.calc_rental_days(r))
+        return r.id
 
 
-    def get(self, id: int):
+    def get(self, id: int) -> Rental:
         """"Get rental by id."""
 
         return self._rentals[id]
@@ -44,6 +48,12 @@ class RentalRepository:
         """Return all entities."""
 
         return list(self._rentals.values())
+
+
+    def delete(self, id: int):
+        """Delete Rental entity."""
+
+        del self._rentals[id]
 
 
     def get_stats_days(self) -> List[Tuple[Movie, int]]:
