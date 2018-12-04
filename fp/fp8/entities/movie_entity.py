@@ -1,7 +1,9 @@
 class Movie:
     """Class that describes the Movie entity."""
 
-    def __init__(self, title: str, description: str, genre: str):
+    def __init__(self, title: str, description: str, genre: str, id=None):
+        if id is not None:
+            self.id = id
         self.title = title
         self.description = description
         self.genre = genre

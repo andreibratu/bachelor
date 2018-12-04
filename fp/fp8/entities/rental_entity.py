@@ -10,7 +10,10 @@ class Rental:
 
     def __init__(self, movie: Movie, client: Client,
                  rented_date: datetime, due_date: datetime,
-                 returned_date: datetime = None):
+                 returned_date: datetime = None, id: int = None):
+        if id is not None:
+            self.id = id
+
         self.movie = movie
         self.client = client
 

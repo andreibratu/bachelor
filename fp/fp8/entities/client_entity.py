@@ -1,7 +1,9 @@
 class Client:
     """Class that describes the Client entity."""
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, id: int = None):
+        if id is not None:
+            self.id = id
         self.name = name
 
     def __str__(self):
