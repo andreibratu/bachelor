@@ -1,6 +1,6 @@
 from copy import copy
 
-from abstract.observable import Observable
+from observer.observable import Observable
 
 from entities.movie_entity import Movie
 
@@ -29,16 +29,17 @@ class MovieController(Observable):
 
         m = Movie(title=title, description=description, genre=genre)
         id = self.__movie_repository.insert(m)
+        m.id = m
 
         change = {
             'undo': {
-                'ref': self.__movie_repository,
-                'o': id,
-                'op': 'delete'},
+                'ref': self.__movie_repository.delete,
+                'o': [id],
+            },
             'redo': {
-                'ref': self.__movie_repository,
-                'o': copy(m),
-                'op': 'insert'}
+                'ref': self.__movie_repository.insert,
+                'o': [copy(m)],
+            }
         }
         self.notify([change])
 
@@ -55,13 +56,13 @@ class MovieController(Observable):
 
             change = {
                 'undo': {
-                    'ref': self.__movie_repository,
-                    'o': copy(m),
-                    'op': 'insert'},
+                    'ref': self.__movie_repository.insert,
+                    'o': [copy(m)],
+                },
                 'redo': {
-                    'ref': self.__movie_repository,
-                    'o': id,
-                    'op': 'delete'}
+                    'ref': self.__movie_repository.delete,
+                    'o': [id],
+                }
             }
 
             self.notify([change])
@@ -86,16 +87,16 @@ class MovieController(Observable):
 
             change = {
                 'undo': {
-                    'ref': self.__movie_repository,
-                    'o': m_before_change,
-                    'op': 'insert'},
+                    'ref': self.__movie_repository.update,
+                    'o': [m_before_change],
+                },
                 'redo': {
-                    'ref': self.__movie_repository,
-                    'o': m_after_change,
-                    'op': 'insert'}
+                    'ref': self.__movie_repository.update,
+                    'o': [m_after_change],
+                }
             }
 
-            self.__movie_repository.insert(m)
+            self.__movie_repository.update(m)
             self.notify([change])
 
         except KeyError:

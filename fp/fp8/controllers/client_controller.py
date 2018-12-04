@@ -1,6 +1,6 @@
 from copy import copy
 
-from abstract.observable import Observable
+from observer.observable import Observable
 
 from entities.client_entity import Client
 
@@ -15,24 +15,25 @@ class ClientController(Observable):
 
     def __init__(self, client_repository: ClientRepository):
         Observable.__init__(self)
-        self.__client_repository = client_repository
+        self._client_repository = client_repository
 
 
     def display(self):
         """Print all clients."""
 
-        print_list(self.__client_repository.get_all())
+        print_list(self._client_repository.get_all())
 
 
     def create(self, name: str):
         """Create new client."""
 
         c = Client(name=name)
-        id = self.__client_repository.insert(c)
+        id = self._client_repository.insert(c)
+        c.id = id
 
         change = {
-            'undo': {'ref': self.__client_repository, 'o': id, 'op': 'delete'},
-            'redo': {'ref': self.__client_repository, 'o': c, 'op': 'insert'}
+            'undo': {'ref': self._client_repository.delete, 'o': [id]},
+            'redo': {'ref': self._client_repository.insert, 'o': [copy(c)]}
         }
         self.notify([change])
 
@@ -43,19 +44,19 @@ class ClientController(Observable):
         try:
             id = int(id)
 
-            client = self.__client_repository.get(id)
+            client = self._client_repository.get(id)
             change = {
                 'undo': {
-                    'ref': self.__client_repository,
-                    'o': client,
-                    'op': 'insert'},
+                    'ref': self._client_repository.insert,
+                    'o': [copy(client)],
+                },
                 'redo': {
-                    'ref': self.__client_repository,
-                    'o': id,
-                    'op': 'delete'}
+                    'ref': self._client_repository.delete,
+                    'o': [id],
+                }
             }
 
-            self.__client_repository.delete(id)
+            self._client_repository.delete(id)
             self.notify([change])
 
         except KeyError:
@@ -68,23 +69,23 @@ class ClientController(Observable):
         try:
             id = int(id)
 
-            c = self.__client_repository.get(id)
+            c = self._client_repository.get(id)
             before_change = copy(c)
             c.update(name=name)
             after_change = copy(c)
 
             change = {
                 'undo': {
-                    'ref': self.__client_repository,
-                    'o': before_change,
-                    'op': 'insert'},
+                    'ref': self._client_repository.update,
+                    'o': [before_change],
+                },
                 'redo': {
-                    'ref': self.__client_repository,
-                    'o': after_change,
-                    'op': 'insert'}
+                    'ref': self._client_repository.update,
+                    'o': [after_change],
+                }
             }
 
-            self.__client_repository.insert(c)
+            self._client_repository.update(c)
             self.notify([change])
 
         except KeyError:
@@ -94,7 +95,4 @@ class ClientController(Observable):
     def search(self, query: str):
         """Return clients that match query."""
 
-        print(abstract_search(
-            self.__client_repository.get_all(),
-            query)
-        )
+        print(abstract_search(self._client_repository.get_all(), query))
