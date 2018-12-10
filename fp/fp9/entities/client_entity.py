@@ -7,7 +7,10 @@ class Client:
         self.name = name
 
     def __str__(self):
-        return ' - '.join((str(self.id), self.name))
+        return ' -- '.join((
+            str(self.id),
+            self.name)
+        )
 
     def update(self, name):
         self.name = name

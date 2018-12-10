@@ -21,7 +21,7 @@ class ClientController(Observable):
     def display(self):
         """Print all clients."""
 
-        print_list(self._client_repository.get_all())
+        print_list(self._client_repository[:])
 
 
     def create(self, name: str):
@@ -32,7 +32,7 @@ class ClientController(Observable):
         c.id = id
 
         change = {
-            'undo': {'ref': self._client_repository.delete, 'o': [id]},
+            'undo': {'ref': self._client_repository.__delitem__, 'o': [id]},
             'redo': {'ref': self._client_repository.insert, 'o': [copy(c)]}
         }
         self.notify([change])
@@ -44,19 +44,19 @@ class ClientController(Observable):
         try:
             id = int(id)
 
-            client = self._client_repository.get(id)
+            client = self._client_repository[id]
             change = {
                 'undo': {
                     'ref': self._client_repository.insert,
                     'o': [copy(client)],
                 },
                 'redo': {
-                    'ref': self._client_repository.delete,
+                    'ref': self._client_repository.__delitem__,
                     'o': [id],
                 }
             }
 
-            self._client_repository.delete(id)
+            del self._client_repository[id]
             self.notify([change])
 
         except KeyError:
@@ -69,23 +69,23 @@ class ClientController(Observable):
         try:
             id = int(id)
 
-            c = self._client_repository.get(id)
+            c = self._client_repository[id]
             before_change = copy(c)
             c.update(name=name)
             after_change = copy(c)
 
             change = {
                 'undo': {
-                    'ref': self._client_repository.update,
+                    'ref': self._client_repository.__setitem__,
                     'o': [before_change],
                 },
                 'redo': {
-                    'ref': self._client_repository.update,
+                    'ref': self._client_repository.__setitem__,
                     'o': [after_change],
                 }
             }
 
-            self._client_repository.update(c)
+            self._client_repository[c.id] = c
             self.notify([change])
 
         except KeyError:
@@ -95,4 +95,4 @@ class ClientController(Observable):
     def search(self, query: str):
         """Return clients that match query."""
 
-        print(abstract_search(self._client_repository.get_all(), query))
+        print(abstract_search(self._client_repository[:], query))

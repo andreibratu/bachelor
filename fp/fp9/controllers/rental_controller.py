@@ -13,6 +13,8 @@ from repos.repos.movie_repository import MovieRepository
 from exceptions.conflict_error import ConflictError
 
 from helper.helper import str_to_dt, print_list
+from filter import my_filter
+from sort import shell_sort
 
 
 class RentalController(Observable):
@@ -41,20 +43,16 @@ class RentalController(Observable):
         client_id = int(client_id)
 
         try:
-            movie = self._movie_repository.get(movie_id)
-
+            movie = self._movie_repository[movie_id]
         except KeyError:
             raise KeyError('Invalid movie id: {}'.format(movie_id))
-
         try:
-            client = self._client_repository.get(client_id)
-
+            client = self._client_repository[client_id]
         except KeyError:
             raise KeyError('Invalid client id: {}'.format(client_id))
 
-
         # Check if movie is not already rented
-        for c in self._client_repository.get_all():
+        for c in self._client_repository:
             curr_rental = self._client_curr_rental(c)
             if curr_rental is not None and movie.id == curr_rental.movie.id:
                 raise ConflictError(
@@ -66,7 +64,7 @@ class RentalController(Observable):
 
         # Check if client has no rented movies
         current_rental = self._client_curr_rental(client)
-        if curr_rental is not None:
+        if current_rental is not None:
             raise ConflictError(
                 "Client '{}' has not returned movie '{}'".format(
                     client.name,
@@ -93,7 +91,7 @@ class RentalController(Observable):
 
         change_rental = {
             'undo': {
-                'ref': self._rental_repository.delete,
+                'ref': self._rental_repository.__delitem__,
                 'o': [id]
             },
             'redo': {
@@ -109,25 +107,18 @@ class RentalController(Observable):
         """Return a movie."""
 
         rental_id = int(rental_id)
+        r = self._rental_repository[rental_id]
 
-        r = self._rental_repository.get(rental_id)
-
-        rental_before_return_change = copy(r)
+        r_b_return = copy(r)
         r.returned_date = str_to_dt(return_date)
-        rental_after_return_change = copy(r)
+        r_a_return = copy(r)
 
         change_rental = {
-            'undo': {
-                'ref': self._rental_repository.update,
-                'o': [rental_before_return_change],
-            },
-            'redo': {
-                'ref': self._rental_repository.update,
-                'o': [rental_after_return_change],
-            }
+            'undo': {'ref': self._rental_repository.update, 'o': [r_b_return]},
+            'redo': {'ref': self._rental_repository.update, 'o': [r_a_return]}
         }
 
-        self._rental_repository.update(r)
+        self._rental_repository[r.id] = r
 
         days_rented = self._rental_repository.calc_rental_days(r)
 
@@ -141,14 +132,13 @@ class RentalController(Observable):
                 'o': [copy(r.movie), days_rented],
             }
         }
-
         self.notify([change_rental, change_days])
 
 
     def display(self):
         """Print all Rental entities."""
 
-        print_list(self._rental_repository.get_all())
+        print_list(self._rental_repository[:])
 
 
     def stats(self, query: str):
@@ -161,22 +151,18 @@ class RentalController(Observable):
                 'days': self._rental_repository.get_stats_days(),
                 'times': self._rental_repository.get_stats_times()
             }[query]
-
-            stats.sort(key=lambda tup: tup[1], reverse=True)
+            shell_sort(stats, lambda x, y: x[1] < y[1])
 
         elif query in ('late', 'current'):
             stats = {
-                'current': [
-                    r for r in self._rental_repository.get_all()
-                    if r.returned_date is None
-                ],
-                'late': [
-                    r for r in self._rental_repository.get_all()
-                    if r.due_date < datetime.now()
-                ]
+                'current': my_filter(
+                    self._rental_repository[:],
+                    lambda r: r.returned_date is None),
+                'late': my_filter(
+                    self._rental_repository[:],
+                    lambda r: r.due_date < datetime.now())
             }[query]
-
-            stats.sort(key=lambda r: r.due_date, reverse=True)
+            shell_sort(stats, lambda d1, d2: d1.due_date > d2.due_date)
 
         else:
             raise ValueError('Invalid arg for stats command')
@@ -188,7 +174,9 @@ class RentalController(Observable):
         """Return the current rental of a client."""
 
         try:
-            return [r for r in self._rental_repository.get_all()
-                    if r.client.id == c.id and r.returned_date is None][0]
+            return my_filter(
+                self._rental_repository[:],
+                lambda r: r.client_id == c.id and r.return_date is None
+            )[0]
         except IndexError:
             return None

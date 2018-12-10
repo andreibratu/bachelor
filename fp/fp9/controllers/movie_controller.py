@@ -15,31 +15,25 @@ class MovieController(Observable):
 
     def __init__(self, movie_repository: MovieRepository):
         Observable.__init__(self)
-        self.__movie_repository = movie_repository
+        self._movie_repository = movie_repository
 
 
     def display(self):
         """Print all entities."""
 
-        print_list(self.__movie_repository.get_all())
+        print_list(self._movie_repository[:])
 
 
     def create(self, title: str, description: str, genre: str):
         """Create and insert new entity."""
 
         m = Movie(title=title, description=description, genre=genre)
-        id = self.__movie_repository.insert(m)
+        id = self._movie_repository.insert(m)
         m.id = m
 
         change = {
-            'undo': {
-                'ref': self.__movie_repository.delete,
-                'o': [id],
-            },
-            'redo': {
-                'ref': self.__movie_repository.insert,
-                'o': [copy(m)],
-            }
+            'undo': {'ref': self._movie_repository.__delitem__, 'o': [id]},
+            'redo': {'ref': self._movie_repository.insert, 'o': [copy(m)]}
         }
         self.notify([change])
 
@@ -50,19 +44,13 @@ class MovieController(Observable):
         try:
             id = int(id)
 
-            m = self.__movie_repository.get(id)
+            m = self._movie_repository[id]
 
-            self.__movie_repository.delete(id)
+            del self._movie_repository[id]
 
             change = {
-                'undo': {
-                    'ref': self.__movie_repository.insert,
-                    'o': [copy(m)],
-                },
-                'redo': {
-                    'ref': self.__movie_repository.delete,
-                    'o': [id],
-                }
+                'undo': {'ref': self._movie_repository.insert, 'o': [copy(m)]},
+                'redo': {'ref': self._movie_repository.__delitem__, 'o': [id]}
             }
 
             self.notify([change])
@@ -75,7 +63,7 @@ class MovieController(Observable):
         """Update movie by id."""
 
         try:
-            m = self.__movie_repository.get(id)
+            m = self._movie_repository[id]
 
             m_before_change = copy(m)
             m.update(
@@ -87,16 +75,16 @@ class MovieController(Observable):
 
             change = {
                 'undo': {
-                    'ref': self.__movie_repository.update,
+                    'ref': self._movie_repository.update,
                     'o': [m_before_change],
                 },
                 'redo': {
-                    'ref': self.__movie_repository.update,
+                    'ref': self._movie_repository.update,
                     'o': [m_after_change],
                 }
             }
 
-            self.__movie_repository.update(m)
+            self._movie_repository[m.id] = m
             self.notify([change])
 
         except KeyError:
@@ -106,7 +94,4 @@ class MovieController(Observable):
     def search(self, query: str):
         """Return movies that match query."""
 
-        print(abstract_search(
-            self.__movie_repository.get_all(),
-            query)
-        )
+        print(abstract_search(self._movie_repository[:], query))

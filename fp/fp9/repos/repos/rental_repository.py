@@ -3,17 +3,17 @@ from collections import Counter
 
 from entities.rental_entity import Rental
 from entities.movie_entity import Movie
+from repos.repos.repository import AbstractRepository
 
 
-class RentalRepository:
+class RentalRepository(AbstractRepository):
     """Object that manages Rental entities."""
 
 
     def __init__(self):
-        self._rentals = {}
+        super().__init__()
         self._movie_stats_days = Counter()
         self._movie_stats_times = Counter()
-        self._counter = 1
 
 
     def insert(self, r: Rental) -> id:
@@ -22,38 +22,15 @@ class RentalRepository:
          If added for the first time, an id will be assigned.
          """
 
-        r.id = self._counter
-        self._counter += 1
-        self._rentals[r.id] = r
+        super().insert(r)
         self.update_stats_times(r.movie, 1)
 
         return r.id
 
 
-    def update(self, r: Rental) -> id:
-        """Update rental."""
-
-        self._rentals[r.id] = r
+    def __setitem__(self, key, r: Rental) -> int:
+        super().__setitem__(key, r)
         self.update_stats_days(r.movie, self.calc_rental_days(r))
-        return r.id
-
-
-    def get(self, id: int) -> Rental:
-        """"Get rental by id."""
-
-        return self._rentals[id]
-
-
-    def get_all(self) -> List[Rental]:
-        """Return all entities."""
-
-        return list(self._rentals.values())
-
-
-    def delete(self, id: int):
-        """Delete Rental entity."""
-
-        del self._rentals[id]
 
 
     def get_stats_days(self) -> List[Tuple[Movie, int]]:
@@ -70,8 +47,6 @@ class RentalRepository:
 
     def calc_rental_days(self, r: Rental) -> int:
         """Calculate how many days a rental was made for."""
-
-        assert r.returned_date is not None
 
         return (r.returned_date - r.rented_date).days
 

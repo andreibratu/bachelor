@@ -16,6 +16,11 @@ class Movie:
 
 
     def __str__(self):
-        return ' - '.join((str(self.id), self.title))
+        return ' -- '.join((
+            str(self.id),
+            self.title,
+            self.description,
+            self.genre)
+        )
 
     __repr__ = __str__
