@@ -1,9 +1,9 @@
-from repos.repos.repository import AbstractRepository
+from repos.abstract_repos.iterable_repository import IterableRepository
 
 
-class ClientRepository(AbstractRepository):
+class ClientRepository(IterableRepository):
     """Object that manages Client entities."""
 
 
     def __init__(self):
-        super().__init__()
+        IterableRepository.__init__(self)

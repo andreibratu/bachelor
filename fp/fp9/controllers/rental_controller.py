@@ -12,9 +12,7 @@ from repos.repos.movie_repository import MovieRepository
 
 from exceptions.conflict_error import ConflictError
 
-from helper.helper import str_to_dt, print_list
-from filter import my_filter
-from sort import shell_sort
+from helper.helper import str_to_dt, print_list, my_filter, shell_sort
 
 
 class RentalController(Observable):

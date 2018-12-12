@@ -17,7 +17,7 @@ class Movie:
 
     def __str__(self):
         return ' -- '.join((
-            str(self.id),
+            # str(self.id),
             self.title,
             self.description,
             self.genre)

@@ -1,32 +1,13 @@
+from repos.abstract_repos.pickle_repository import PickleRepository
 from repos.repos.rental_repository import RentalRepository
-import pickle
-import os
 
 
-class PickleRentalRepository(RentalRepository):
+class PickleRentalRepository(RentalRepository, PickleRepository):
 
     def __init__(self):
-
-        self._path = 'storage/rentals.txt'
-
-        super().__init__()
-
-        if os.stat(self._path).st_size != 0:
-            with open(self._path, 'rb') as f:
-                db = pickle.load(f)
-                self._rentals = {int(k): v for k, v in db['objects'].items()}
-                self._counter = db['counter']
-                self._movie_stats_days = db['stats_days']
-                self._movie_stats_times = db['stats_times']
-
-
-    def __del__(self):
-
-        with open(self._path, 'wb') as f:
-            db = {
-                'objects': self._rentals,
-                'counter': self._counter,
-                'stats_days': self._movie_stats_days,
-                'stats_times': self._movie_stats_times
-            }
-            pickle.dump(db, f)
+        PickleRepository.__init__(
+            self,
+            path='storage/rentals.txt',
+            extra_args=['_movie_stats_days', '_movie_stats_times']
+        )
+        RentalRepository.__init__(self)

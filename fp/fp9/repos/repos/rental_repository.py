@@ -1,17 +1,18 @@
 from typing import List, Tuple
 from collections import Counter
 
+from repos.abstract_repos.iterable_repository import IterableRepository
+
 from entities.rental_entity import Rental
 from entities.movie_entity import Movie
-from repos.repos.repository import AbstractRepository
 
 
-class RentalRepository(AbstractRepository):
+class RentalRepository(IterableRepository):
     """Object that manages Rental entities."""
 
 
     def __init__(self):
-        super().__init__()
+        IterableRepository.__init__(self)
         self._movie_stats_days = Counter()
         self._movie_stats_times = Counter()
 

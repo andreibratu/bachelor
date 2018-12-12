@@ -1,5 +1,5 @@
 {
-  "repository": "inmemory",
+  "repository": "pickle",
   "ui": "cli",
   "debug": true
 }

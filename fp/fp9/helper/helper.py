@@ -172,5 +172,6 @@ def shell_sort(arr: List, cmp: Callable):
                 # put temp (the original a[i]) in its correct location
                 arr[j] = temp
             gap //= 2
+
     except TypeError:
         raise TypeError('Comparison callable should expect 2 args')

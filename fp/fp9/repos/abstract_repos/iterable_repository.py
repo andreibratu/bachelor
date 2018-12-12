@@ -1,5 +1,5 @@
-class AbstractRepository:
-    """Abstract implementation of the Repository object."""
+class IterableRepository:
+    """Abstract implementation of an iterable repository."""
 
 
     def __init__(self):

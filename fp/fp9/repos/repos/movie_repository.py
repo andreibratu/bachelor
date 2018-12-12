@@ -1,9 +1,9 @@
-from repos.repos.repository import AbstractRepository
+from repos.abstract_repos.iterable_repository import IterableRepository
 
 
-class MovieRepository(AbstractRepository):
+class MovieRepository(IterableRepository):
     """Object that manages Movie entities."""
 
 
     def __init__(self):
-        super().__init__()
+        IterableRepository.__init__(self)
