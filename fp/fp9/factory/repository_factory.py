@@ -4,17 +4,13 @@ from repos.repos.client_repository import ClientRepository
 from repos.repos.movie_repository import MovieRepository
 from repos.repos.rental_repository import RentalRepository
 
-from repos.pickle_repos.client_repository_pickle import PickleClientRepository
-from repos.pickle_repos.movie_repository_pickle import PickleMovieRepository
-from repos.pickle_repos.rental_repository_pickle import PickleRentalRepository
+from repos.file_repos.file_client_repository import FileClientRepository
+from repos.file_repos.file_movie_repository import FileMovieRepository
+from repos.file_repos.file_rental_repository import FileRentalRepository
 
-from repos.json_repos.client_repository_json import JsonClientRepository
-from repos.json_repos.movie_repository_json import JsonMovieRepository
-from repos.json_repos.rental_repository_json import JsonRentalRepository
-
-from repos.sql_repos.client_repository_sql import SqlClientRepository
-from repos.sql_repos.movie_repository_sql import SqlMovieRepository
-from repos.sql_repos.rental_repository_sql import SqlRentalRepository
+from repos.sql_repos.sql_client_repository import SqlClientRepository
+from repos.sql_repos.sql_movie_repository import SqlMovieRepository
+from repos.sql_repos.sql_rental_repository import SqlRentalRepository
 
 
 class RepositoryFactory:
@@ -28,14 +24,14 @@ class RepositoryFactory:
             try:
                 self._objects = {
                     'pickle': {
-                        'client': PickleClientRepository,
-                        'movie': PickleMovieRepository,
-                        'rental': PickleRentalRepository
+                        'client': FileClientRepository,
+                        'movie': FileMovieRepository,
+                        'rental': FileRentalRepository
                     },
                     'json': {
-                        'client': JsonClientRepository,
-                        'movie': JsonMovieRepository,
-                        'rental': JsonRentalRepository
+                        'client': FileClientRepository,
+                        'movie': FileMovieRepository,
+                        'rental': FileRentalRepository
                     },
                     'inmemory': {
                         'client': ClientRepository,

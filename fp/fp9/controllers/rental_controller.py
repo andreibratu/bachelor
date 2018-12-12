@@ -174,7 +174,7 @@ class RentalController(Observable):
         try:
             return my_filter(
                 self._rental_repository[:],
-                lambda r: r.client_id == c.id and r.return_date is None
+                lambda r: r.client.id == c.id and r.returned_date is None
             )[0]
         except IndexError:
             return None

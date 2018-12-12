@@ -1,3 +1,5 @@
+from entities.file_manager import FileManager
+
 from helper.helper import build_db, get_settings
 
 from factory.repository_factory import RepositoryFactory
@@ -12,6 +14,7 @@ from controllers.rental_controller import RentalController
 settings = get_settings()
 
 client_args, movie_args, rental_args = (None, None, None)
+
 if settings['repository'] == 'sql':
     db, client_manager, movie_manager, rental_manager = build_db()
     client_args = {'db': db, 'client_manager': client_manager}
@@ -22,6 +25,12 @@ if settings['repository'] == 'sql':
         'movie_manager': movie_manager,
         'rental_manager': rental_manager
     }
+
+if settings['repository'] in ('json', 'pickle'):
+    client_args, movie_args, rental_args = tuple(
+        {'file_manager': FileManager(type=settings['repository'])}
+        for _ in range(3)
+    )
 
 repository_factory = RepositoryFactory()
 ui_factory = UIFactory()
