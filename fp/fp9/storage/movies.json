@@ -1,1 +1,1 @@
-{"_counter": 2, "_objects": {"1": {"py/object": "entities.movie_entity.Movie", "description": "foobar", "genre": "foobar", "id": {"py/id": 0}, "title": "foobar"}}}
+{"_counter": 3, "_objects": {"1": {"py/object": "entities.movie_entity.Movie", "description": "foobar", "genre": "foobar", "id": {"py/id": 0}, "title": "foobar"}, "2": {"py/object": "entities.movie_entity.Movie", "description": "fghj", "genre": "fghj", "id": {"py/id": 1}, "title": "fghj"}}}

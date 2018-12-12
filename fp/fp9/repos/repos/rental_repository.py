@@ -36,7 +36,6 @@ class RentalRepository(IterableRepository):
 
     def get_stats_days(self) -> List[Tuple[Movie, int]]:
         """Return rental stats by number days rented."""
-
         return list(self._movie_stats_days.items())
 
 

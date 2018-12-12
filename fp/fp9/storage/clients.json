@@ -1,1 +1,1 @@
-{"_counter": 1, "_objects": {}}
+{"_counter": 3, "_objects": {"1": {"py/object": "entities.client_entity.Client", "id": 1, "name": "Mary"}, "2": {"py/object": "entities.client_entity.Client", "id": 2, "name": "John"}}}

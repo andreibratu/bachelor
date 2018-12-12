@@ -112,8 +112,13 @@ class RentalController(Observable):
         r_a_return = copy(r)
 
         change_rental = {
-            'undo': {'ref': self._rental_repository.update, 'o': [r_b_return]},
-            'redo': {'ref': self._rental_repository.update, 'o': [r_a_return]}
+            'undo': {
+                'ref': self._rental_repository.__setitem__,
+                'o': [r_b_return.id, r_b_return]},
+            'redo': {
+                'ref': self._rental_repository.__setitem__,
+                'o': [r_a_return.id, r_a_return]
+            }
         }
 
         self._rental_repository[r.id] = r
