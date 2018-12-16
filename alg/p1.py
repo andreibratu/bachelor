@@ -14,8 +14,6 @@ bratuandrei0@gmail.com
 2018
 """
 
-import os # Needed for file I/O
-
 n = int(input('Kindly input the size of the set '))
 valid = []
 
@@ -30,8 +28,8 @@ def validate(law):
         for j in range(0, n):
             for k in range(0, n):
                 # (i * j) * k = i * (j * k)
-                a = law[(i, j)] # aux variable for i * j
-                b = law[(j, k)] # aux variable for j * k
+                a = law[(i, j)]  # aux variable for i * j
+                b = law[(j, k)]  # aux variable for j * k
                 if law[(a, k)] != law[(i, b)]:
                     return False
     return True
@@ -54,18 +52,18 @@ def backtracking(r, c, law):
         return
     if c == n:
         # Filled one row, moving to the next
-        backtracking(r+1, 0, dict(law))
+        backtracking(r + 1, 0, dict(law))
     if c < n:
         for k in range(0, n):
             # Attempt all possible values for current position (law[r][c])
-            law[(r,c)] = k
-            backtracking(r, c+1, dict(law))
+            law[(r, c)] = k
+            backtracking(r, c + 1, dict(law))
 
 
-backtracking(0, 0, {}) # Start looking for solutions
+backtracking(0, 0, {})  # Start looking for solutions
 
 filename = 'result{}.txt'.format(n)
-f = open(filename, 'a') # Open file to write results
+f = open(filename, 'a')  # Open file to write results
 
 # Write how many valid laws were found
 f.write('Valid laws: ' + str(len(valid)))
@@ -73,7 +71,7 @@ f.write('\n')
 
 # Print the first 10 associative laws
 for i in range(0, len(valid)):
-    sol = [[0]*n]*n # An NxN matrix
+    sol = [[0] * n] * n  # An NxN matrix
     for pair, val in valid[i].items():
         # Fill the law table with values
         r, c = pair

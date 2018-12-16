@@ -13,9 +13,9 @@ bratuandrei0@gmail.com
 from itertools import product
 
 n = int(input('Kindly input the size of your set: '))
-partitions_bitmask = [] # Holds all valid partitions in bitmask form.
-partitions = [] # Holds all valid partitions in human readable form.
-ans = [] # Holds the answer as partition-graph tuples
+partitions_bitmask = []  # Holds all valid partitions in bitmask form.
+partitions = []  # Holds all valid partitions in human readable form.
+ans = []  # Holds the answer as partition-graph tuples
 
 
 def backtracking(i, p):
@@ -45,9 +45,9 @@ def backtracking(i, p):
         return
 
     for k in range(0, n):
-        p[k] = p[k] | (1<<i)
-        backtracking(i+1, list(p))
-        p[k] = p[k] & ~(1<<i)
+        p[k] = p[k] | (1 << i)
+        backtracking(i + 1, list(p))
+        p[k] = p[k] & ~(1 << i)
 
 
 def bitmask_to_human():
@@ -61,7 +61,7 @@ def bitmask_to_human():
         for mask in partition:
             group = []
             for i in range(0, n):
-                if mask & (1<<i):
+                if mask & (1 << i):
                     group.append(i)
             readable.append(group)
         partitions.append(readable)
@@ -86,7 +86,7 @@ build_graph()
 
 # Prepare file
 filename = 'result{}.txt'.format(n)
-f = open(filename, 'a') # Open file to write results
+f = open(filename, 'a')  # Open file to write results
 
 # Write how many valid partitions were found
 f.write('Valid partitons: ' + str(len(ans)))
