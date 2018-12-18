@@ -1,15 +1,17 @@
 from texttable import Texttable
 from itertools import chain
 
+from observer.observable import Observable
 from exceptions import ColumnFullException, IllegalMoveException
 
 
-class Table:
+class Table(Observable):
 
     COLS = 7
     ROWS = 6
 
     def __init__(self):
+        super().__init__()
         self._table = []
         for _ in range(self.ROWS):
             self._table.append([' ' for _ in range(self.COLS)])
@@ -62,6 +64,7 @@ class Table:
 
 
         self._table[first_occupied_row - 1][column] = symbol
+        self.notify(self._table)  # Notify the AI of table update.
 
 
     def new_game(self):

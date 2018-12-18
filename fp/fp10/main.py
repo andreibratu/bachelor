@@ -9,4 +9,5 @@ game_master = GameMaster(one_symbol='X', two_symbol='O', table=table)
 ai = AI(symbol='O', difficulty=2, table=table)
 ui = CommandUI(game_master=game_master)
 
+table.subscribe(ai)
 ui.new_game()
