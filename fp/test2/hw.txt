@@ -1,0 +1,5 @@
+1,Anna,I will make sure to implement a layered architecture solution
+2,John,The program is layered
+3,Betty,I did not understand layered architecture
+4,Vlad,My proposed solution does not include layers
+5,Mary,I will need several layers of holiday before another solution
