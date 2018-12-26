@@ -29,7 +29,7 @@ class UI(object):
             The read number.
         """
 
-        number = input('Input {} number'.format(ordinal))
+        number = input('Input {} number: '.format(ordinal))
         base = int(input('Input the base of the number: '))
         nr = Number(number, base)
         val = NumberValidator()
@@ -96,7 +96,7 @@ class UI(object):
         if number1 is None:
             return
 
-        number2 = self._read_number_add_sub('first')
+        number2 = self._read_number_add_sub('second')
         if number2 is None:
             return
 
@@ -108,12 +108,12 @@ class UI(object):
         if number1 > number2:
             dif = number1 - number2
             print('Result in base {} is: '.format(base3))
-            print('{} - {} = {}'.format(number1.val, number2.val, dif.val))
+            print('{} - {} = {}\n'.format(number1.val, number2.val, dif.val))
 
         else:
             dif = number2 - number1
             print('Result in base {} is: '.format(base3))
-            print('{} - {} = {}'.format(number2.val, number1.val, dif.val))
+            print('{} - {} = {}\n'.format(number2.val, number1.val, dif.val))
 
 
     def _mul(self):
@@ -135,7 +135,7 @@ class UI(object):
         try:
             prod = number1 * number2
             print('The product in base {}:'.format(base3))
-            print('{} * {} = {}'.format(number1.val, number2.val, prod.val))
+            print('{} * {} = {}\n'.format(number1.val, number2.val, prod.val))
 
         except ValueError as e:
             print(e)
@@ -161,9 +161,9 @@ class UI(object):
         try:
             div = number1 / number2
             print('Remainder in base {} is:'.format(base3))
-            print('{} / {} = {}'.format(number1.val, number2.val, div[0].val))
+            print('{} / {} = {}\n'.format(number1.val, number2.val, div[0].val))
             print('The remainder in base {} is:'.format(base3))
-            print('{} % {} = {}'.format(number1.val, number2.val, div[1].val))
+            print('{} % {} = {}\n'.format(number1.val, number2.val, div[1].val))
 
         except ValueError as e:
             print(e)
@@ -183,7 +183,7 @@ class UI(object):
 
         try:
             val.validate(new_n)
-            print('The number in base {} is {}'.format(new_base, new_n.val))
+            print('The number in base {} is {}\n'.format(new_base, new_n.val))
 
         except InvalidNumberException as ex:
             print(ex)
@@ -209,7 +209,7 @@ class UI(object):
         val = NumberValidator()
         try:
             val.validate(new_n)
-            print('Number {} in the new base is {}'.format(nr.val, new_n.val))
+            print('Number {} in the new base is {}\n'.format(nr.val, new_n.val))
 
         except InvalidNumberException as ex:
             print(ex)
@@ -236,7 +236,7 @@ class UI(object):
         val = NumberValidator()
         try:
             val.validate(new_n)
-            print('Number {} in the new base is {}'.format(nr.val, new_n.val))
+            print('Number {} in the new base is {}\n'.format(nr.val, new_n.val))
 
         except InvalidNumberException as ex:
             print(ex)
