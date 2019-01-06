@@ -1,36 +1,58 @@
+from typing import List, Iterable
+
 from texttable import Texttable
 from itertools import chain
 
-from observer.observable import Observable
-from exceptions import ColumnFullException, IllegalMoveException
+from exceptions import ColumnFullException
 
 
-class Table(Observable):
+class Table:
 
     COLS = 7
     ROWS = 6
 
     def __init__(self):
-        super().__init__()
         self._table = []
         for _ in range(self.ROWS):
             self._table.append([' ' for _ in range(self.COLS)])
 
 
-    def __iter__(self):
+    def __iter__(self) -> Iterable:
+        """Return an iterable that iterates the entire game matrix."""
+
         return chain.from_iterable(self._table)
 
 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -> List[int]:
+        """Return the n-th row of the game table."""
+
         return self._table[key]
 
 
     def __str__(self):
+        """Return visual representation of the game table."""
+
         to_print = Texttable()
         for row in self._table:
             to_print.add_row(row)
         to_print.add_row([i + 1 for i in range(self.COLS)])
         return str(to_print.draw())
+
+
+    def is_column_available(self, column: int):
+        """Return if a move can be made on given column.
+
+        Args:
+            c (int): The column
+        Returns:
+            A tuple with a bool representing wether a move can be made.
+        """
+
+        for i in range(Table.ROWS):
+            if self._table[i][column] == ' ':
+                return True
+
+        return False
 
 
     def move(self, symbol: str, column: int):
@@ -44,30 +66,22 @@ class Table(Observable):
             IllegalMoveException: The given column is not 0 <= col < self.COLS
         """
 
-        first_occupied_row = None
-
-        for i in range(self.ROWS):
-            try:
-                if self._table[i][column] != ' ':
-                    first_occupied_row = i
-                    break
-
-            except IndexError:
-                raise IllegalMoveException
-
-        if first_occupied_row == 0:
+        if not self.is_column_available(column):
+            print(column)
+            print(str(self))
             raise ColumnFullException
 
-        if first_occupied_row is None:
-            # Empty column
-            first_occupied_row = self.ROWS
-
-
-        self._table[first_occupied_row - 1][column] = symbol
-        self.notify(self._table)  # Notify the AI of table update.
+        for i in reversed(range(self.ROWS)):
+            # Find the first move row of the column that is not occupied.
+            if self._table[i][column] == ' ':
+                self._table[i][column] = symbol
+                break
 
 
     def new_game(self):
-        self._table = []
-        for _ in range(self.ROWS):
-            self._table.append([' ' for _ in range(self.COLS)])
+        """Clear the game board."""
+
+        self._table = [
+            [' ' for _ in range(Table.COLS)]
+            for _ in range(Table.ROWS)
+        ]
