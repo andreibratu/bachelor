@@ -2,6 +2,7 @@ from typing import List
 from copy import deepcopy
 
 from table import Table
+from exceptions import ColumnFullException
 
 
 class AI:
@@ -34,15 +35,10 @@ class AI:
             4: (1, 0), 5: (1, -1), 6: (0, 1), 7: (-1, -1)
         }
 
-        '''
-        For each position on the table, check all adjacent three positions for
-        arrangements found in self._strategy
-        '''
-
         found_winning = False
 
-        for r in range(Table.ROWS - 4):
-            for c in range(Table.COLS - 4):
+        for r in range(Table.ROWS):
+            for c in range(Table.COLS):
                 for d in range(8):
                     rr = r
                     cc = c
@@ -61,7 +57,6 @@ class AI:
                         break
 
                     if build == self._player_symbol * 4:
-                        print('THIS NIGGA WINNING')
                         return -1
 
         if found_winning:
@@ -87,7 +82,7 @@ class AI:
         """
 
         if moves == 0:
-            return (self._calculate_score(table), None)
+            return (self._calculate_score(table._table), None)
 
         best = float('-inf') if ai_turn else float('inf')
         symbol = self._ai_symbol if ai_turn else self._player_symbol
@@ -95,10 +90,10 @@ class AI:
 
         for col in range(Table.COLS):
 
-            if self._table.is_column_available(col):
-
+            try:
                 copy_table = deepcopy(table)
                 copy_table.move(symbol, col)
+                assert self._table._table != copy_table._table
 
                 score = self._minimax(
                     table=copy_table,
@@ -113,6 +108,9 @@ class AI:
                     if score < best:
                         best = score
                         best_move = col
+
+            except ColumnFullException:
+                continue
 
         return (best, best_move)
 

@@ -1,20 +1,18 @@
 from os import system
 
-from exceptions import InvalidMoveException
+from exceptions import InvalidMoveException, ColumnFullException
 from game_master import GameMaster
 from brain import AI
-from validator import Validator
 
 
 class CommandUI:
 
     DEBUG = True
 
-    def __init__(self, game_master: GameMaster, ai: AI, validator: Validator):
+    def __init__(self, game_master: GameMaster, ai: AI):
         self._symbol_one = 'X'
         self._symbol_two = 'O'
         self._game_master = game_master
-        self._validator = validator
         self._ai = ai
 
 
@@ -70,7 +68,7 @@ class CommandUI:
             result = self._game_master.check_victory()
 
             if result is not None:
-                print('Player {} has won the game'.format(result))
+                print(f'Player {result} has won the game')
 
                 if self._play_again():
                     self._game_master.new_game()
@@ -79,10 +77,26 @@ class CommandUI:
                     break
 
             if player_turn:
-                col = int(input('Player 1, where will you move? '))
-                self._game_master.move(col - 1)
+                while True:
+                    try:
+                        col = input(f'Player 1, where will you move? ')
+                        col = int(col)
+                        self._game_master.move(col - 1)
+                        break
+
+                    except ValueError:
+                        continue
+
+                    except ColumnFullException:
+                        print(f'Column {col} is full!')
+                        continue
+
+                    except InvalidMoveException:
+                        print('Please input a valid column!')
+                        continue
 
             else:
+                print('Thinking...')
                 col = self._ai.next_move()
                 self._game_master.move(col)
 
@@ -118,15 +132,23 @@ class CommandUI:
 
                 else:
                     p = self._game_master.get_current_player()
-                    col = int(
-                        input('Player {}, where will you move? '.format(p))
-                    )
+                    while True:
+                        try:
+                            col = input(f'Player {p}, where will you move? ')
+                            col = int(col)
+                            self._game_master.move(col - 1)
+                            break
 
-                    if self._validator.is_valid_column(col):
-                        self._game_master.move(col - 1)
+                        except ValueError:
+                            continue
 
-                    else:
-                        raise InvalidMoveException
+                        except ColumnFullException:
+                            print(f'Column {col} if full!')
+                            continue
+
+                        except InvalidMoveException:
+                            print('Please input a valid column!')
+                            continue
 
                 self.clear_screen()
 

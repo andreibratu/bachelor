@@ -3,7 +3,7 @@ from typing import List, Iterable
 from texttable import Texttable
 from itertools import chain
 
-from exceptions import ColumnFullException
+from exceptions import ColumnFullException, InvalidMoveException
 
 
 class Table:
@@ -66,9 +66,10 @@ class Table:
             IllegalMoveException: The given column is not 0 <= col < self.COLS
         """
 
+        if not 0 <= column < Table.COLS:
+            raise InvalidMoveException
+
         if not self.is_column_available(column):
-            print(column)
-            print(str(self))
             raise ColumnFullException
 
         for i in reversed(range(self.ROWS)):

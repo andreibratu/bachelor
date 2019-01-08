@@ -1,10 +1,8 @@
 class ColumnFullException(Exception):
-
-    def __init__(self):
-        super().__init__(message='The column is already full!')
+    """Exception raised when the column is full."""
+    pass
 
 
 class InvalidMoveException(Exception):
-
-    def __init__(self):
-        super().__init__(message='Given column is invalid')
+    """Exception raise when the input column is invalid."""
+    pass

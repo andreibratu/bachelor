@@ -2,12 +2,10 @@ from ui import CommandUI
 from table import Table
 from game_master import GameMaster
 from brain import AI
-from validator import Validator
 
 
 table = Table()
 game_master = GameMaster(one_symbol='X', two_symbol='O', table=table)
-validator = Validator()
 
 opt = None
 while True:
@@ -16,10 +14,10 @@ while True:
     if opt in ('Y', 'N'):
         break
 ai = {
-    'Y': AI(symbol='O', difficulty=5, player_symbol='X', table=table),
+    'Y': AI(symbol='O', difficulty=2, player_symbol='X', table=table),
     'N': None
 }[opt]
 
-ui = CommandUI(game_master=game_master, ai=ai, validator=validator)
+ui = CommandUI(game_master=game_master, ai=ai)
 
 ui.new_game()
