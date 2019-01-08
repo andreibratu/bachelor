@@ -1,6 +1,6 @@
 from os import system
 
-from exceptions import InvalidMoveException, ColumnFullException
+from exceptions import InvalidColumnException, ColumnFullException
 from game_master import GameMaster
 from brain import AI
 
@@ -68,7 +68,10 @@ class CommandUI:
             result = self._game_master.check_victory()
 
             if result is not None:
-                print(f'Player {result} has won the game')
+                if result == 1:
+                    print('You have won!')
+                else:
+                    print('Computer has won..')
 
                 if self._play_again():
                     self._game_master.new_game()
@@ -91,7 +94,7 @@ class CommandUI:
                         print(f'Column {col} is full!')
                         continue
 
-                    except InvalidMoveException:
+                    except InvalidColumnException:
                         print('Please input a valid column!')
                         continue
 
@@ -146,7 +149,7 @@ class CommandUI:
                             print(f'Column {col} if full!')
                             continue
 
-                        except InvalidMoveException:
+                        except InvalidColumnException:
                             print('Please input a valid column!')
                             continue
 

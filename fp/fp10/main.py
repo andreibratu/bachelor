@@ -2,6 +2,10 @@ from ui import CommandUI
 from table import Table
 from game_master import GameMaster
 from brain import AI
+from tests import run_tests
+
+
+run_tests()
 
 
 table = Table()
@@ -14,7 +18,7 @@ while True:
     if opt in ('Y', 'N'):
         break
 ai = {
-    'Y': AI(symbol='O', difficulty=2, player_symbol='X', table=table),
+    'Y': AI(symbol='O', difficulty=5, player_symbol='X', table=table),
     'N': None
 }[opt]
 

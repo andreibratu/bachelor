@@ -3,6 +3,6 @@ class ColumnFullException(Exception):
     pass
 
 
-class InvalidMoveException(Exception):
+class InvalidColumnException(Exception):
     """Exception raise when the input column is invalid."""
     pass

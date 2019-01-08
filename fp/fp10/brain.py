@@ -2,6 +2,7 @@ from typing import List
 from copy import deepcopy
 
 from table import Table
+from helper import in_table
 from exceptions import ColumnFullException
 
 
@@ -25,9 +26,6 @@ class AI:
         Returns:
             The value of the table.
         """
-
-        def in_table(rr, cc):
-            return 0 <= rr < Table.ROWS and 0 <= cc < Table.COLS
 
         # The eight possible directions on the table
         dir = {

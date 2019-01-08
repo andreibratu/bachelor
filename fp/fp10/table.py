@@ -3,7 +3,7 @@ from typing import List, Iterable
 from texttable import Texttable
 from itertools import chain
 
-from exceptions import ColumnFullException, InvalidMoveException
+from exceptions import ColumnFullException, InvalidColumnException
 
 
 class Table:
@@ -42,10 +42,8 @@ class Table:
     def is_column_available(self, column: int):
         """Return if a move can be made on given column.
 
-        Args:
-            c (int): The column
         Returns:
-            A tuple with a bool representing wether a move can be made.
+            A bool representing wether a move can be made.
         """
 
         for i in range(Table.ROWS):
@@ -67,7 +65,7 @@ class Table:
         """
 
         if not 0 <= column < Table.COLS:
-            raise InvalidMoveException
+            raise InvalidColumnException
 
         if not self.is_column_available(column):
             raise ColumnFullException

@@ -1,4 +1,5 @@
 from table import Table
+from helper import in_table
 
 
 class GameMaster:
@@ -25,11 +26,6 @@ class GameMaster:
             1 or 2 if a player has won, or None if the game is still going.
         """
 
-        def in_board(r, c):
-            """Check if given position is inside the board."""
-
-            return 0 <= r < Table.ROWS and 0 <= c < Table.COLS
-
         directions = {
             0: (-1, 0), 1: (-1, 1), 2: (0, 1), 3: (1, 1),
             4: (1, 0), 5: (1, -1), 6: (0, 1), 7: (-1, -1)
@@ -49,7 +45,7 @@ class GameMaster:
                             rr = r + delta_r
                             cc = c + delta_c
 
-                            if not in_board(rr, cc):
+                            if not in_table(rr, cc):
                                 four_in_row = False
                                 break
 
