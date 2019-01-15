@@ -24,6 +24,28 @@ def is_valid(seq):
     return len(p_stack) == 0
 
 
+def is_consistent(seq):
+    """Check if given incomplete sequence can become valid."""
+
+    p_stack = []
+    for c in seq:
+        if c == '(':
+            p_stack.append('(')
+        else:
+            if len(p_stack) == 0:
+                return False
+
+            if p_stack[-1] != '(':
+                return False
+
+            else:
+                p_stack.pop()
+
+    # Contains only left-paranthesis, check if there are enough
+    # characters left to close
+    return len(p_stack) <= n-len(seq)
+
+
 while True:
     n = int(input('Please input the size the sequences: '))
     if n > 0 and n % 2 == 0:
@@ -40,5 +62,6 @@ while len(stack) != 0:
             print(seq)
 
     else:
-        stack.append(seq + ')')
-        stack.append(seq + '(')
+        if is_consistent(seq):
+            stack.append(seq + ')')
+            stack.append(seq + '(')
