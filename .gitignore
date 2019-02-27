@@ -1,7 +1,0 @@
-*.exe
-*.lst
-*.pyc
-*.txt
-**/.coverage
-**/.coveragerc
-htmlcov/
