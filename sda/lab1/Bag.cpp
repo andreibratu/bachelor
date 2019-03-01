@@ -4,70 +4,55 @@
 #include <string.h>
 
 Bag::Bag() {
-    this->allocated_size = 1;
+    this->capacity = 1;
     this->logical_size = 0;
-    this->total_elements = 0;
-    this->array = new Pair [this->allocated_size];
+    this->array = new TElem [this->capacity];
 }
 
 void Bag::add(TElem e) {
-    for(int i = 0; i < this->logical_size; i++) {
-        if(e == this->array[i].element) {
-            this->array[i].apparitions += 1;
-            this->total_elements += 1;
-            return;
-        }
-    }
-
-    if(this->logical_size == this->allocated_size) {
+    if(this->logical_size == this->capacity) {
       // Reallocation is necessary
-      this->allocated_size *= 2;
-      Pair* newArray = new Pair [this->allocated_size];
-      memcpy(newArray, this->array, this->logical_size * sizeof(Pair));
+      this->capacity *= 2;
+      TElem* newArray = new TElem [this->capacity];
+      memcpy(newArray, this->array, this->size() * sizeof(TElem));
       delete[] this->array;
       this->array = newArray;
     }
-    this->array[this->logical_size].element = e;
-    this->array[this->logical_size].apparitions = 1;
-    this->logical_size += 1;
-    this->total_elements += 1;
+    this->array[this->logical_size++] = e;
 }
 
 bool Bag::remove(TElem e) {
-    if(!this->search(e)) return false;
-    else {
-        for(int i=0; i<this->logical_size; i++) {
-            if(this->array[i].element == e) {
-                this->array[i].apparitions -= 1;
-                this->total_elements -= 1;
-                return true;
-            }
-        }
+  for(int i=0; i<this->size(); i++) {
+    if(this->array[i] == e) {
+      // Move all elements after index i to the left by one position
+      int how_many_to_move = this->size()-i-1;
+      memcpy(this->array+i, this->array+i+1, how_many_to_move*sizeof(TElem));
+      this->logical_size -= 1;
+      return true;
     }
+  }
+  return false;
 }
 
 bool Bag::search(TElem e) const {
-    for(int i=0; i<this->logical_size; i++) {
-        if(this->array[i].element == e && this->array[i].apparitions > 0) {
-            return true;
-        }
-    }
-    return false;
+  for(int i=0; i<this->logical_size; i++) {
+      if(this->array[i] == e) {
+          return true;
+      }
+  }
+  return false;
 }
 
 int Bag::nrOccurrences(TElem e) const {
-    if(!this->search(e)) return 0;
-    else {
-        for(int i=0; i<this->logical_size; i++) {
-            if(this->array[i].element == e) {
-                return this->array[i].apparitions;
-            }
-        }
-    }
+  int counter = 0;
+  for(int i=0; i<this->size(); i++) {
+    if(this->array[i] == e) counter++;
+  }
+  return counter;
 }
 
 int Bag::size() const {
-    return this->total_elements;
+  return this->logical_size;
 }
 
 BagIterator Bag::iterator() const {

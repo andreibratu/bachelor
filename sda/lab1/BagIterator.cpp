@@ -1,36 +1,28 @@
 #include "BagIterator.h"
 #include "Bag.h"
+#include <exception>
+#include <iostream>
 
-BagIterator::BagIterator(const Bag& c) {
-    this->c = c;
+// Constant members of the class should be init like this
+BagIterator::BagIterator(const Bag& c): c{c} {
     this->idx = 0;
-    this->how_many = 0;
-    this->current = 0;
 }
 
 void BagIterator::first() {
     this->idx = 0;
-    this->how_many = this->c.array[idx].apparitions;
-    this->current = this->c.array[idx].element;
 }
 
 void BagIterator::next() {
-    if (this->how_many > 0) {
-        how_many -= 1;
-    }
-    else {
-        this->idx += 1;
-        if (this->valid()) {
-            this->how_many = this->c.array[idx].apparitions;
-            this->current = this->c.array[idx].element;
-        }
-    }
+  this->idx++;
 }
 
 bool BagIterator::valid() const {
-    return this->idx < c.size();
+  return this->idx < this->c.size();
 }
 
 TElem BagIterator::getCurrent() const {
-    return this->current;
+  if(this->valid()) {
+    return this->c.array[this->idx];
+  }
+  else throw std::exception();
 }

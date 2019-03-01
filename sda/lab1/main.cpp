@@ -3,5 +3,6 @@
 
 int main() {
   testAll();
+  // testAllExtended();
   return 0;
 }

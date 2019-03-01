@@ -12,7 +12,7 @@ void testCreate() {
 	Bag b;
 	assert(b.size() == 0);
 	assert(b.isEmpty() == true);
-	for (int i = -5; i < 5; i++) { 
+	for (int i = -5; i < 5; i++) {
 		assert(b.search(i) == false);
 	}
 	for (int i = -10; i < 10; i++) {
@@ -22,18 +22,18 @@ void testCreate() {
 		assert(b.nrOccurrences(i) == 0);
 	}
 
-	BagIterator it = b.iterator(); 
+	BagIterator it = b.iterator();
 	assert(it.valid() == false);
 }
 
 void testAdd() {
-	Bag b; 
+	Bag b;
 	for (int i = 0; i < 10; i++) {
 		b.add(i);
 	}
 	assert(b.isEmpty() == false);
 	assert(b.size() == 10);
-	for (int i = -10; i < 20; i++) { 
+	for (int i = -10; i < 20; i++) {
 		b.add(i);
 	}
 	assert(b.isEmpty() == false);
@@ -43,7 +43,7 @@ void testAdd() {
 	}
 	assert(b.isEmpty() == false);
 	assert(b.size() == 240);
-	for (int i = -200; i < 200; i++) { 
+	for (int i = -200; i < 200; i++) {
 		int count = b.nrOccurrences(i);
 		if (i < -100) {
 			assert(count == 0);
@@ -82,11 +82,11 @@ void testAdd() {
 
 void testRemove() {
 	Bag b;
-	for (int i = -100; i < 100; i++) { 
+	for (int i = -100; i < 100; i++) {
 		assert(b.remove(i) == false);
 	}
 	assert(b.size() == 0);
-	for (int i = -100; i < 100; i = i + 2) { 
+	for (int i = -100; i < 100; i = i + 2) {
 		b.add(i);
 	}
 	for (int i = -100; i < 100; i++) {
@@ -99,10 +99,10 @@ void testRemove() {
 		}
 	}
 	assert(b.size() == 0);
-	for (int i = -100; i <= 100; i = i + 2) { 
+	for (int i = -100; i <= 100; i = i + 2) {
 		b.add(i);
 	}
-	for (int i = 100; i > -100; i--) { 
+	for (int i = 100; i > -100; i--) {
 		if (i % 2 == 0) {
 			assert(b.remove(i) == true);
 		}
@@ -113,7 +113,7 @@ void testRemove() {
 
 	assert(b.size() == 1);
 	b.remove(-100);
-	for (int i = -100; i < 100; i++) { 
+	for (int i = -100; i < 100; i++) {
 		b.add(i);
 		b.add(i);
 		b.add(i);
@@ -124,14 +124,14 @@ void testRemove() {
 	for (int i = -100; i < 100; i++) {
 		assert(b.nrOccurrences(i) == 5);
 	}
-	for (int i = -100; i < 100; i++) { 
+	for (int i = -100; i < 100; i++) {
 		assert(b.remove(i) == true);
 	}
 	assert(b.size() == 800);
 	for (int i = -100; i < 100; i++) {
 		assert(b.nrOccurrences(i) == 4);
 	}
-	for (int i = -200; i < 200; i++) { 
+	for (int i = -200; i < 200; i++) {
 		if (i < -100 || i >= 100) {
 			assert(b.remove(i) == false);
 			assert(b.remove(i) == false);
@@ -153,7 +153,7 @@ void testRemove() {
 	}
 	int min = -200;
 	int max = 200;
-	while (min < max) { 
+	while (min < max) {
 		b.add(min);
 		b.add(max);
 		min++;
@@ -162,7 +162,7 @@ void testRemove() {
 	b.add(0);
 	b.add(0);
 	assert(b.size() == 402);
-	for (int i = -30; i < 30; i++) { 
+	for (int i = -30; i < 30; i++) {
 
 		assert(b.search(i) == true);
 		assert(b.remove(i) == true);
@@ -178,9 +178,9 @@ void testRemove() {
 }
 
 
-void testIterator() { 
+void testIterator() {
 	Bag b;
-	BagIterator it = b.iterator(); 
+	BagIterator it = b.iterator();
 	assert(it.valid() == false);
 	try {
 		it.next();
@@ -197,10 +197,10 @@ void testIterator() {
 		assert(true);
 	}
 
-	for (int i = 0; i < 100; i++) {  
+	for (int i = 0; i < 100; i++) {
 		b.add(33);
 	}
-	BagIterator it2 = b.iterator(); 
+	BagIterator it2 = b.iterator();
 	assert(it2.valid() == true);
 	for (int i = 0; i < 100; i++) {
 		TElem elem = it2.getCurrent();
@@ -208,7 +208,7 @@ void testIterator() {
 		it2.next();
 	}
 	assert(it2.valid() == false);
-	it2.first(); 
+	it2.first();
 	assert(it2.valid() == true);
 	for (int i = 0; i < 100; i++) {
 		TElem elem = it2.getCurrent();
@@ -235,13 +235,13 @@ void testIterator() {
 
 
 	Bag b2;
-	for (int i = -100; i < 100; i++) { 
+	for (int i = -100; i < 100; i++) {
 		b2.add(i);
 		b2.add(i);
 		b2.add(i);
 	}
 	BagIterator it3 = b2.iterator();
-	assert(it3.valid() == true); 
+	assert(it3.valid() == true);
 	for (int i = 0; i < 600; i++) {
 		TElem e1 = it3.getCurrent();
 		it3.next();
@@ -250,20 +250,20 @@ void testIterator() {
 	it3.first();
 	assert(it3.valid() == true);
 	Bag b3;
-	for (int i = 0; i < 200; i = i + 4) { 
+	for (int i = 0; i < 200; i = i + 4) {
 		b3.add(i);
 	}
 	BagIterator it4 = b3.iterator();
 	assert(it4.valid() == true);
 	int count = 0;
-	while (it4.valid()) { 
+	while (it4.valid()) {
 		TElem e = it4.getCurrent();
 		assert(e % 4 == 0);
 		it4.next();
 		count++;
 	}
 	assert(count == 50);
-	Bag b4; 
+	Bag b4;
 	for (int i = 0; i < 100; i++) {
 		b4.add(i);
 		b4.add(i * (-2));
@@ -280,7 +280,7 @@ void testIterator() {
 	}
 
 	assert(elements.size() == b4.size());
-	for (unsigned int i = 0; i < elements.size(); i++) { 
+	for (unsigned int i = 0; i < elements.size(); i++) {
 		TElem lastElem = elements.at(elements.size() - i - 1);
 		assert(b4.search(lastElem) == true);
 		b4.remove(lastElem);
@@ -293,7 +293,7 @@ void testIterator() {
 		b5.add(i * 2);
 		b5.add(i / 2);
 		b5.add(i / (-2));
-	}	
+	}
 	vector<TElem> elements2;
 	BagIterator it6 = b5.iterator();
 	while (it6.valid()) {
@@ -303,7 +303,7 @@ void testIterator() {
 	}
 
 	assert(elements2.size() == b5.size());
-	for (unsigned int i = 0; i < elements2.size(); i++) { 
+	for (unsigned int i = 0; i < elements2.size(); i++) {
 		TElem firstElem = elements2.at(i);
 		assert(b5.search(firstElem) == true);
 		b5.remove(firstElem);
@@ -325,14 +325,14 @@ void testQuantity() {
 		it.next();
 	}
 	it.first();
-	while (it.valid()) { 
+	while (it.valid()) {
 		TElem e = it.getCurrent();
 		assert(b.search(e) == true);
 		assert(b.nrOccurrences(e) > 0);
 		it.next();
 	}
 	assert(it.valid() == false);
-	for (int i = 0; i < 10; i++) { 
+	for (int i = 0; i < 10; i++) {
 		for (int j = 40000; j >= -40000; j--) {
 			b.remove(j);
 		}

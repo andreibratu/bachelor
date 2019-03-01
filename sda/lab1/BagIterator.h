@@ -2,6 +2,7 @@
 #include "Bag.h"
 
 typedef int TElem;
+#define END_CONTAINER_ERROR 1
 
 class Bag;
 
@@ -13,8 +14,6 @@ private:
   BagIterator(const Bag& c);
   const Bag& c;
   int idx;
-  int how_many;
-  int current;
 
 public:
   //sets the iterator to the first element of the container

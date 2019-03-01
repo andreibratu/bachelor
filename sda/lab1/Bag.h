@@ -3,21 +3,6 @@
 
 typedef int TElem;
 
-struct Pair {
-  int element;
-  int apparitions;
-
-  Pair(int element, int apparitions) {
-      this->element = element;
-      this->apparitions = apparitions;
-  }
-
-  Pair() {
-    this->element = 0;
-    this->apparitions = 0;
-  }
-};
-
 class BagIterator;
 
 class Bag {
@@ -25,10 +10,9 @@ class Bag {
   friend class BagIterator;
 
 private:
-  int total_elements;
   int logical_size;
-  int allocated_size;
-  Pair* array;
+  int capacity;
+  TElem* array;
 
 public:
   //constructor

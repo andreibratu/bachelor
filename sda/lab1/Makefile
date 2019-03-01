@@ -1,2 +1,2 @@
-result: main.cpp ShortTest.cpp Bag.cpp BagIterator.cpp
-	g++ -fpermissive -o result main.cpp ShortTest.cpp Bag.cpp BagIterator.cpp
+result: main.cpp ShortTest.cpp ExtendedTest.cpp Bag.cpp BagIterator.cpp
+	g++ -o result main.cpp ShortTest.cpp ExtendedTest.cpp Bag.cpp BagIterator.cpp
