@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-Medication* init(char* name, double c, int q, double p) {
+Medication* medication_init(char* name, double c, int q, double p) {
   Medication* m = (Medication*)malloc(sizeof(Medication));
   m->name = name;
   m->concentration = c;
@@ -32,6 +32,6 @@ int same(const Medication* m, char* name, double concentration) {
   return 0;
 }
 
-void destroy(Medication* m) {
+void medication_destructor(Medication* m) {
   free(m);
 }

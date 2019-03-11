@@ -5,18 +5,20 @@
 
 
 typedef struct {
-  Medication* medications;
+  Medication** medications;
   int size;
   int capacity;
 } MedicationVector;
 
 
-MedicationVector* init(int);
+MedicationVector* medication_vector_init(int);
 
-void add(MedicationVector*, Medication);
+void add(MedicationVector*, Medication*);
+
+int find(MedicationVector*, char*, double);
 
 void remove(MedicationVector*, char*, double);
 
-void destroy(MedicationVector*);
+void medication_vector_destructor(MedicationVector*);
 
 #endif
