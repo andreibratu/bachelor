@@ -33,6 +33,5 @@ int same(const Medication* m, char* name, double concentration) {
 }
 
 void destroy(Medication* m) {
-  free(m->name);
   free(m);
 }
