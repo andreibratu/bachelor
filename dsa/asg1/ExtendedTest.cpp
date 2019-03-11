@@ -243,7 +243,7 @@ void testIterator() {
 	BagIterator it3 = b2.iterator();
 	assert(it3.valid() == true);
 	for (int i = 0; i < 600; i++) {
-		TElem e1 = it3.getCurrent();
+		it3.getCurrent();
 		it3.next();
 	}
 	assert(it3.valid() == false);
@@ -279,7 +279,7 @@ void testIterator() {
 		it5.next();
 	}
 
-	assert(elements.size() == b4.size());
+	assert((int)elements.size() == b4.size());
 	for (unsigned int i = 0; i < elements.size(); i++) {
 		TElem lastElem = elements.at(elements.size() - i - 1);
 		assert(b4.search(lastElem) == true);
@@ -302,7 +302,7 @@ void testIterator() {
 		it6.next();
 	}
 
-	assert(elements2.size() == b5.size());
+	assert((int)elements2.size() == b5.size());
 	for (unsigned int i = 0; i < elements2.size(); i++) {
 		TElem firstElem = elements2.at(i);
 		assert(b5.search(firstElem) == true);
