@@ -7,14 +7,16 @@ typedef struct {
   MedicationVector* medication;
 } MedicationRepository;
 
-MedicationRepository* init();
+MedicationRepository* repository_init();
 
-void addMedication(MedicationRepository*, Medication);
+void addMedication(MedicationRepository*, char*, double, int, double);
 
 void deleteMedication(MedicationRepository*, char*, double);
 
-void updateMedication(MedicationRepository*, char*, double*, int);
+void updateMedicationQuantity(MedicationRepository*, char*, double, int);
 
+void updateMedicationPrice(MedicationRepository*, char*, double, double);
 
+void repository_destructor(MedicationRepository*);
 
 #endif
