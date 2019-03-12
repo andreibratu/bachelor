@@ -21,7 +21,7 @@ int main() {
   add(mv, m3);
   assert(mv->size == 3);
   assert(mv->capacity == 4);
-  remove(mv, n1, 5.7);
+  removeMedication(mv, n1, 5.7);
   assert(mv->size == 2);
   assert(strcmp(mv->medications[0]->name, n2) == 0);
   medication_vector_destructor(mv);

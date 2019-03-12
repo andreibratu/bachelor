@@ -35,7 +35,7 @@ int find(MedicationVector* mv, char* name, double concentration) {
 }
 
 
-void remove(MedicationVector* mv, char* name, double concentration) {
+void removeMedication(MedicationVector* mv, char* name, double concentration) {
   int idx = find(mv, name, concentration);
   if(idx == -1) return;
   Medication* will_be_freed = mv->medications[idx];

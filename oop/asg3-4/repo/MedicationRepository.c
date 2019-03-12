@@ -6,7 +6,7 @@
 
 MedicationRepository* repository_init() {
   MedicationRepository* mr = (MedicationRepository*)
-    malloc(sizeof(MedicationRepository));
+  malloc(sizeof(MedicationRepository));
   mr->medication = medication_vector_init(1);
 
   return mr;
@@ -24,7 +24,7 @@ void addMedication(MedicationRepository* mr, char* name, double c, int q, double
 
 
 void deleteMedication(MedicationRepository* mr, char* name, double c) {
-  remove(mr->medication, name, c);
+  removeMedication(mr->medication, name, c);
 }
 
 
@@ -45,4 +45,9 @@ void updateMedicationPrice(MedicationRepository* mr, char* name, double c, doubl
 void repository_destructor(MedicationRepository* mr) {
   medication_vector_destructor(mr->medication);
   free(mr);
+}
+
+
+MedicationVector* getAll(MedicationRepository* mr) {
+  return mr->medication;
 }

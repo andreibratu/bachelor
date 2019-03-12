@@ -1,5 +1,6 @@
 #include "../repo/MedicationRepository.h"
 #include <assert.h>
+#include <stdio.h>
 
 int main() {
   char n1[] = "asdf";
@@ -22,6 +23,11 @@ int main() {
   updateMedicationPrice(mr, n1, 3.5, 4);
   assert(mr->medication->medications[0]->price == 8);
   repository_destructor(mr);
-
+  MedicationVector* mv = getAll(mr);
+  int i;
+  for(i=0; i<mv->size; i++) {
+    printf("%s", mv->medications[i]->name);
+    assert(mv->medications[i] != 0);
+  }
   return 0;
 }

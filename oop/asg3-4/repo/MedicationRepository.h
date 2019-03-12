@@ -19,4 +19,6 @@ void updateMedicationPrice(MedicationRepository*, char*, double, double);
 
 void repository_destructor(MedicationRepository*);
 
+MedicationVector* getAll(MedicationRepository*);
+
 #endif

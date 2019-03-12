@@ -17,7 +17,7 @@ void add(MedicationVector*, Medication*);
 
 int find(MedicationVector*, char*, double);
 
-void remove(MedicationVector*, char*, double);
+void removeMedication(MedicationVector*, char*, double);
 
 void medication_vector_destructor(MedicationVector*);
 
