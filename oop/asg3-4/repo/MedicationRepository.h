@@ -9,7 +9,7 @@ typedef struct {
 
 MedicationRepository* repository_init();
 
-void addMedication(MedicationRepository*, char*, double, int, double);
+void addMedication(MedicationRepository*, Medication* m);
 
 void deleteMedication(MedicationRepository*, char*, double);
 

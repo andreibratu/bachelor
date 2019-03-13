@@ -1,5 +1,6 @@
 #include "../repo/MedicationRepository.h"
 #include <assert.h>
+#include <stdlib.h>
 #include <stdio.h>
 
 int main() {
@@ -7,14 +8,18 @@ int main() {
   char n2[] = "cvbn";
   char n3[] = "asdf";
 
+  Medication* m1 = medication_init(n1, 3.5, 6, 4);
+  Medication* m2 = medication_init(n3, 3.5, 3, 4);
+  Medication* m3 = medication_init(n2, 4, 2, 6);
+
   MedicationRepository* mr = repository_init();
 
-  addMedication(mr, n1, 3.5, 6, 4);
+  addMedication(mr, m1);
   assert(mr->medication->size == 1);
-  addMedication(mr, n3, 3.5, 3, 4);
+  addMedication(mr, m2);
   assert(mr->medication->size == 1);
   assert(mr->medication->medications[0]->quantity == 9);
-  addMedication(mr, n2, 4, 2, 6);
+  addMedication(mr, m3);
   assert(mr->medication->size == 2);
   deleteMedication(mr, n2, 4);
   assert(mr->medication->size == 1);
@@ -29,5 +34,8 @@ int main() {
     assert(m->name != 0);
   }
   repository_destructor(mr);
+  // free(m1);
+  // free(m2);
+  // free(m3);
   return 0;
 }

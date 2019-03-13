@@ -5,19 +5,17 @@
 
 
 MedicationRepository* repository_init() {
-  MedicationRepository* mr = (MedicationRepository*)
-  malloc(sizeof(MedicationRepository));
+  MedicationRepository* mr = (MedicationRepository*)malloc(sizeof(MedicationRepository));
   mr->medication = medication_vector_init(1);
 
   return mr;
 }
 
 
-void addMedication(MedicationRepository* mr, char* name, double c, int q, double p) {
-  int idx = find(mr->medication, name, c);
-  if(idx != -1) mr->medication->medications[idx]->quantity += q;
+void addMedication(MedicationRepository* mr, Medication* m) {
+  int idx = find(mr->medication, m->name, m->concentration);
+  if(idx != -1) mr->medication->medications[idx]->quantity += m->quantity;
   else {
-    Medication* m = medication_init(name, c, q, p);
     add(mr->medication, m);
   }
 }
