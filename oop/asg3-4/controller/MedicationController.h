@@ -2,24 +2,28 @@
 #define MEDICATION_CONTROLLER_H
 
 #include "../repo/MedicationRepository.h"
+#include <stdlib.h>
 
 typedef struct {
   MedicationRepository* repo;
 } MedicationController;
 
+MedicationController* controller_init();
 
-MedicationVector* shortSupply(MedicationController*, int);
+MedicationVector* controller_shortSupply(MedicationController*, int);
 
-MedicationVector* findByStr(MedicationController*, char*);
+MedicationVector* controller_findByStr(MedicationController*, char*);
 
-MedicationVector* getAll(MedicationController*);
+MedicationVector* controller_getAll(MedicationController*);
 
-void add(MedicationController*, char*, double, int, double);
+void controller_addMedication(MedicationController*, char*, double, int, double);
 
-void controllerAddMedication(MedicationController*, char*, double, int, double);
+void controller_deleteMedication(MedicationController*, char*, double);
 
-void deleteMedication(MedicationController*, char*, double);
+void controller_updateMedicationQuantity(MedicationController*, char*, double, int);
 
-void updateMedicationQuantity(MedicationController*, )
+void controller_updateMedicatonPrice(MedicationController*, char*, double, double);
+
+void controller_destructor(MedicationController*);
 
 #endif

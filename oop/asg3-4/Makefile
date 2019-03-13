@@ -15,3 +15,9 @@ MedicationRepositoryTest: repo/MedicationRepository.c ds/MedicationVector.c mode
 	./MedicationRepositoryTest
 	valgrind ./MedicationRepositoryTest
 	rm ./MedicationRepositoryTest
+
+MedicationControllerTest: model/Medication.c ds/MedicationVector.c repo/MedicationRepository.c controller/MedicationController.c tests/MedicationControllerTest.c
+	gcc -o MedicationControllerTest -Wall -Werror tests/MedicationControllerTest.c model/Medication.c ds/MedicationVector.c controller/MedicationController.c repo/MedicationRepository.c
+	./MedicationControllerTest
+	valgrind ./MedicationControllerTest
+	rm ./MedicationControllerTest
