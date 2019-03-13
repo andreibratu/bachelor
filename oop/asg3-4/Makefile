@@ -11,7 +11,7 @@ MedicationVectorTest: model/Medication.c ds/MedicationVector.c tests/MedicationV
 	rm ./MedicationVectorTest
 
 MedicationRepositoryTest: repo/MedicationRepository.c ds/MedicationVector.c model/Medication.c
-	gcc -o MedicationRepositoryTest -Werror tests/MedicationRepositoryTest.c model/Medication.c ds/MedicationVector.c repo/MedicationRepository.c
+	gcc -o MedicationRepositoryTest -Wall -Werror tests/MedicationRepositoryTest.c model/Medication.c ds/MedicationVector.c repo/MedicationRepository.c
 	./MedicationRepositoryTest
 	valgrind ./MedicationRepositoryTest
 	rm ./MedicationRepositoryTest
