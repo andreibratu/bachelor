@@ -22,12 +22,12 @@ int main() {
   assert(mr->medication->medications[0]->quantity == 11);
   updateMedicationPrice(mr, n1, 3.5, 4);
   assert(mr->medication->medications[0]->price == 8);
-  repository_destructor(mr);
   MedicationVector* mv = getAll(mr);
   int i;
   for(i=0; i<mv->size; i++) {
-    printf("%s", mv->medications[i]->name);
-    assert(mv->medications[i] != 0);
+    Medication* m = mv->medications[i];
+    assert(m->name != 0);
   }
+  repository_destructor(mr);
   return 0;
 }
