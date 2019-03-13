@@ -4,7 +4,7 @@
 #include <string.h>
 
 
-MedicationVector* medication_vector_init(int size) {
+MedicationVector* vector_init(int size) {
   MedicationVector* mv = (MedicationVector*)malloc(sizeof(MedicationVector));
   mv->medications = (Medication**)malloc(size*sizeof(Medication*));
   mv->capacity = size;
@@ -13,7 +13,7 @@ MedicationVector* medication_vector_init(int size) {
 }
 
 
-void add(MedicationVector* mv, Medication* m) {
+void vector_add(MedicationVector* mv, Medication* m) {
   if(mv->size == mv->capacity) {
     mv->capacity *= 2;
     mv->medications = (Medication**)realloc(
@@ -24,7 +24,7 @@ void add(MedicationVector* mv, Medication* m) {
 }
 
 
-int find(MedicationVector* mv, char* name, double concentration) {
+int vector_find(MedicationVector* mv, char* name, double concentration) {
   int i;
   for(i=0; i<mv->size; i++) {
     Medication* m = mv->medications[i];
@@ -35,8 +35,8 @@ int find(MedicationVector* mv, char* name, double concentration) {
 }
 
 
-void removeMedication(MedicationVector* mv, char* name, double concentration) {
-  int idx = find(mv, name, concentration);
+void vector_remove(MedicationVector* mv, char* name, double concentration) {
+  int idx = vector_find(mv, name, concentration);
   if(idx == -1) return;
   Medication* will_be_freed = mv->medications[idx];
   memcpy(
@@ -50,7 +50,7 @@ void removeMedication(MedicationVector* mv, char* name, double concentration) {
 }
 
 
-void medication_vector_destructor(MedicationVector* mv) {
+void vector_destructor(MedicationVector* mv) {
   int i;
   for(i=0; i<mv->size; i++) {
     free(mv->medications[i]);

@@ -11,14 +11,14 @@ typedef struct {
 } MedicationVector;
 
 
-MedicationVector* medication_vector_init(int);
+MedicationVector* vector_init(int);
 
-void add(MedicationVector*, Medication*);
+void vector_add(MedicationVector*, Medication*);
 
-int find(MedicationVector*, char*, double);
+int vector_find(MedicationVector*, char*, double);
 
-void removeMedication(MedicationVector*, char*, double);
+void vector_remove(MedicationVector*, char*, double);
 
-void medication_vector_destructor(MedicationVector*);
+void vector_destructor(MedicationVector*);
 
 #endif

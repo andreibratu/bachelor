@@ -9,16 +9,16 @@ typedef struct {
 
 MedicationRepository* repository_init();
 
-void addMedication(MedicationRepository*, Medication* m);
+void repository_addMedication(MedicationRepository*, Medication* m);
 
-void deleteMedication(MedicationRepository*, char*, double);
+void repository_deleteMedication(MedicationRepository*, char*, double);
 
-void updateMedicationQuantity(MedicationRepository*, char*, double, int);
+void repository_updateMedicationQuantity(MedicationRepository*, char*, double, int);
 
-void updateMedicationPrice(MedicationRepository*, char*, double, double);
+void repository_updateMedicationPrice(MedicationRepository*, char*, double, double);
 
 void repository_destructor(MedicationRepository*);
 
-MedicationVector* getAll(MedicationRepository*);
+MedicationVector* repository_getAll(MedicationRepository*);
 
 #endif

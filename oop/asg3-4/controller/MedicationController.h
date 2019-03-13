@@ -16,7 +16,7 @@ MedicationVector* controller_findByStr(MedicationController*, char*);
 
 MedicationVector* controller_getAll(MedicationController*);
 
-void controller_addMedication(MedicationController*, char*, double, int, double);
+void controller_vector_repository_addMedication(MedicationController*, char*, double, int, double);
 
 void controller_deleteMedication(MedicationController*, char*, double);
 

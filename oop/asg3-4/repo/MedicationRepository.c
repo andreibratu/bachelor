@@ -6,46 +6,46 @@
 
 MedicationRepository* repository_init() {
   MedicationRepository* mr = (MedicationRepository*)malloc(sizeof(MedicationRepository));
-  mr->medication = medication_vector_init(1);
+  mr->medication = vector_init(1);
 
   return mr;
 }
 
 
-void addMedication(MedicationRepository* mr, Medication* m) {
-  int idx = find(mr->medication, m->name, m->concentration);
+void repository_addMedication(MedicationRepository* mr, Medication* m) {
+  int idx = vector_find(mr->medication, m->name, m->concentration);
   if(idx != -1) mr->medication->medications[idx]->quantity += m->quantity;
   else {
-    add(mr->medication, m);
+    vector_add(mr->medication, m);
   }
 }
 
 
-void deleteMedication(MedicationRepository* mr, char* name, double c) {
-  removeMedication(mr->medication, name, c);
+void repository_deleteMedication(MedicationRepository* mr, char* name, double c) {
+  vector_remove(mr->medication, name, c);
 }
 
 
-void updateMedicationQuantity(MedicationRepository* mr, char* name, double c, int q) {
-  int idx = find(mr->medication, name, c);
+void repository_updateMedicationQuantity(MedicationRepository* mr, char* name, double c, int q) {
+  int idx = vector_find(mr->medication, name, c);
   if(idx == -1) return;
   mr->medication->medications[idx]->quantity += q;
 }
 
 
-void updateMedicationPrice(MedicationRepository* mr, char* name, double c, double p) {
-  int idx = find(mr->medication, name, c);
+void repository_updateMedicationPrice(MedicationRepository* mr, char* name, double c, double p) {
+  int idx = vector_find(mr->medication, name, c);
   if(idx == -1) return;
   mr->medication->medications[idx]->price += p;
 }
 
 
-void repository_destructor(MedicationRepository* mr) {
-  medication_vector_destructor(mr->medication);
-  free(mr);
+  MedicationVector* repository_getAll(MedicationRepository* mr) {
+  return mr->medication;
 }
 
 
-MedicationVector* getAll(MedicationRepository* mr) {
-  return mr->medication;
+void repository_destructor(MedicationRepository* mr) {
+  vector_destructor(mr->medication);
+  free(mr);
 }

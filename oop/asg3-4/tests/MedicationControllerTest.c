@@ -9,10 +9,10 @@ int main() {
 
   MedicationController* mc = controller_init();
 
-  controller_addMedication(mc, n1, 3, 5, 4);
-  controller_addMedication(mc, n1, 3, 3, 2);
+  controller_vector_repository_addMedication(mc, n1, 3, 5, 4);
+  controller_vector_repository_addMedication(mc, n1, 3, 3, 2);
   assert(controller_getAll(mc)->size == 1);
-  controller_addMedication(mc, n2, 2, 6, 7);
+  controller_vector_repository_addMedication(mc, n2, 2, 6, 7);
   assert(controller_getAll(mc)->size == 2);
   assert(controller_findByStr(mc, substr1)->size != 0);
   controller_deleteMedication(mc, n2, 2);

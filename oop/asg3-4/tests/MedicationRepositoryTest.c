@@ -14,20 +14,20 @@ int main() {
 
   MedicationRepository* mr = repository_init();
 
-  addMedication(mr, m1);
+  repository_addMedication(mr, m1);
   assert(mr->medication->size == 1);
-  addMedication(mr, m2);
+  repository_addMedication(mr, m2);
   assert(mr->medication->size == 1);
   assert(mr->medication->medications[0]->quantity == 9);
-  addMedication(mr, m3);
+  repository_addMedication(mr, m3);
   assert(mr->medication->size == 2);
-  deleteMedication(mr, n2, 4);
+  repository_deleteMedication(mr, n2, 4);
   assert(mr->medication->size == 1);
-  updateMedicationQuantity(mr, n1, 3.5, 2);
+  repository_updateMedicationQuantity(mr, n1, 3.5, 2);
   assert(mr->medication->medications[0]->quantity == 11);
-  updateMedicationPrice(mr, n1, 3.5, 4);
+  repository_updateMedicationPrice(mr, n1, 3.5, 4);
   assert(mr->medication->medications[0]->price == 8);
-  MedicationVector* mv = getAll(mr);
+  MedicationVector* mv = repository_getAll(mr);
   int i;
   for(i=0; i<mv->size; i++) {
     Medication* m = mv->medications[i];

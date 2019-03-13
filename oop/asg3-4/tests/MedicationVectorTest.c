@@ -12,19 +12,19 @@ int main() {
   Medication* m2 = medication_init(n2, 4.5, 2, 8);
   Medication* m3 = medication_init(n3, 5.6, 4, 7);
 
-  MedicationVector* mv = medication_vector_init(2);
-  add(mv, m1);
+  MedicationVector* mv = vector_init(2);
+  vector_add(mv, m1);
   assert(mv->size == 1);
-  add(mv, m2);
+  vector_add(mv, m2);
   assert(mv->size == 2);
   assert(mv->capacity == 2);
-  add(mv, m3);
+  vector_add(mv, m3);
   assert(mv->size == 3);
   assert(mv->capacity == 4);
-  removeMedication(mv, n1, 5.7);
+  vector_remove(mv, n1, 5.7);
   assert(mv->size == 2);
   assert(strcmp(mv->medications[0]->name, n2) == 0);
-  medication_vector_destructor(mv);
+  vector_destructor(mv);
 
   return 0;
 }
