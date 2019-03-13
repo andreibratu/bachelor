@@ -11,7 +11,7 @@ typedef struct {
 } MedicationVector;
 
 
-MedicationVector* vector_init(int);
+MedicationVector* vector_init();
 
 void vector_add(MedicationVector*, Medication*);
 

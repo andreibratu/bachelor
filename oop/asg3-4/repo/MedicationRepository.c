@@ -6,7 +6,7 @@
 
 MedicationRepository* repository_init() {
   MedicationRepository* mr = (MedicationRepository*)malloc(sizeof(MedicationRepository));
-  mr->medication = vector_init(1);
+  mr->medication = vector_init();
 
   return mr;
 }

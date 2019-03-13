@@ -4,10 +4,10 @@
 #include <string.h>
 
 
-MedicationVector* vector_init(int size) {
+MedicationVector* vector_init() {
   MedicationVector* mv = (MedicationVector*)malloc(sizeof(MedicationVector));
-  mv->medications = (Medication**)malloc(size*sizeof(Medication*));
-  mv->capacity = size;
+  mv->medications = (Medication**)malloc(sizeof(Medication*));
+  mv->capacity = 1;
   mv->size = 0;
   return mv;
 }

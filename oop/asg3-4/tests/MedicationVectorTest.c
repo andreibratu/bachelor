@@ -12,7 +12,7 @@ int main() {
   Medication* m2 = medication_init(n2, 4.5, 2, 8);
   Medication* m3 = medication_init(n3, 5.6, 4, 7);
 
-  MedicationVector* mv = vector_init(2);
+  MedicationVector* mv = vector_init();
   vector_add(mv, m1);
   assert(mv->size == 1);
   vector_add(mv, m2);

@@ -14,7 +14,7 @@ MedicationController* controller_init() {
 
 
 MedicationVector* controller_shortSupply(MedicationController* mc, int x) {
-  MedicationVector* ans = vector_init(1);
+  MedicationVector* ans = vector_init();
   MedicationVector* all = repository_getAll(mc->repo);
 
   int i;
@@ -29,7 +29,7 @@ MedicationVector* controller_shortSupply(MedicationController* mc, int x) {
 
 
 MedicationVector* controller_findByStr(MedicationController* mc, char* sstr) {
-  MedicationVector* ans = vector_init(1);
+  MedicationVector* ans = vector_init();
   MedicationVector* all = repository_getAll(mc->repo);
 
   int i;
