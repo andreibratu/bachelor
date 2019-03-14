@@ -50,7 +50,7 @@ MedicationVector* controller_getAll(MedicationController* mc) {
 }
 
 
-void controller_vector_repository_addMedication(MedicationController* mc, char* n, double c, int q, double p) {
+void controller_addMedication(MedicationController* mc, char* n, double c, int q, double p) {
   Medication* m = medication_init(n, c, q, p);
   repository_addMedication(mc->repo, m);
 }

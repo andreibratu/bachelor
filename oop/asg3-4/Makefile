@@ -21,3 +21,6 @@ MedicationControllerTest: model/Medication.c ds/MedicationVector.c repo/Medicati
 	./MedicationControllerTest
 	valgrind ./MedicationControllerTest
 	rm ./MedicationControllerTest
+
+Build: model/Medication.c ds/MedicationVector.c repo/MedicationRepository.c controller/MedicationController.c ui/ui.c main.c
+	gcc -o main -Wall -Werror model/Medication.c ds/MedicationVector.c repo/MedicationRepository.c controller/MedicationController.c ui/ui.c main.c

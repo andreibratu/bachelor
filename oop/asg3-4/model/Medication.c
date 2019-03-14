@@ -1,6 +1,7 @@
-#include "Medication.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+#include "Medication.h"
 
 Medication* medication_init(char* name, double c, int q, double p) {
   Medication* m = (Medication*)malloc(sizeof(Medication));
@@ -31,6 +32,7 @@ int same(const Medication* m, char* name, double concentration) {
 
   return 0;
 }
+
 
 void medication_destructor(Medication* m) {
   free(m);
