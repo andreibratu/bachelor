@@ -12,7 +12,7 @@ MedicationController* controller_init();
 
 MedicationVector* controller_shortSupply(MedicationController*, int);
 
-MedicationVector* controller_findByStr(MedicationController*, char*);
+MedicationVector* controller_findByStr(MedicationController*, char*, int (*) (const void*, const void*));
 
 MedicationVector* controller_getAll(MedicationController*);
 

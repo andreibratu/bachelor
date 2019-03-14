@@ -6,6 +6,7 @@ int main() {
   char n1[] = "asdf";
   char n2[] = "erty";
   char substr1[] = "sd";
+  int (*asc)(const void*, const void*) = sort_ascending;
 
   MedicationController* mc = controller_init();
 
@@ -14,7 +15,7 @@ int main() {
   assert(controller_getAll(mc)->size == 1);
   controller_addMedication(mc, n2, 2, 6, 7);
   assert(controller_getAll(mc)->size == 2);
-  assert(controller_findByStr(mc, substr1)->size != 0);
+  assert(controller_findByStr(mc, substr1, asc)->size != 0);
   controller_deleteMedication(mc, n2, 2);
   assert(controller_getAll(mc)->size == 1);
   controller_updateMedicationQuantity(mc, n1, 3, 2);

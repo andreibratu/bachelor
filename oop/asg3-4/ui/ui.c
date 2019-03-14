@@ -25,6 +25,8 @@ void input_loop(MedicationController* mc) {
   int quantity;
   double price;
   int low_quantity;
+  int sorting = -1;
+  int (*sort_func)(const void*, const void*);
 
   while (flag) {
     printf("%s", "Choose an option:\n\
@@ -89,7 +91,20 @@ void input_loop(MedicationController* mc) {
        case 7:
          printf("%s: ", "Enter a substring");
          scanf("%s", ss);
-         mv = controller_findByStr(mc, ss);
+         while(sorting == -1) {
+           printf("Sort ascending(1)/ descending(0)? ");
+           scanf("%d", &sorting);
+           printf("\n");
+           if(sorting < 0 || sorting > 1) {
+             sorting = -1;
+           }
+         }
+
+         if(sorting == 1) sort_func = sort_ascending;
+         else sort_func = sort_descending;
+
+         mv = controller_findByStr(mc, ss, sort_func);
+
          display_vector(mv);
          break;
        case 8:

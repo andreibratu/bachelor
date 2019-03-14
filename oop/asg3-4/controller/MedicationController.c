@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdlib.h>
 #include "../model/Medication.h"
 #include "../ds/MedicationVector.h"
 #include "../repo/MedicationRepository.h"
@@ -28,17 +29,23 @@ MedicationVector* controller_shortSupply(MedicationController* mc, int x) {
 }
 
 
-MedicationVector* controller_findByStr(MedicationController* mc, char* sstr) {
+MedicationVector* controller_findByStr(MedicationController* mc, char* sstr, int (*sorting_func)(const void*, const void*)) {
   MedicationVector* ans = vector_init();
   MedicationVector* all = repository_getAll(mc->repo);
 
-  int i;
-  for(i=0; i<all->size; i++) {
-    if(strstr(all->medications[i]->name, sstr) != NULL) {
-      vector_add(ans, all->medications[i]);
+  if(strlen(sstr) == 0) {
+    ans = all;
+  }
+  else {
+    int i;
+    for(i=0; i<all->size; i++) {
+      if(strstr(all->medications[i]->name, sstr) != NULL) {
+        vector_add(ans, all->medications[i]);
+      }
     }
   }
 
+  qsort(ans, ans->size, sizeof(Medication*), sorting_func);
   return ans;
 }
 
@@ -52,7 +59,7 @@ MedicationVector* controller_getAll(MedicationController* mc) {
 
 void controller_addMedication(MedicationController* mc, char* n, double c, int q, double p) {
   Medication* m = medication_init(n, c, q, p);
-  repository_addMedication(mc->repo, m);
+  return repository_addMedication(mc->repo, m);
 }
 
 
