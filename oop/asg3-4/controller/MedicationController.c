@@ -1,8 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
-#include "../model/Medication.h"
-#include "../ds/MedicationVector.h"
-#include "../repo/MedicationRepository.h"
+#include <ctype.h>
 #include "MedicationController.h"
 
 
@@ -29,7 +27,22 @@ MedicationVector* controller_shortSupply(MedicationController* mc, int x) {
 }
 
 
-MedicationVector* controller_findByStr(MedicationController* mc, char* sstr, int (*sorting_func)(const void*, const void*)) {
+MedicationVector* controller_highPrice(MedicationController* mc, double p) {
+  MedicationVector* ans = vector_init();
+  MedicationVector* all = repository_getAll(mc->repo);
+
+  int i;
+  for(i=0; i<all->size; i++) {
+    if(all->medications[i]->price > p) {
+      vector_add(ans, all->medications[i]);
+    }
+  }
+
+  return ans;
+}
+
+
+MedicationVector* controller_findByStr(MedicationController* mc, char* sstr, int flag) {
   MedicationVector* ans = vector_init();
   MedicationVector* all = repository_getAll(mc->repo);
 
@@ -39,19 +52,26 @@ MedicationVector* controller_findByStr(MedicationController* mc, char* sstr, int
   else {
     int i;
     for(i=0; i<all->size; i++) {
-      if(strstr(all->medications[i]->name, sstr) != NULL) {
+      char* lower = (char*)malloc(strlen(all->medications[i]->name)+1);
+      strcpy(lower, all->medications[i]->name);
+      char* p = lower;
+      for(; *p != 0; p++) *p = tolower(*p);
+      if(strstr(lower, sstr) != NULL) {
         vector_add(ans, all->medications[i]);
       }
     }
   }
 
-  qsort(ans, ans->size, sizeof(Medication*), sorting_func);
+  if(!flag)
+    qsort(ans->medications, ans->size, sizeof(Medication*), sort_descending);
+  else
+    qsort(ans->medications, ans->size, sizeof(Medication*), sort_ascending);
   return ans;
 }
 
 
 MedicationVector* controller_getAll(MedicationController* mc) {
-  MedicationVector* all = repository_getAll(mc->repo);
+MedicationVector* all = repository_getAll(mc->repo);
 
   return all;
 }
