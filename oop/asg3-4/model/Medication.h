@@ -2,20 +2,23 @@
 #define MEDICATION_H
 
 typedef struct {
+  // Model reperesentation of medication
   char* name;
   double concentration;
   int quantity;
   double price;
 } Medication;
 
-// Constructor
+// Model constructor
 Medication* medication_init(char*, double, int, double);
 
-// Return 1 if equal in name and concentration else 0
+// Return 1 if Medication matches given name and concentration
 int same(const Medication*, char*, double);
 
+// Sort ascending lexicographically or by concentration if equal
 int sort_ascending(const void* a, const void* b);
 
+// Sort after same criteria as ascending, only in reversed order
 int sort_descending(const void* a, const void* b);
 
 void medication_destructor(Medication*);
