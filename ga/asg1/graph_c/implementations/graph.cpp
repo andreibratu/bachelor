@@ -1,9 +1,9 @@
 #include <utility>
 #include <exception>
 #include <algorithm>
-#include "graph.h"
-#include "vertex.h"
-#include "graph_iterator.h"
+#include "../interfaces/graph.h"
+#include "../interfaces/vertex.h"
+#include "../interfaces/graph_iterator.h"
 
 
 bool Graph::is_edge(int in, int out) const {
@@ -70,8 +70,8 @@ bool Graph::add_edge(int out, int in) {
     return false;
 
   this->edges.insert(std::make_pair(in, out));
-  *v_in->add_outbound(out);
-  *v_out->add_inbound(in);
+  *it_v_in->add_outbound(out);
+  *it_v_out->add_inbound(in);
   return true;
 }
 

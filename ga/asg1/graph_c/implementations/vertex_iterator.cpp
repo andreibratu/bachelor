@@ -1,5 +1,5 @@
 #include <vector>
-#include "vertex_iterator.h"
+#include "../interfaces/vertex_iterator.h"
 #include <exception>
 
 VertexIterator::VertexIterator(const std::vector<int>& c): c{c} {

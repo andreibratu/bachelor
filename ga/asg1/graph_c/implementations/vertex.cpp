@@ -1,6 +1,6 @@
 #include <algorithm>
-#include "vertex_iterator.h"
-#include "vertex.h"
+#include "../interfaces/vertex_iterator.h"
+#include "../interfaces/vertex.h"
 
 Vertex::Vertex(int label) {
   this->label = label;
@@ -45,7 +45,7 @@ bool Vertex::add_outbound(int id) {
   }
   return false;
 
-  VertexIterator Vertex::parse_inbound_edges() const {
+  VertexIterator Vertex::get_inbound_edges_iterator() const {
     return VertexIterator(this->inbound);
   }
 

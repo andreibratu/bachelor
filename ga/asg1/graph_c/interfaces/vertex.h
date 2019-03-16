@@ -11,7 +11,7 @@ private:
   std::vector<int> outbound;
 public:
   int label;
-  
+
   Vertex(int);
 
   int get_degree_in(void) const;
@@ -22,9 +22,9 @@ public:
 
   bool add_outbound(int);
 
-  VertexIterator parse_inbound_edges() const;
+  VertexIterator get_inbound_edges_iterator() const;
 
-  VertexIterator parse_outbound_edges() const;
+  VertexIterator get_outbound_edges_iterator() const;
 
   void remove_inbound(int);
 

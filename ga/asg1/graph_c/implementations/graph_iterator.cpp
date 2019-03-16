@@ -1,4 +1,4 @@
-#include "graph_iterator.h"
+#include "../interfaces/graph_iterator.h"
 
 GraphIterator::GraphIterator(const std::vector<Vertex>& c): c{c} {
   this->it = this->c.begin();
