@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VERTEX_IT_H
+#define VERTEX_IT_H
 
 #include <vector>
 
@@ -18,3 +19,5 @@ public:
 
   void next();
 };
+
+#endif

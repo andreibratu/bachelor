@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VERTEX_H
+#define VERTEX_H
 
 #include <vector>
 #include "vertex_iterator.h"
@@ -30,3 +31,5 @@ public:
 
   void remove_outbound(int);
 };
+
+#endif

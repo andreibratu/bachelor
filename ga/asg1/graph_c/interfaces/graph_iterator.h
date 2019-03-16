@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GRAPH_IT_H
+#define GRAPH_IT_H
 
 #include <vector>
 #include "vertex.h"
@@ -21,3 +22,5 @@ public:
 
   void next();
 };
+
+#endif
