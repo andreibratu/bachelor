@@ -1,4 +1,6 @@
 #include "interfaces/graph.h"
+#include "interfaces/generator.h"
+
 
 int main() {
   Graph<int> g = Graph<int>();
@@ -29,5 +31,6 @@ int main() {
   assert(g.remove_edge(1, 3));
   assert(g.remove_edge(3, 1));
   assert(!g.remove_edge(1, 3));
+  Graph<int> g1 = generate_random_graph(40, 8);
   return 0;
 }
