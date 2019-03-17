@@ -4,18 +4,19 @@
 #include <vector>
 
 
+template <class T>
 class VertexIterator {
 private:
-  const std::vector<int>& c;
-  std::vector<int>::const_iterator it;
+  const std::vector<T>& c;
+  typename std::vector<T>::const_iterator it;
 public:
-  VertexIterator(const std::vector<int>& c);
+  VertexIterator(const std::vector<T>& c);
 
   void first();
 
   bool valid() const;
 
-  int getCurrent() const;
+  T getCurrent() const;
 
   void next();
 };

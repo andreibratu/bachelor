@@ -2,25 +2,35 @@
 #include "../interfaces/vertex_iterator.h"
 #include <exception>
 
-VertexIterator::VertexIterator(const std::vector<int>& c): c{c} {
+
+template <class T>
+VertexIterator<T>::VertexIterator(const std::vector<T>& c): c{c} {
   this->it = this->c.begin();
 }
 
-void VertexIterator::first() {
+
+template <class T>
+void VertexIterator<T>::first() {
   this->it = this->c.begin();
 }
 
-bool VertexIterator::valid() const {
+
+template <class T>
+bool VertexIterator<T>::valid() const {
   return this->it != this->c.end();
 }
 
-int VertexIterator::getCurrent() const {
+template <class T>
+T VertexIterator<T>::getCurrent() const {
   if(this->valid()) {
     return *this->it;
   }
   else throw std::exception();
 }
 
-void VertexIterator::next() {
+template <class T>
+void VertexIterator<T>::next() {
   this->it++;
 }
+
+template class VertexIterator<int>;

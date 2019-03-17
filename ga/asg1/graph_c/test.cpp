@@ -1,7 +1,7 @@
 #include "interfaces/graph.h"
 
 int main() {
-  Graph g = Graph();
+  Graph<int> g = Graph<int>();
   g.add_vertex(3);
   g.add_vertex(1);
   g.add_vertex(6);

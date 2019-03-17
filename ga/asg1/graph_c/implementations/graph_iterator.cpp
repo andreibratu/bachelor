@@ -1,24 +1,37 @@
 #include "../interfaces/graph_iterator.h"
 
-GraphIterator::GraphIterator(const std::vector<Vertex>& c): c{c} {
+
+template <class T>
+GraphIterator<T>::GraphIterator(const std::vector<Vertex<T>>& c): c{c} {
   this->it = this->c.begin();
 }
 
-void GraphIterator::first() {
+
+template <class T>
+void GraphIterator<T>::first() {
   this->it = this->c.begin();
 }
 
-bool GraphIterator::valid() const {
+
+template <class T>
+bool GraphIterator<T>::valid() const {
   return this->it != this->c.end();
 }
 
-Vertex GraphIterator::getCurrent() const {
+
+template <class T>
+Vertex<T> GraphIterator<T>::getCurrent() const {
   if(this->valid()) {
     return *this->it;
   }
   else throw std::exception();
 }
 
-void GraphIterator::next() {
+
+template <class T>
+void GraphIterator<T>::next() {
   this->it++;
 }
+
+
+template class GraphIterator<int>;

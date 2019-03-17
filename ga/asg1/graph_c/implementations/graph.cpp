@@ -6,42 +6,46 @@
 #include "../interfaces/graph_iterator.h"
 
 
-Graph::Graph() {}
+template <class T>
+Graph<T>::Graph() {}
 
 
-bool Graph::is_edge(int out, int in) const {
+template <class T>
+bool Graph<T>::is_edge(T out, T in) const {
   auto it_edge = this->edges.find({out, in});
 
   return it_edge != this->edges.end();
 }
 
 
-bool Graph::add_vertex(int label) {
+template <class T>
+bool Graph<T>::add_vertex(T label) {
   auto it = std::find_if(
     this->vertices.begin(),
     this->vertices.end(),
-    [&label](const Vertex& v) {return v.label == label;}
+    [&label](const Vertex<T>& v) {return v.label == label;}
   );
 
   if (it == this->vertices.end()) {
-    this->vertices.push_back(Vertex(label));
+    this->vertices.push_back(Vertex<T>(label));
     return true;
   }
   else return false;
 }
 
 
-bool Graph::remove_vertex(int label) {
+template <class T>
+bool Graph<T>::remove_vertex(T label) {
   auto v_it = std::find_if(
     this->vertices.begin(),
     this->vertices.end(),
-    [&label](const Vertex& v) {return v.label == label;}
+    [&label](const Vertex<T>& v) {return v.label == label;}
   );
   if (v_it != this->vertices.end()) {
     this->vertices.erase(v_it);
-    GraphIterator it = this->get_graph_iterator();
+    GraphIterator<T> it = this->get_graph_iterator();
     for(; it.valid() ; it.next()) {
-      Vertex v = it.getCurrent();
+      Vertex<T> v = it.getCurrent();
       v.remove_inbound(label);
       v.remove_outbound(label);
     }
@@ -51,19 +55,20 @@ bool Graph::remove_vertex(int label) {
 }
 
 
-bool Graph::add_edge(int out, int in) {
+template <class T>
+bool Graph<T>::add_edge(T out, T in) {
   if(this->is_edge(out, in))
     return false;
 
   auto it_v_in = std::find_if(
     this->vertices.begin(),
     this->vertices.end(),
-    [&in](const Vertex& v) {return v.label == in;}
+    [&in](const Vertex<T>& v) {return v.label == in;}
   );
   auto it_v_out = std::find_if(
     this->vertices.begin(),
     this->vertices.end(),
-    [&out](const Vertex& v) {return v.label == out;}
+    [&out](const Vertex<T>& v) {return v.label == out;}
   );
 
   if(it_v_in == this->vertices.end() || it_v_out == this->vertices.end())
@@ -76,20 +81,21 @@ bool Graph::add_edge(int out, int in) {
 }
 
 
-bool Graph::remove_edge(int out, int in) {
+template <class T>
+bool Graph<T>::remove_edge(T out, T in) {
   if(!this->is_edge(out, in))
     return false;
 
   auto it_v_in = std::find_if(
     this->vertices.begin(),
     this->vertices.end(),
-    [&in](const Vertex& v) {return v.label == in;}
+    [&in](const Vertex<T>& v) {return v.label == in;}
   );
 
   auto it_v_out = std::find_if(
     this->vertices.begin(),
     this->vertices.end(),
-    [&out](const Vertex& v) {return v.label == out;}
+    [&out](const Vertex<T>& v) {return v.label == out;}
   );
 
   auto it_edge = this->edges.find({out, in});
@@ -101,17 +107,20 @@ bool Graph::remove_edge(int out, int in) {
 }
 
 
-int Graph::size() {
+template <class T>
+int Graph<T>::size() {
   return (int)this->vertices.size();
 }
 
 
-GraphIterator Graph::get_graph_iterator() const {
-  return GraphIterator(this->vertices);
+template <class T>
+GraphIterator<T> Graph<T>::get_graph_iterator() const {
+  return GraphIterator<T>(this->vertices);
 }
 
 
-int Graph::get_edge_property(int in, int out) {
+template <class T>
+int Graph<T>::get_edge_property(T out, T in) {
   if(!this->is_edge(in, out)) {
     throw std::exception();
   }
@@ -120,10 +129,13 @@ int Graph::get_edge_property(int in, int out) {
 }
 
 
-void Graph::set_edge_property(int in, int out, int val) {
+template <class T>
+void Graph<T>::set_edge_property(T out, T in, int val) {
   if(!this->is_edge(out, in)) {
     throw std::exception();
   }
 
   this->edges[{out, in}] = val;
-};
+}
+
+template class Graph<int>;

@@ -4,21 +4,26 @@
 #include <vector>
 #include "vertex.h"
 
+template <class T>
 class Vertex;
+
+template <class T>
 class Graph;
 
+
+template <class T>
 class GraphIterator {
 private:
-  const std::vector<Vertex> c;
-  std::vector<Vertex>::const_iterator it;
+  const std::vector<Vertex<T>> c;
+  typename std::vector<Vertex<T>>::const_iterator it;
 public:
-  GraphIterator(const std::vector<Vertex>& c);
+  GraphIterator(const std::vector<Vertex<T> >& c);
 
   void first();
 
   bool valid() const;
 
-  Vertex getCurrent() const;
+  Vertex<T> getCurrent() const;
 
   void next();
 };
