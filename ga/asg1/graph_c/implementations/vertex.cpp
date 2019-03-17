@@ -1,5 +1,5 @@
 #include <algorithm>
-#include "../interfaces/vertex_iterator.h"
+#include "../interfaces/iterator.h"
 #include "../interfaces/vertex.h"
 
 
@@ -62,15 +62,12 @@ bool Vertex<T>::add_outbound(T label) {
 
 
 template <class T>
-VertexIterator<T> Vertex<T>::get_inbound_edges_iterator() const {
-  return VertexIterator<T>(this->inbound);
+Iterator<T> Vertex<T>::get_inbound_edges_iterator() const {
+  return Iterator<T>(this->inbound);
 }
 
 
 template <class T>
-VertexIterator<T> Vertex<T>::get_outbound_edges_iterator() const {
-  return VertexIterator<T>(this->outbound);
+Iterator<T> Vertex<T>::get_outbound_edges_iterator() const {
+  return Iterator<T>(this->outbound);
 }
-
-
-template class Vertex<int>;

@@ -1,16 +1,18 @@
-#ifndef VERTEX_IT_H
-#define VERTEX_IT_H
+#ifndef ITER_H
+#define ITER_H
 
 #include <vector>
 
+template <class T>
+class Vertex;
 
 template <class T>
-class VertexIterator {
+class Iterator {
 private:
   const std::vector<T>& c;
   typename std::vector<T>::const_iterator it;
 public:
-  VertexIterator(const std::vector<T>& c);
+  Iterator(const std::vector<T>& c);
 
   void first();
 
@@ -20,5 +22,8 @@ public:
 
   void next();
 };
+
+template class Iterator<int>;
+template class Iterator<Vertex<int>>;
 
 #endif

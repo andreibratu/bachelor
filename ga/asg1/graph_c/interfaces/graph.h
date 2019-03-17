@@ -6,11 +6,7 @@
 #include <unordered_map>
 #include <boost/functional/hash.hpp>
 #include "vertex.h"
-#include "graph_iterator.h"
-
-
-template <class T>
-class Vertex;
+#include "iterator.h"
 
 
 template <class T>
@@ -19,6 +15,7 @@ private:
   typedef std::pair<T,T> Edge;
   std::vector<Vertex<T>> vertices;
   std::unordered_map<Edge, int, boost::hash<Edge>> edges;
+  typename std::vector<Vertex<T>>::iterator find_vertex(T label);
 public:
   Graph();
 
@@ -34,11 +31,13 @@ public:
 
   int size();
 
-  GraphIterator<T> get_graph_iterator() const;
+  Iterator<Vertex<T>> get_graph_iterator() const;
 
   int get_edge_property(T, T);
 
   void set_edge_property(T, T, int);
 };
+
+template class Graph<int>;
 
 #endif
