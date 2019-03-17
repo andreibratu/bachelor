@@ -44,12 +44,12 @@ bool Vertex::add_outbound(int id) {
     return true;
   }
   return false;
-
-  VertexIterator Vertex::get_inbound_edges_iterator() const {
-    return VertexIterator(this->inbound);
-  }
-
-  VertexIterator Vertex::parse_outbound_edges() const {
-    return VertexIterator(this->outbound);
-  }
 };
+
+VertexIterator Vertex::get_inbound_edges_iterator() const {
+  return VertexIterator(this->inbound);
+}
+
+VertexIterator Vertex::get_outbound_edges_iterator() const {
+  return VertexIterator(this->outbound);
+}

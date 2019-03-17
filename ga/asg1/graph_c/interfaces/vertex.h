@@ -6,6 +6,7 @@
 
 class VertexIterator;
 
+
 class Vertex {
 private:
   std::vector<int> inbound;

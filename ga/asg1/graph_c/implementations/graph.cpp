@@ -6,14 +6,14 @@
 #include "../interfaces/graph_iterator.h"
 
 
-bool Graph::is_edge(int in, int out) const {
-  auto it_edge = this->edges.find(std::make_pair(in, out));
+Graph::Graph() {}
+
+
+bool Graph::is_edge(int out, int in) const {
+  auto it_edge = this->edges.find({out, in});
 
   return it_edge != this->edges.end();
 }
-
-
-Graph::Graph() {}
 
 
 bool Graph::add_vertex(int label) {
@@ -40,7 +40,7 @@ bool Graph::remove_vertex(int label) {
   if (v_it != this->vertices.end()) {
     this->vertices.erase(v_it);
     GraphIterator it = this->get_graph_iterator();
-    for(; it.valid() ; it.getCurrent()) {
+    for(; it.valid() ; it.next()) {
       Vertex v = it.getCurrent();
       v.remove_inbound(label);
       v.remove_outbound(label);
@@ -52,7 +52,7 @@ bool Graph::remove_vertex(int label) {
 
 
 bool Graph::add_edge(int out, int in) {
-  if(this->is_edge(in, out))
+  if(this->is_edge(out, in))
     return false;
 
   auto it_v_in = std::find_if(
@@ -69,15 +69,15 @@ bool Graph::add_edge(int out, int in) {
   if(it_v_in == this->vertices.end() || it_v_out == this->vertices.end())
     return false;
 
-  this->edges.insert(std::make_pair(in, out));
-  *it_v_in->add_outbound(out);
-  *it_v_out->add_inbound(in);
+  this->edges[{out, in}] = 0;
+  it_v_in->add_inbound(out);
+  it_v_out->add_outbound(in);
   return true;
 }
 
 
-bool Graph::remove_edge(int in, int out) {
-  if(!this->is_edge(in, out))
+bool Graph::remove_edge(int out, int in) {
+  if(!this->is_edge(out, in))
     return false;
 
   auto it_v_in = std::find_if(
@@ -86,21 +86,17 @@ bool Graph::remove_edge(int in, int out) {
     [&in](const Vertex& v) {return v.label == in;}
   );
 
-  auto it_v_in = std::find_if(
+  auto it_v_out = std::find_if(
     this->vertices.begin(),
     this->vertices.end(),
     [&out](const Vertex& v) {return v.label == out;}
   );
 
-  auto it_edge = find(
-    this->edges.begin(),
-    this->edges.end(),
-    std::make_pair(in, out)
-  );
+  auto it_edge = this->edges.find({out, in});
   this->edges.erase(it_edge);
 
-  *it_v_in->remove_outbound(out);
-  *it_v_out->remove_inbound(in);
+  it_v_in->remove_inbound(out);
+  it_v_out->remove_outbound(in);
   return true;
 }
 
@@ -110,24 +106,24 @@ int Graph::size() {
 }
 
 
-GraphIterator get_graph_iterator() {
+GraphIterator Graph::get_graph_iterator() const {
   return GraphIterator(this->vertices);
 }
 
 
-int get_edge_property(int in, int out) {
+int Graph::get_edge_property(int in, int out) {
   if(!this->is_edge(in, out)) {
     throw std::exception();
   }
 
-  return this->edges[make_pair(in, out)];
+  return this->edges[{out, in}];
 }
 
 
-void set_edge_property(int in, int out, int val) {
-  if(!this->is_edge(in, out)) {
+void Graph::set_edge_property(int in, int out, int val) {
+  if(!this->is_edge(out, in)) {
     throw std::exception();
   }
 
-  this->edges[make_pair(in, out)] = val;
+  this->edges[{out, in}] = val;
 };

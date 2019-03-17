@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <utility>
-#include <unordered_set>
+#include <unordered_map>
 #include <boost/functional/hash.hpp>
 #include "vertex.h"
 #include "graph_iterator.h"
@@ -13,7 +13,7 @@ typedef std::pair<int,int> Edge;
 class Graph {
 private:
   std::vector<Vertex> vertices;
-  std::unordered_set<Edge, int, boost::hash<Edge>> edges;
+  std::unordered_map<Edge, int, boost::hash<Edge>> edges;
 public:
   Graph();
 
@@ -31,7 +31,7 @@ public:
 
   GraphIterator get_graph_iterator() const;
 
-  int get_edge_property(int, int) const;
+  int get_edge_property(int, int);
 
   void set_edge_property(int, int, int);
 };
