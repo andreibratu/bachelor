@@ -13,13 +13,13 @@ int main() {
   Medication* m3 = medication_init(n2, 4, 2, 6);
 
   MedicationRepository* mr = repository_init();
-
-  repository_addMedication(mr, m1);
+  
   assert(mr->medication->size == 1);
   repository_addMedication(mr, m2);
   assert(mr->medication->size == 1);
   assert(mr->medication->medications[0]->quantity == 9);
   repository_addMedication(mr, m3);
+  repository_addMedication(mr, m1);
   assert(mr->medication->size == 2);
   repository_deleteMedication(mr, n2, 4);
   assert(mr->medication->size == 1);

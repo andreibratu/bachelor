@@ -21,7 +21,7 @@ int main() {
   assert(sort_descending(m3, m4) == 1);
   assert(sort_descending(m1, m2) == 1);
   assert(sort_descending(m1, m3) == 0);
-  
+
   assert(same(m1, n3, 4.5) == 1);
 
   medication_destructor(m1);

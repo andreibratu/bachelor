@@ -1,14 +1,17 @@
 #ifndef MEDICATION_REPOSITORY_H
 #define MEDICATION_REPOSITORY_H
 
-#include "../ds/MedicationVector.h"
+#include "../ds/Vector.h"
+#include "../model/Medication.h"
 
 typedef struct {
   // Object delegated with keeping the objects
-  MedicationVector* medication;
+  vector* medication;
 } MedicationRepository;
 
 MedicationRepository* repository_init();
+
+int repository_find_medication(vector*, char*, double);
 
 // Add medication to repository
 // Medication will be uniquely identified by name and concentration
@@ -27,9 +30,9 @@ void repository_updateMedicationQuantity(MedicationRepository*, char*, double, i
 void repository_updateMedicationPrice(MedicationRepository*, char*, double, double);
 
 // Return all Medication objects in a Vector
-MedicationVector* repository_getAll(MedicationRepository*);
+vector* repository_getAll(MedicationRepository*);
 
+// Repository destructor
 void repository_destructor(MedicationRepository*);
-
 
 #endif

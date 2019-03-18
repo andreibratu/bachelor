@@ -2,11 +2,14 @@
 #define MEDICATION_CONTROLLER_H
 
 #include "../repo/MedicationRepository.h"
+#include "../history/HistoryController.h"
+#include "../ds/vector.h"
 #include <stdlib.h>
 
 typedef struct {
   // Object implementing business logic of the application
   MedicationRepository* repo;
+  HistoryController* history;
 } MedicationController;
 
 // Constructor
@@ -28,16 +31,19 @@ void controller_updateMedicationQuantity(MedicationController*, char*, double, i
 void controller_updateMedicatonPrice(MedicationController*, char*, double, double);
 
 // Return all medication whose quantity is smaller than given bound
-MedicationVector* controller_shortSupply(MedicationController*, int);
+vector* controller_shortSupply(MedicationController*, int);
 
 // Return all medication whose price is larger than given bound
-MedicationVector* controller_highPrice(MedicationController*, double);
+vector* controller_highPrice(MedicationController*, double);
 
 // Find all Medication whose name contains given substring, case-insensitive
 // List of objects can be sorted ascendingly or descendingy (see Medication.h)
 MedicationVector* controller_findByStr(MedicationController*, char*, int);
 
+void controller_undo(MedicationController*);
+
 // Destructor
 void controller_destructor(MedicationController*);
+
 
 #endif

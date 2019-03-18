@@ -1,15 +1,16 @@
 #include <stdio.h>
 #include "../controller/MedicationController.h"
+#include "../ds/Vector.h"
 #include "../model/Medication.h"
 
 
-void display_vector(MedicationVector* mv) {
-  if(mv->size == 0)
+void display_vector(vector* v) {
+  if(v->size == 0)
     printf("Nothing to display!\n\n");
   else {
     int i;
-    for(i=0; i<mv->size; i++) {
-      Medication* m = mv->medications[i];
+    for(i=0; i<v->size; i++) {
+      Medication* m = (Medication*)vector_get(v, i);
       printf("%s %f %d %f\n", m->name, m->concentration, m->quantity, m->price);
     }
   }
