@@ -1,61 +1,80 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <assert.h>
 #include "Vector.h"
 
-vector* vector_init()
+
+Vector* vector_init()
 {
-    vector* v = (vector*)malloc(sizeof(vector));
+    Vector* v = (Vector*)malloc(sizeof(Vector));
     v->capacity = VECTOR_INIT_CAPACITY;
     v->size = 0;
-    v->items = (void**)malloc(sizeof(void*) * v->capacity);
+    v->items = (TElem*)malloc(sizeof(TElem) * VECTOR_INIT_CAPACITY);
     return v;
 }
 
-int vector_total(vector *v)
-{
-    return v->size;
-}
 
-static void vector_resize(vector *v, int capacity)
+void vector_resize(Vector* v, int capacity)
 {
-    void **items = (void**)realloc(v->items, sizeof(void *) * capacity);
-    if (items) {
-        v->items = items;
-        v->capacity = capacity;
+    TElem* n_elems = (TElem*)malloc(sizeof(TElem)* v->capacity * 2);
+    int i;
+    for (i=0; i<v->size; i++){
+      n_elems[i]=v->items[i];
     }
+    free(v->items);
+    v->items = n_elems;
+    v->capacity *= 2;
 }
 
-void vector_add(vector *v, void *item)
+
+void vector_add(Vector* v, TElem item)
 {
     if (v->capacity == v->size)
         vector_resize(v, v->capacity * 2);
     v->items[v->size++] = item;
 }
 
-void vector_set(vector *v, int index, void *item)
+
+void vector_set(Vector* v, int index, TElem item)
 {
     if (index >= 0 && index < v->size)
         v->items[index] = item;
 }
 
-void *vector_get(vector *v, int index)
+
+TElem vector_get(Vector* v, int index)
 {
     if (index >= 0 && index < v->size)
         return v->items[index];
     return NULL;
 }
 
-void vector_delete(vector *v, int index)
+
+int vector_find(Vector* v, TElem e, int (*equality)(TElem, TElem)) {
+  int i;
+  for(i=0; i<v->size; i++) {
+    assert(e);
+    assert(v->items[i]);
+    if(equality(e, v->items[i])) return i;
+  }
+
+  return -1;
+}
+
+
+void vector_remove(Vector* v, int index, void (*destructor)(TElem))
 {
     if (index < 0 || index >= v->size)
         return;
 
-    v->items[index] = NULL;
+    destructor(v->items[index]);
 
-    for (int i = index; i < v->size - 1; i++) {
-        v->items[i] = v->items[i + 1];
-        v->items[i + 1] = NULL;
-    }
+    memcpy(
+      v->items+index,
+      v->items+index+1,
+      (v->size-index+1) * sizeof(TElem)
+    );
 
     v->size--;
 
@@ -63,7 +82,13 @@ void vector_delete(vector *v, int index)
         vector_resize(v, v->capacity / 2);
 }
 
-void vector_free(vector *v)
+
+void vector_destructor(Vector* v, void (*destructor)(TElem))
 {
+    int i;
+    for(i=0; i<v->size; i++) {
+      destructor(v->items[i]);
+    }
     free(v->items);
+    free(v);
 }

@@ -13,13 +13,15 @@ typedef struct {
 Medication* medication_init(char*, double, int, double);
 
 // Return 1 if Medication matches given name and concentration
-int same(const Medication*, char*, double);
+int medication_equal(const Medication*, const Medication*);
 
 // Sort ascending lexicographically or by concentration if equal
 int sort_ascending(const void* a, const void* b);
 
 // Sort after same criteria as ascending, only in reversed order
 int sort_descending(const void* a, const void* b);
+
+Medication* copy_medication(Medication*);
 
 void medication_destructor(Medication*);
 

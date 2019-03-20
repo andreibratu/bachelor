@@ -1,9 +1,12 @@
+#include "repo/MedicationRepository.h"
 #include "controller/MedicationController.h"
-#include "ui/ui.h"
-#include <stdlib.h>
+#include "history/HistoryController.h"
+#include "ui/UI.h"
+
 
 int main() {
-  MedicationController* mc = controller_init();
+  HistoryController* hc =  history_controller_init();
+  MedicationController* mc = controller_init(hc);
   char n1[] = "Asprina";
   char n2[] = "Aspacardin";
   char n3[] = "Modafinil";
@@ -28,5 +31,6 @@ int main() {
   controller_addMedication(mc, n10, 7, 6, 7);
   input_loop(mc);
   free(mc);
+
   return 0;
 }

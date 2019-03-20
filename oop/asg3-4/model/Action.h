@@ -1,5 +1,14 @@
+#ifndef ACTION_H
+#define ACTION_H
+
+#define ADD 0
+#define DELETE 1
+#define UPDATEQ 2
+#define UPDATEP 3
+
+
 typedef struct {
-  char* action;
+  int type;
   char* name;
   double concentration;
   int quantity;
@@ -8,6 +17,8 @@ typedef struct {
 } Action;
 
 
-Action* action_init(char* action, char* name, double concentration, int quantity, double price, double amount);
+Action* action_init(int, char*, double, int, double, double);
 
-void medication_destructor(Action*);
+void action_destructor(Action*);
+
+#endif

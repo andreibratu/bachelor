@@ -1,32 +1,98 @@
 CC=gcc
-CFLAGS=-Wall -Werror
+LFLAGS=-Wall -c -g
+BFLAGS=-Wall -g
+VFLAGS=--leak-check=full
 
 
-MedicationTest: model/Medication.c tests/MedicationTest.c
-	gcc -o MedicationTest -Wall -Werror model/Medication.c tests/MedicationTest.c
-	./MedicationTest
-	valgrind ./MedicationTest
-	rm ./MedicationTest
+medication.o:
+	$(CC) -o medication.o $(LFLAGS) model/Medication.c
 
-VectorTest: model/Medication.c ds/Vector.c tests/VectorTest.c
-	gcc -o MedicationVector model/Medication.c ds/Vector.c tests/VectorTest.c
-	./MedicationVector
-	valgrind ./MedicationVector
-	rm ./MedicationVector
 
-MedicationRepositoryTest: repo/MedicationRepository.c ds/MedicationVector.c model/Medication.c
-	gcc -o MedicationRepositoryTest -Wall tests/MedicationRepositoryTest.c model/Medication.c ds/MedicationVector.c repo/MedicationRepository.c
-	./MedicationRepositoryTest
-	valgrind --leak-check=full ./MedicationRepositoryTest
-	rm ./MedicationRepositoryTest
+vector.o:
+	$(CC) -o vector.o $(LFLAGS) ds/Vector.c
 
-MedicationControllerTest: model/Medication.c ds/MedicationVector.c repo/MedicationRepository.c controller/MedicationController.c tests/MedicationControllerTest.c
-	gcc -o MedicationControllerTest -Wall -Werror tests/MedicationControllerTest.c model/Medication.c ds/MedicationVector.c controller/MedicationController.c repo/MedicationRepository.c
-	./MedicationControllerTest
-	valgrind ./MedicationControllerTest
-	rm ./MedicationControllerTest
 
-Build: model/Medication.c ds/MedicationVector.c repo/MedicationRepository.c controller/MedicationController.c ui/ui.c main.c
-	gcc -o main -Wall -Werror model/Medication.c ds/MedicationVector.c repo/MedicationRepository.c controller/MedicationController.c ui/ui.c main.c
-	./main
-	rm ./main
+repository.o:
+	$(CC) -o repository.o $(LFLAGS) repo/MedicationRepository.c
+
+
+controller.o:
+	$(CC) -o controller.o $(LFLAGS) controller/MedicationController.c
+
+
+action.o:
+	$(CC) -o action.o $(LFLAGS) model/Action.c
+
+
+history.o:
+	$(CC) -o history.o $(LFLAGS) history/HistoryController.c
+
+
+ui.o:
+	$(CC) -o ui.o $(LFLAGS) ui/UI.c
+
+
+medication_test.o:
+	$(CC) -o medication_test.o $(LFLAGS) tests/MedicationTest.c
+
+
+vector_test.o:
+	$(CC) -o vector_test.o $(LFLAGS) tests/VectorTest.c
+
+
+repository_test.o:
+	$(CC) -o repository_test.o $(LFLAGS) tests/MedicationRepositoryTest.c
+
+
+controller_test.o:
+	$(CC) -o controller_test.o $(LFLAGS) tests/MedicationControllerTest.c
+
+
+history_test.o:
+	$(CC) -o history_test.o $(LFLAGS) tests/HistoryControllerTest.c
+
+
+main.o:
+	$(CC) -o main.o $(LFLAGS) main.c
+
+
+
+MedicationTest: medication.o vector.o medication_test.o
+	$(CC) -o MedicationTest.o $(BFLAGS) medication.o vector.o medication_test.o
+	./MedicationTest.o
+	valgrind $(VFLAGS) ./MedicationTest.o
+
+
+VectorTest: medication.o vector.o vector_test.o
+	$(CC) -o VectorTest.o $(BFLAGS) medication.o vector.o vector_test.o
+	./VectorTest.o
+	valgrind $(VFLAGS) ./VectorTest.o
+
+
+RepositoryTest: medication.o vector.o repository.o repository_test.o
+	$(CC) -o RepositoryTest.o $(BFLAGS) medication.o vector.o repository.o repository_test.o
+	./RepositoryTest.o
+	valgrind $(VFLAGS) ./RepositoryTest.o
+
+
+ControllerTest: medication.o vector.o repository.o controller.o history.o controller_test.o action.o
+	$(CC) $(BFLAGS) -o ControllerTest.o medication.o vector.o action.o repository.o history.o controller.o controller_test.o
+	./ControllerTest.o
+	valgrind $(VFLAGS) ./ControllerTest.o
+
+
+HistoryTest: medication.o vector.o repository.o controller.o history.o action.o history_test.o
+	$(CC) $(BFLAGS) -o HistoryTest.o medication.o vector.o action.o repository.o history.o controller.o history_test.o
+	./HistoryTest.o
+	valgrind $(VFLAGS) ./HistoryTest.o
+
+
+Build: medication.o vector.o repository.o controller.o history.o ui.o action.o main.o
+	$(CC) $(BFLAGS) -o output medication.o vector.o repository.o controller.o history.o ui.o action.o main.o
+	./output
+
+
+.PHONY: clean
+
+clean:
+	rm *.o
