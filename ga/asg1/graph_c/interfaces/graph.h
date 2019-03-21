@@ -28,6 +28,10 @@ public:
 
   bool remove_edge(int, int);
 
+  Iterator<int> get_outbound_edges_it(int);
+
+  Iterator<int> get_inbound_edges_it(int);
+
   int size();
 
   Iterator<Vertex> get_graph_iterator() const;
