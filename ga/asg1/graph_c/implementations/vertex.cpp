@@ -10,17 +10,21 @@ Vertex::Vertex(int label) {
 
 void Vertex::remove_inbound(int label) {
   auto it = std::find(this->inbound.begin(), this->inbound.end(), label);
-  if(it != this->inbound.end()) {
-    this->inbound.erase(it);
-  }
+
+  if(it == this->inbound.end())
+    return;
+
+  this->inbound.erase(it);
 }
 
 
 void Vertex::remove_outbound(int label) {
   auto it = std::find(this->outbound.begin(), this->outbound.end(), label);
-  if(it != this->outbound.end()) {
-    this->outbound.erase(it);
-  }
+
+  if(it == this->outbound.end())
+    return;
+
+  this->outbound.erase(it);
 }
 
 

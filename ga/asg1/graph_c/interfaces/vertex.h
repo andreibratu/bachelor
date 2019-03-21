@@ -12,23 +12,62 @@ private:
 public:
   int label;
 
-  Vertex(int);
+  /**
+    Vertex constructor.
 
-  int get_degree_in(void) const;
+    @param: `label` Label to assign to the vertex.
+  */
+  Vertex(int label);
 
-  int get_degree_out(void) const;
 
-  bool add_inbound(int);
+  // @return: How many inbound edges.
+  int get_degree_in() const;
 
+
+  // @return: How many outbound edges.
+  int get_degree_out() const;
+
+
+  /**
+    Add inbound vertex neighbour.
+
+    @param: `label` Label of the vertex
+    @return: Neigbour did not exist and was added.
+  */
+  bool add_inbound(int label);
+
+
+  /**
+    Add outbound vertex neighbour.
+
+    @param: `label` Label of the vertex.
+    @return: Neigbour did not exist and was added.
+  */
   bool add_outbound(int);
 
+
+  // @return: Iterator over inbound neighbours.
   Iterator<int> get_inbound_edges_iterator() const;
 
+
+  // @return: Iterator over outbound neighbours.
   Iterator<int> get_outbound_edges_iterator() const;
 
-  void remove_inbound(int);
 
-  void remove_outbound(int);
+  /**
+    Remove inbound neighbour.
+
+    @param: `label` Label of inbound neighbour to be removed.
+  */
+  void remove_inbound(int label);
+
+
+  /**
+    Remove inbound neighbour.
+
+    @param: `label` Label of outbound neighbour to be removed.
+  */
+  void remove_outbound(int label);
 };
 
 #endif

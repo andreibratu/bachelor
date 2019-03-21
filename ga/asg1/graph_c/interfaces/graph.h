@@ -16,29 +16,113 @@ private:
   std::unordered_map<Edge, int, boost::hash<Edge>> edges;
   std::vector<Vertex>::iterator find_vertex(int);
 public:
+  // Graph constructor
   Graph();
 
-  bool is_edge(int, int) const;
+  /**
+    Check if given edge exists.
 
-  bool add_vertex(int);
+    @param 'out' Outbound vertex label
+    @param 'in' Inbound vertex label.
+    @return Edge exists.
+  */
+  bool is_edge(int out, int in) const;
 
-  bool remove_vertex(int);
 
-  bool add_edge(int, int);
+  /**
+    Add new vertex into graph.
 
-  bool remove_edge(int, int);
+    @param `label` Label of the new vertex.
+    @return Vertex label was not used already and new vertex was added.
+  */
+  bool add_vertex(int label);
 
-  Iterator<int> get_outbound_edges_it(int);
 
-  Iterator<int> get_inbound_edges_it(int);
+  /**
+    Remove vertex from graph.
 
+    @param `label` Label of the vertex to be removed.
+    @return Vertex existed and it was removed.
+  */
+  bool remove_vertex(int label);
+
+
+  /**
+    Add edge into graph.
+
+    @param `out` Label of the outbound vertex.
+    @param `in` Label of the inbound vertex.
+    @return Edge did not exist already and it was added.
+  */
+  bool add_edge(int out, int in);
+
+
+  /**
+    Remove edge from graph.
+
+    @param `out` Label of the outbound vertex.
+    @param `in` Label of the inbound vertex.
+    @return Edge was present and it was removed.
+  */
+  bool remove_edge(int out, int in);
+
+
+  /**
+    Get iterator over the outbound edges of given vertex.
+
+    @param `label` Label of the inquired vertex.
+    @return Iterator.
+    @throw Vertex with given label does not exist.
+  */
+  Iterator<int> get_outbound_edges_it(int label);
+
+
+  /**
+    Get iterator over the inbound edges of given vertex.
+
+    @param `label` Label of the inquired vertex.
+    @return Iterator
+    @throw Vertex with given label does not exist.
+  */
+  Iterator<int> get_inbound_edges_it(int label);
+
+
+  /**
+    Number of vertices in the graph.
+
+    @return Number of vertices
+  */
   int size();
 
+
+  /**
+    Get iterator over graph's vertices.
+
+    @return Iterator.
+  */
   Iterator<Vertex> get_graph_iterator() const;
 
-  int get_edge_property(int, int);
 
-  void set_edge_property(int, int, int);
+  /**
+    Get the associated property of an edge.
+
+    @param `out` Label of the outbound vertex.
+    @param `in` Label of the inbound vertex.
+    @return Property
+    @throw Edge does not exist
+  */
+  int get_edge_property(int out, int in);
+
+  /**
+    Set associated property of an edge.
+
+    @param `out` Label of the outbound vertex.
+    @param `in` Label of the inbound vertex.
+    @param 'val' Value of the edge.
+    @return Property
+    @throw Edge does not exist
+  */
+  void set_edge_property(int out, int in, int val);
 };
 
 #endif
