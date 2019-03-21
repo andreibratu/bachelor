@@ -4,14 +4,14 @@
 #include "../interfaces/graph.h"
 
 
-Graph<int> generate_random_graph(int vertices, int edges) {
+Graph generate_random_graph(int vertices, int edges) {
 
   typedef std::pair<int, int> Edge;
   srand(time(NULL));
   assert(edges <= vertices*(vertices-1));
 
   std::unordered_set<Edge, boost::hash<Edge>> used_edges;
-  Graph<int> g;
+  Graph g;
   for(int i=0; i<vertices; i++) {
     g.add_vertex(i);
   }

@@ -3,7 +3,7 @@
 
 
 int main() {
-  Graph<int> g = Graph<int>();
+  Graph g = Graph();
   g.add_vertex(3);
   g.add_vertex(1);
   g.add_vertex(6);
@@ -15,6 +15,8 @@ int main() {
   assert(g.size() == 3);
   assert(!g.add_edge(34, 35));
   g.add_edge(3, 1);
+  g.add_edge(3, 6);
+  g.add_edge(3, 11);
   assert(!g.is_edge(1, 3));
   assert(g.is_edge(3, 1));
   g.add_edge(1, 3);
@@ -31,6 +33,6 @@ int main() {
   assert(g.remove_edge(1, 3));
   assert(g.remove_edge(3, 1));
   assert(!g.remove_edge(1, 3));
-  Graph<int> g1 = generate_random_graph(40, 8);
+  Graph g1 = generate_random_graph(40, 8);
   return 0;
 }

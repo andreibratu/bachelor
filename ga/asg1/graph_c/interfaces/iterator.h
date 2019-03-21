@@ -3,7 +3,6 @@
 
 #include <vector>
 
-template <class T>
 class Vertex;
 
 template <class T>
@@ -24,6 +23,6 @@ public:
 };
 
 template class Iterator<int>;
-template class Iterator<Vertex<int>>;
+template class Iterator<Vertex>;
 
 #endif

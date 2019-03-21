@@ -9,35 +9,32 @@
 #include "iterator.h"
 
 
-template <class T>
 class Graph {
 private:
-  typedef std::pair<T,T> Edge;
-  std::vector<Vertex<T>> vertices;
+  typedef std::pair<int, int> Edge;
+  std::vector<Vertex> vertices;
   std::unordered_map<Edge, int, boost::hash<Edge>> edges;
-  typename std::vector<Vertex<T>>::iterator find_vertex(T label);
+  std::vector<Vertex>::iterator find_vertex(int);
 public:
   Graph();
 
-  bool is_edge(T, T) const;
+  bool is_edge(int, int) const;
 
-  bool add_vertex(T);
+  bool add_vertex(int);
 
-  bool remove_vertex(T);
+  bool remove_vertex(int);
 
-  bool add_edge(T, T);
+  bool add_edge(int, int);
 
-  bool remove_edge(T, T);
+  bool remove_edge(int, int);
 
   int size();
 
-  Iterator<Vertex<T>> get_graph_iterator() const;
+  Iterator<Vertex> get_graph_iterator() const;
 
-  int get_edge_property(T, T);
+  int get_edge_property(int, int);
 
-  void set_edge_property(T, T, int);
+  void set_edge_property(int, int, int);
 };
-
-template class Graph<int>;
 
 #endif

@@ -5,33 +5,30 @@
 #include "iterator.h"
 
 
-template <class T>
 class Vertex {
 private:
-  std::vector<T> inbound;
-  std::vector<T> outbound;
+  std::vector<int> inbound;
+  std::vector<int> outbound;
 public:
-  T label;
+  int label;
 
-  Vertex(T);
+  Vertex(int);
 
   int get_degree_in(void) const;
 
   int get_degree_out(void) const;
 
-  bool add_inbound(T);
+  bool add_inbound(int);
 
-  bool add_outbound(T);
+  bool add_outbound(int);
 
-  Iterator<T> get_inbound_edges_iterator() const;
+  Iterator<int> get_inbound_edges_iterator() const;
 
-  Iterator<T> get_outbound_edges_iterator() const;
+  Iterator<int> get_outbound_edges_iterator() const;
 
-  void remove_inbound(T);
+  void remove_inbound(int);
 
-  void remove_outbound(T);
+  void remove_outbound(int);
 };
-
-template class Vertex<int>;
 
 #endif

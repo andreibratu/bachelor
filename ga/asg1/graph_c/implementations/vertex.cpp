@@ -3,14 +3,12 @@
 #include "../interfaces/vertex.h"
 
 
-template <class T>
-Vertex<T>::Vertex(T label) {
+Vertex::Vertex(int label) {
   this->label = label;
 }
 
 
-template <class T>
-void Vertex<T>::remove_inbound(T label) {
+void Vertex::remove_inbound(int label) {
   auto it = std::find(this->inbound.begin(), this->inbound.end(), label);
   if(it != this->inbound.end()) {
     this->inbound.erase(it);
@@ -18,8 +16,7 @@ void Vertex<T>::remove_inbound(T label) {
 }
 
 
-template <class T>
-void Vertex<T>::remove_outbound(T label) {
+void Vertex::remove_outbound(int label) {
   auto it = std::find(this->outbound.begin(), this->outbound.end(), label);
   if(it != this->outbound.end()) {
     this->outbound.erase(it);
@@ -27,20 +24,17 @@ void Vertex<T>::remove_outbound(T label) {
 }
 
 
-template <class T>
-int Vertex<T>::get_degree_in() const {
+int Vertex::get_degree_in() const {
   return (int)this->inbound.size();
 }
 
 
-template <class T>
-int Vertex<T>::get_degree_out() const {
+int Vertex::get_degree_out() const {
   return (int)this->outbound.size();
 }
 
 
-template <class T>
-bool Vertex<T>::add_inbound(T label) {
+bool Vertex::add_inbound(int label) {
   auto it = std::find(this->inbound.begin(), this->inbound.end(), label);
   if(it == this->inbound.end()) {
     this->inbound.push_back(label);
@@ -50,8 +44,7 @@ bool Vertex<T>::add_inbound(T label) {
 }
 
 
-template <class T>
-bool Vertex<T>::add_outbound(T label) {
+bool Vertex::add_outbound(int label) {
   auto it = std::find(this->outbound.begin(), this->outbound.end(), label);
   if(it == this->outbound.end()) {
     this->outbound.push_back(label);
@@ -61,13 +54,11 @@ bool Vertex<T>::add_outbound(T label) {
 };
 
 
-template <class T>
-Iterator<T> Vertex<T>::get_inbound_edges_iterator() const {
-  return Iterator<T>(this->inbound);
+Iterator<int> Vertex::get_inbound_edges_iterator() const {
+  return Iterator<int>(this->inbound);
 }
 
 
-template <class T>
-Iterator<T> Vertex<T>::get_outbound_edges_iterator() const {
-  return Iterator<T>(this->outbound);
+Iterator<int> Vertex::get_outbound_edges_iterator() const {
+  return Iterator<int>(this->outbound);
 }
