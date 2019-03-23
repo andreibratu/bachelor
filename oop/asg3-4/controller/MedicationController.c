@@ -1,18 +1,15 @@
 #include <ctype.h>
 #include <string.h>
-#include <stdio.h>
 #include "MedicationController.h"
 #include "../history/HistoryController.h"
 #include "../ds/Vector.h"
 #include "../model/Action.h"
-
+#include <stdio.h>
 
 
 MedicationController* controller_init(HistoryController* hc) {
   MedicationController* mc = (MedicationController*)malloc(sizeof(MedicationController));
-  MedicationRepository* mr = repository_init();
-  mc->repo = mr;
-  mc->history = hc;
+  mc->repo = repository_init();
   return mc;
 }
 
@@ -100,9 +97,9 @@ void controller_deleteMedication(MedicationController* mc, char* n, double c) {
 
 
 void controller_updateMedicationQuantity(MedicationController* mc, char* n, double c, int nq) {
-  repository_updateMedicationQuantity(mc->repo, n, c, nq);
   Action* undo = action_init(UPDATEQ, n, c, -1, -1, -nq);
   history_controller_addUndo(mc->history, undo);
+  repository_updateMedicationQuantity(mc->repo, n, c, nq);
 }
 
 
@@ -119,11 +116,19 @@ Vector* controller_getAll(MedicationController* mc) {
 
 
 void controller_undo(MedicationController* mc) {
+  if(mc->history->undo->size == 0) {
+    printf("Nothing to undo!\n");
+    return;
+  }
   history_controller_applyUndo(mc->history, mc->repo);
 }
 
 
 void controller_redo(MedicationController* mc) {
+  if(mc->history->redo->size == 0) {
+    printf("Nothing to redo!\n");
+    return;
+  }
   history_controller_applyRedo(mc->history, mc->repo);
 }
 

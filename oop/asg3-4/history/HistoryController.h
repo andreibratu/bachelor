@@ -1,5 +1,5 @@
-#ifndef HISTORY_CONTROLLER
-#define HISTORY_CONTROLLER
+#ifndef HISTORY_CONTROLLER_H
+#define HISTORY_CONTROLLER_H
 
 #include "../repo/MedicationRepository.h"
 #include "../ds/Vector.h"

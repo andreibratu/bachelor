@@ -10,11 +10,10 @@ typedef struct {
   // Object implementing business logic of the application
   MedicationRepository* repo;
   HistoryController* history;
-  void* ans;
 } MedicationController;
 
 // Constructor
-MedicationController* controller_init(HistoryController*);
+MedicationController* controller_init();
 
 // Return all Medication
 Vector* controller_getAll(MedicationController*);

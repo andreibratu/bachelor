@@ -1,11 +1,11 @@
 #include <stdio.h>
-#include "UI.h"
-#include "../controller/MedicationController.h"
-#include "../ds/Vector.h"
-#include "../model/Medication.h"
+#include "UIList.h"
+#include "../../controller/list/MedicationListController.h"
+#include "../../ds/Vector.h"
+#include "../../model/Medication.h"
 
 
-void display_vector(Vector* v) {
+void list_display_vector(Vector* v) {
   if(v->size == 0)
     printf("Nothing to display!\n\n");
   else {
@@ -18,7 +18,7 @@ void display_vector(Vector* v) {
 }
 
 
-void input_loop(MedicationController* mc) {
+void input_loop(MedicationListController* mc) {
   int flag = 1;
   char* name = (char*)malloc(100);
   char* ss = (char*)malloc(100);
@@ -49,7 +49,7 @@ void input_loop(MedicationController* mc) {
      printf("\n");
      switch (option) {
        case 1:
-         display_vector(controller_getAll(mc));
+         list_display_vector(list_controller_getAll(mc));
          break;
        case 2:
          printf("%s: ", "Enter name");
@@ -60,14 +60,14 @@ void input_loop(MedicationController* mc) {
          scanf("%d", &quantity);
          printf("%s: ", "Enter price");
          scanf("%lf", &price);
-         controller_addMedication(mc, name, concentration, quantity, price);
+         list_controller_addMedication(mc, name, concentration, quantity, price);
          break;
        case 3:
          printf("%s: ", "Enter name");
          scanf("%s", name);
          printf("%s: ", "Enter concentration");
          scanf("%lf", &concentration);
-         controller_deleteMedication(mc, name, concentration);
+         list_controller_deleteMedication(mc, name, concentration);
          break;
        case 4:
          printf("%s: ", "Enter name");
@@ -76,7 +76,7 @@ void input_loop(MedicationController* mc) {
          scanf("%lf", &concentration);
          printf("%s: ", "Enter price modification");
          scanf("%lf", &price);
-         controller_updateMedicatonPrice(mc, name, concentration, price);
+         list_controller_updateMedicationPrice(mc, name, concentration, price);
          break;
        case 5:
          printf("%s: ", "Enter name");
@@ -85,17 +85,17 @@ void input_loop(MedicationController* mc) {
          scanf("%lf", &concentration);
          printf("%s: ", "Enter quantity modification");
          scanf("%d", &quantity);
-         controller_updateMedicationQuantity(mc, name, concentration, quantity);
+         list_controller_updateMedicationQuantity(mc, name, concentration, quantity);
          break;
        case 6:
          printf("%s: ", "Enter quantity upper bound");
          scanf("%d", &quantity_bound);
-         display_vector(controller_shortSupply(mc, quantity_bound));
+         list_display_vector(list_controller_shortSupply(mc, quantity_bound));
          break;
        case 7:
          printf("%s", "Enter price lower bound: ");
          scanf("%lf", &price_bound);
-         display_vector(controller_highPrice(mc, price_bound));
+         list_display_vector(list_controller_highPrice(mc, price_bound));
          break;
        case 8:
          printf("%s: ", "Enter a substring");
@@ -105,15 +105,15 @@ void input_loop(MedicationController* mc) {
            scanf("%d", &sorting);
            printf("\n");
          }
-         display_vector(controller_findByStr(mc, ss, sorting));
+         list_display_vector(list_controller_findByStr(mc, ss, sorting));
          break;
        case 9:
-         controller_undo(mc);
-         display_vector(controller_getAll(mc));
+         list_controller_undo(mc);
+         list_display_vector(list_controller_getAll(mc));
          break;
        case 10:
-         controller_redo(mc);
-         display_vector(controller_getAll(mc));
+         list_controller_redo(mc);
+         list_display_vector(list_controller_getAll(mc));
          break;
        case 11:
          flag = 0;

@@ -28,8 +28,20 @@ history.o:
 	$(CC) -o history.o $(LFLAGS) history/HistoryController.c
 
 
+history_list.o:
+	$(CC) -o history_list.o $(LFLAGS) history/list/HistoryListController.c
+
+
+controller_list.o:
+	$(CC) -o controller_list.o $(LFLAGS) controller/list/MedicationListController.c
+
+
 ui.o:
 	$(CC) -o ui.o $(LFLAGS) ui/UI.c
+
+
+ui_list.o:
+	$(CC) -o ui_list.o $(LFLAGS) ui/list/UIList.c
 
 
 medication_test.o:
@@ -54,7 +66,6 @@ history_test.o:
 
 main.o:
 	$(CC) -o main.o $(LFLAGS) main.c
-
 
 
 MedicationTest: medication.o vector.o medication_test.o
@@ -88,11 +99,19 @@ HistoryTest: medication.o vector.o repository.o controller.o history.o action.o 
 
 
 Build: medication.o vector.o repository.o controller.o history.o ui.o action.o main.o
-	$(CC) $(BFLAGS) -o output medication.o vector.o repository.o controller.o history.o ui.o action.o main.o
+	$(CC) $(BFLAGS) -o output.o medication.o vector.o repository.o controller.o history.o ui.o action.o main.o
+	./output.o
+
+
+BuildList: medication.o vector.o repository.o controller.o controller_list.o history.o history_list.o ui.o ui_list.o action.o main.o
+	$(CC) $(BFLAGS) -o output.o medication.o vector.o repository.o controller.o \
+controller_list.o history.o history_list.o ui.o \
+ui_list.o action.o main.o
 	./output
 
 
 .PHONY: clean
 
 clean:
-	rm *.o
+	find . -name "*.o" | xargs rm
+	find . -name "*.h.gch" | xargs rm
