@@ -30,7 +30,7 @@ void repository_addMedication(MedicationRepository* mr, Medication* m) {
   }
 
   Medication* existent = (Medication*)vector_get(mr->medication, idx);
-  medication_destructor(m);
+  // medication_destructor(m);
   existent->quantity += m->quantity;
 }
 
