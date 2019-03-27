@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <exception>
+#include <iostream>
 
 
 template <class T>
@@ -76,6 +77,16 @@ public:
     );
 
     this->logicalSize--;
+  }
+
+
+  template <class U>
+  friend std::ostream& operator << (std::ostream& os, const Vector<U>& v) {
+    for(int i=0; i<v.size(); i++) {
+      os << i << ".   " << v[i] << '\n';
+    }
+
+    return os;
   }
 
 

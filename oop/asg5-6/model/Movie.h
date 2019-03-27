@@ -1,6 +1,7 @@
 #ifndef MOVIE_H
 #define MOVIE_H
 #include <string>
+#include <iostream>
 
 class Movie {
 private:
@@ -34,13 +35,15 @@ public:
 
   void setLikes(int likes);
 
-  int getLikes();
+  int getLikes() const;
 
   bool operator == (const Movie other) const;
 
   Movie& operator ++ ();
 
   Movie& operator ++ (int);
+
+  friend std::ostream& operator << (std::ostream& os, const Movie& m);
 };
 
 #endif

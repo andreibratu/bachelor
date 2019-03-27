@@ -2,13 +2,6 @@
 #include "../controller/AdminController.h"
 
 
-void display_vector(Vector<Movie>& v) {
-  for(int i=0; i<v.size(); i++) {
-    std::cout << i <<". - " << v[i].getName() << '-' << v[i].getGenre() << '-' << v[i].getTrailer() << '-' << v[i].getYear() << '-' << v[i].getLikes() << '\n';
-  }
-}
-
-
 void input_loop(AdminController& c) {
   int option;
   std::string name;
@@ -35,8 +28,7 @@ Your option: ";
     std::cout << '\n';
     switch(option) {
     case 1:
-        v = c.getAll();
-        display_vector(v);
+        std::cout << c.getAll() << '\n';
         break;
     case 2:
         std::cout << "Name: ";

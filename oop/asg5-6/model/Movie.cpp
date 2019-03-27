@@ -67,7 +67,7 @@ void Movie::setLikes(int likes) {
 }
 
 
-int Movie::getLikes() {
+int Movie::getLikes() const {
   return this->likes;
 }
 
@@ -88,4 +88,11 @@ Movie& Movie::operator ++ () {
 Movie& Movie::operator ++ (int) {
   ++(*this);
   return *this;
+}
+
+
+std::ostream& operator << (std::ostream& os,  const Movie& m) {
+  os << m.getName() << '-' << m.getGenre() << '-' << m.getTrailer() << '-' << m.getYear() << '-' << m.getLikes();
+
+  return os;
 }

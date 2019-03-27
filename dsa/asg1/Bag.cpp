@@ -9,6 +9,8 @@ Bag::Bag() {
     this->array = new TElem [this->capacity];
 }
 
+
+// O(1) amortised cost, O(n) if rellocation is necessary for the Dynamic Array
 void Bag::add(TElem e) {
     if(this->logical_size == this->capacity) {
       // Reallocation is necessary
@@ -21,6 +23,8 @@ void Bag::add(TElem e) {
     this->array[this->logical_size++] = e;
 }
 
+
+// O(n), linear in the amount of items that have to be rellocated
 bool Bag::remove(TElem e) {
   for(int i=0; i<this->size(); i++) {
     if(this->array[i] == e) {
@@ -34,6 +38,8 @@ bool Bag::remove(TElem e) {
   return false;
 }
 
+
+// O(n)
 bool Bag::search(TElem e) const {
   for(int i=0; i<this->logical_size; i++) {
       if(this->array[i] == e) {
@@ -43,6 +49,8 @@ bool Bag::search(TElem e) const {
   return false;
 }
 
+
+// O(n), array must be traversed
 int Bag::nrOccurrences(TElem e) const {
   int counter = 0;
   for(int i=0; i<this->size(); i++) {
@@ -51,18 +59,26 @@ int Bag::nrOccurrences(TElem e) const {
   return counter;
 }
 
+
+// O(1)
 int Bag::size() const {
   return this->logical_size;
 }
 
+
+// O(1)
 BagIterator Bag::iterator() const {
     return BagIterator(*this);
 }
 
+
+// O(1)
 bool Bag::isEmpty() const {
     return this->logical_size == 0;
 }
 
+
+// O(1)
 Bag::~Bag() {
     delete[] this->array;
 }
