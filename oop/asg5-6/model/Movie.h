@@ -13,9 +13,9 @@ private:
 public:
   Movie();
 
-  Movie(const Movie& m);
+  Movie(const std::string& n, const std::string& g, const std::string& t, int y);
 
-  Movie(std::string n, std::string g, std::string t, int y);
+  Movie(const Movie& m);
 
   void setName(std::string name);
 

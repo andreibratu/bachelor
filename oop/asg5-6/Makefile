@@ -15,6 +15,10 @@ admin_controller.o:
 	$(CC) $(LFLAGS) -o admin_controller.o controller/AdminController.cpp
 
 
+user_controller.o:
+	$(CC) $(LFLAGS) -o user_controller.o controller/UserController.cpp
+
+
 movie_test.o:
 	$(CC) $(LFLAGS) -o movie_test.o tests/MovieTest.cpp
 
@@ -27,16 +31,24 @@ repository_test.o:
 	$(CC) $(LFLAGS) -o repository_test.o tests/RepositoryTest.cpp
 
 
+admin_test.o:
+	$(CC) $(LFLAGS) -o admin_test.o tests/AdminControllerTest.cpp
+
+
 ui.o:
 		$(CC) $(LFLAGS) -o ui.o ui/AdminUI.cpp
+
+
+user_ui.o:
+	$(CC) $(LFLAGS) -o user_ui.o ui/UserUI.cpp
 
 
 main.o:
 		$(CC) $(LFLAGS) -o main.o main.cpp
 
 
-TestVector: vector_test.o
-	$(CC) $(TFLAGS) -o VectorTest.o vector_test.o
+TestVector: vector_test.o movie.o
+	$(CC) $(TFLAGS) -o VectorTest.o vector_test.o movie.o
 	./VectorTest.o
 	valgrind ./VectorTest.o
 
@@ -53,9 +65,14 @@ TestRepository: repo.o movie.o repository_test.o
 	valgrind ./RepositoryTest.o
 
 
-Build: movie.o repo.o admin_controller.o ui.o main.o
-	$(CC) $(TFLAGS) -o output.o movie.o repo.o admin_controller.o ui.o main.o
-	./output.o
+TestAdmin: repo.o movie.o admin_controller.o admin_test.o
+	$(CC) $(TFLAGS) -o AdminTest.o repo.o movie.o admin_controller.o admin_test.o
+	./AdminTest.o
+	valgrind ./AdminTest.o
+
+
+Build: movie.o repo.o admin_controller.o ui.o main.o user_ui.o user_controller.o
+	$(CC) $(TFLAGS) -o output.o movie.o repo.o admin_controller.o ui.o main.o user_ui.o user_controller.o
 
 .PHONY: clean
 

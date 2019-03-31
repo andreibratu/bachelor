@@ -1,17 +1,115 @@
 #include <iostream>
 #include "../controller/AdminController.h"
+#include "AdminUI.h"
 
 
-void input_loop(AdminController& c) {
-  int option;
+AdminUI::AdminUI(AdminController& c): cntrl{c} {}
+
+
+void AdminUI::displayAll() {
+  std::cout << this->cntrl.getAll() << '\n';
+}
+
+
+void AdminUI::addMovie() {
   std::string name;
   std::string genre;
   std::string trailer;
   int year;
+
+  std::cout << "Name: ";
+  std::getline(std::cin, name);
+
+  std::cout << "Genre: ";
+  std::getline(std::cin, genre);
+
+  std::cout << "Trailer: ";
+  std::getline(std::cin, trailer);
+
+  std::cout << "Year: ";
+  std::cin >> year;
+
+  this->cntrl.addMovie(name, genre, trailer, year);
+}
+
+
+void AdminUI::deleteMovie() {
   int idx;
-  bool result;
+  std::cout << "Index: ";
+  std::cin >> idx;
+
+  bool result = this->cntrl.deleteMovie(idx);
+  if(!result) std::cout << "Invalid index!\n";
+}
+
+
+void AdminUI::newName() {
+  int idx;
+  std::string name;
+
+  std::cout << "Index: ";
+  std::cin >> idx;
+  std::cin.ignore();
+
+  std::cout << "New name: ";
+  std::getline(std::cin, name);
+
+  bool result = this->cntrl.updateName(idx, name);
+  if(!result) std::cout << "Invalid index!\n";
+}
+
+
+void AdminUI::newGenre() {
+  int idx;
+  std::string genre;
+
+  std::cout << "Index: ";
+  std::cin >> idx;
+  std::cin.ignore();
+
+  std::cout << "New genre: ";
+  std::getline(std::cin, genre);
+
+  bool result = this->cntrl.updateGenre(idx, genre);
+  if(!result) std::cout << "Invalid index!\n";
+}
+
+
+void AdminUI::newTrailer() {
+  int idx;
+  std::string trailer;
+
+  std::cout << "Index: ";
+  std::cin >> idx;
+  std::cin.ignore();
+
+  std::cout << "Trailer: ";
+  std::getline(std::cin, trailer);
+
+  bool result = this->cntrl.updateTrailer(idx, trailer);
+  if(!result) std::cout << "Invalid index!\n";
+}
+
+
+void AdminUI::newYear() {
+  int idx;
+  int year;
+
+  std::cout << "Index: ";
+  std::cin >> idx;
+
+  std::cout << "Year: ";
+  std::cin >> year;
+
+  bool result = this->cntrl.updateYear(idx, year);
+  if(!result) std::cout << "Invalid index!\n";
+}
+
+
+
+void AdminUI::input_loop() {
+  int option;
   bool flag = true;
-  Vector<Movie> v{};
 
 while (flag) {
     std::cout << "Menu:\n\
@@ -25,80 +123,40 @@ while (flag) {
 8. Exit\n\
 Your option: ";
     std::cin >> option;
-    std::cout << '\n';
+    std::cin.ignore();
     switch(option) {
     case 1:
-        std::cout << c.getAll() << '\n';
+        system("clear");
+        displayAll();
         break;
     case 2:
-        std::cout << "Name: ";
-        std::cin >> name;
-        std::cout << '\n';
-
-        std::cout << "Genre: ";
-        std::cin >> genre;
-        std::cout << '\n';
-
-        std::cout << "Trailer: ";
-        std::cin >> trailer;
-        std::cout << '\n';
-
-        std::cout << "Year: ";
-        std::cin >> year;
-        std::cout << '\n';
-
-        c.addMovie(name, genre, trailer, year);
+        addMovie();
+        system("clear");
         break;
     case 3:
-        std::cout << "Index: ";
-        std::cin >> idx;
-
-        result = c.deleteMovie(idx);
-        if(!result) std::cout << "Invalid index!\n";
+        deleteMovie();
+        system("clear");
         break;
     case 4:
-        std::cout << "Index:\n";
-        std::cin >> idx;
-
-        std::cout << "New name:\n";
-        std::cin >> genre;
-
-        result = c.updateName(idx, name);
-        if(!result) std::cout << "Invalid index!\n";
+        newName();
+        system("clear");
         break;
     case 5:
-        std::cout << "Index: ";
-        std::cin >> idx;
-
-        std::cout << "New genre: ";
-        std::cin >> genre;
-
-        result = c.updateGenre(idx, genre);
-        if(!result) std::cout << "Invalid index!\n";
+        newGenre();
+        system("clear");
         break;
     case 6:
-      std::cout << "Index: ";
-      std::cin >> idx;
-
-      std::cout << "Trailer: ";
-      std::cin >> trailer;
-
-      result = c.updateTrailer(idx, trailer);
-      if(!result) std::cout << "Invalid index!\n";
-      break;
+        newTrailer();
+        system("clear");
+        break;
     case 7:
-      std::cout << "Index: ";
-      std::cin >> idx;
-
-      std::cout << "Year: ";
-      std::cin >> year;
-
-      result = c.updateYear(idx, year);
-      if(!result) std::cout << "Invalid index!\n";
-      break;
+        newYear();
+        system("clear");
+        break;
     case 8:
-      flag = false;
-      break;
+        flag = false;
+        system("clear");
+        break;
     }
   }
 }

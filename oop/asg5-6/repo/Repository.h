@@ -5,22 +5,23 @@
 #include "../model/Movie.h"
 
 class Repository {
+  friend class UserController;
 private:
-  Vector<Movie>& movies;
+  Vector<Movie> movies;
 public:
-  Repository(Vector<Movie>& movies);
+  Repository();
 
-  Vector<Movie> getAll() const;
+  Vector<Movie>& getAll();
 
-  void addMovie(Movie m);
+  void addMovie(const Movie& m);
 
   bool deleteMovie(int idx);
 
-  bool updateName(int idx, std::string name);
+  bool updateName(int idx, const std::string& name);
 
-  bool updateGenre(int idx, std::string genre);
+  bool updateGenre(int idx, const std::string& genre);
 
-  bool updateTrailer(int idx, std::string trailer);
+  bool updateTrailer(int idx, const std::string& trailer);
 
   bool updateYear(int idx, int year);
 

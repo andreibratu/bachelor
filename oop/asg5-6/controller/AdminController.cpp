@@ -5,14 +5,14 @@
 AdminController::AdminController(Repository& r) : repository{r} {}
 
 
-Vector<Movie> AdminController::getAll() {
+Vector<Movie>& AdminController::getAll() {
   return this->repository.getAll();
 }
 
 
-void AdminController::addMovie(std::string n, std::string g, std::string t, int y) {
-  Movie m = Movie{n, g, t, y};
-  this->repository.addMovie(Movie{n, g, t, y});
+void AdminController::addMovie(const std::string& n, const std::string& g, const std::string& t, int y) {
+  Movie m{n, g, t, y};
+  this->repository.addMovie(m);
 }
 
 
@@ -21,17 +21,17 @@ bool AdminController::deleteMovie(int idx) {
 }
 
 
-bool AdminController::updateName(int idx, std::string name) {
+bool AdminController::updateName(int idx, const std::string& name) {
   return this->repository.updateName(idx, name);
 }
 
 
-bool AdminController::updateGenre(int idx, std::string genre) {
+bool AdminController::updateGenre(int idx, const std::string& genre) {
   return this->repository.updateGenre(idx, genre);
 }
 
 
-bool AdminController::updateTrailer(int idx, std::string trailer) {
+bool AdminController::updateTrailer(int idx, const std::string& trailer) {
   return this->repository.updateTrailer(idx, trailer);
 }
 

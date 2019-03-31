@@ -3,6 +3,29 @@
 
 #include "../controller/AdminController.h"
 
-void input_loop(AdminController& c);
+
+class AdminUI {
+private:
+  AdminController& cntrl;
+
+  void addMovie();
+
+  void deleteMovie();
+
+  void newName();
+
+  void newGenre();
+
+  void newTrailer();
+
+  void newYear();
+
+  void displayAll();
+public:
+  AdminUI(AdminController&);
+
+  void input_loop();
+};
+
 
 #endif

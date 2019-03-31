@@ -1,15 +1,15 @@
 #include "Repository.h"
 
 
-Repository::Repository(Vector<Movie>& m) : movies{m} {}
+Repository::Repository() {}
 
 
-Vector<Movie> Repository::getAll() const {
-  return Vector<Movie>(this->movies);
+Vector<Movie>& Repository::getAll() {
+  return this->movies;
 }
 
 
-void Repository::addMovie(Movie m) {
+void Repository::addMovie(const Movie& m) {
   this->movies.push_back(m);
 }
 
@@ -19,13 +19,13 @@ bool Repository::deleteMovie(int idx) {
     this->movies.remove(idx);
     return true;
   }
-  catch(std::exception()) {
+  catch(std::exception e) {
     return false;
   }
 }
 
 
-bool Repository::updateName(int idx, std::string name) {
+bool Repository::updateName(int idx, const std::string& name) {
   try {
     this->movies[idx].setName(name);
     return true;
@@ -36,7 +36,7 @@ bool Repository::updateName(int idx, std::string name) {
 }
 
 
-bool Repository::updateGenre(int idx, std::string genre) {
+bool Repository::updateGenre(int idx, const std::string& genre) {
   try {
     this->movies[idx].setGenre(genre);
     return true;
@@ -47,12 +47,12 @@ bool Repository::updateGenre(int idx, std::string genre) {
 }
 
 
-bool Repository::updateTrailer(int idx, std::string trailer) {
+bool Repository::updateTrailer(int idx, const std::string& trailer) {
   try {
     this->movies[idx].setTrailer(trailer);
     return true;
   }
-  catch(std::exception()) {
+  catch(std::exception e) {
     return false;
   }
 }

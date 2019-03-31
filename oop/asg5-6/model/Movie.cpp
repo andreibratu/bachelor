@@ -1,24 +1,25 @@
 #include "Movie.h"
-
+#include <algorithm>
+#include <assert.h>
 
 Movie::Movie() {}
 
 
-Movie::Movie(const Movie& m) {
-  this->name = std::string(name);
-  this->genre = std::string(genre);
-  this->trailer = std::string(trailer);
-  this->year = year;
-  this->likes = likes;
+Movie::Movie(const std::string& n, const std::string& g, const std::string& t, int y) {
+  name = std::string(n);
+  genre = std::string(g);
+  trailer = std::string(t);
+  year = y;
+  likes = 0;
 }
 
 
-Movie::Movie(std::string n, std::string g, std::string t, int y) {
-  this->name = n;
-  this->genre = g;
-  this->trailer = t;
-  this->year = y;
-  this->likes = 0;
+Movie::Movie(const Movie& m) {
+  name = std::string(m.getName());
+  genre = std::string(m.getGenre());
+  trailer = std::string(m.getTrailer());
+  year = m.getYear();
+  likes = m.getLikes();
 }
 
 
@@ -73,9 +74,26 @@ int Movie::getLikes() const {
 
 
 bool Movie::operator == (const Movie other) const {
-  if(this->getGenre().size() == 0 || other.getGenre().size() == 0) return true;
+  // Search by genre use case
 
-  return this->getGenre() == other.getGenre();
+  if(other.getYear() == -1) {
+    if(other.getGenre().size() == 0) return true;
+
+    std::string copy1 = std::string(this->getGenre());
+    std::string copy2 = std::string(other.getGenre());
+
+    std::transform(copy1.begin(), copy1.end(), copy1.begin(), ::tolower);
+    std::transform(copy2.begin(), copy2.end(), copy2.begin(), ::tolower);
+
+    return copy1 == copy2;
+  }
+
+  // General case equality between objects
+  else {
+    return this->getName() == other.getName() &&
+    this->getYear() == other.getYear() &&
+    this->getGenre() == other.getGenre();
+  }
 }
 
 
@@ -92,7 +110,8 @@ Movie& Movie::operator ++ (int) {
 
 
 std::ostream& operator << (std::ostream& os,  const Movie& m) {
-  os << m.getName() << '-' << m.getGenre() << '-' << m.getTrailer() << '-' << m.getYear() << '-' << m.getLikes();
+
+  os << m.getName() << " | " << m.getGenre() << " | " << m.getTrailer() << " | " << m.getYear() << " | " << m.getLikes();
 
   return os;
 }

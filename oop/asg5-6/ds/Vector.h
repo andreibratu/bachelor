@@ -12,6 +12,16 @@ private:
   int logicalSize;
   int capacity;
   T* array;
+
+  void resize() {
+    T* els = new T [this->capacity * 2];
+    for (int i = 0; i < this->logicalSize ; i++)
+      els[i] = this->array[i];
+
+    this->capacity *= 2;
+    delete[] this->array;
+    this->array = els;
+  }
 public:
 
 
@@ -22,22 +32,35 @@ public:
   }
 
 
-  Vector(const Vector& v) {
-    this->logicalSize = 0;
-    this->capacity = 1;
-    this->array = new T [this->capacity];
-    for(int i=0; i<v.size(); i++) {
-      this->push_back(T(v[i]));
-    }
+  // Vector(const Vector& v) {
+  //   this->logicalSize = v.logicalSize;
+  //   this->capacity = 1;
+  //   this->array = new T [this->capacity];
+  //   for(int i = 0; i < v.size(); i++) {
+  //     this->array[i] = v.array[i];
+  //   }
+  // }
+
+  // Vector<T>& operator = (const Vector<T>& other) {
+  //   this->logicalSize = other.logicalSize;
+  //   this->capacity = other.capacity;
+  //   this->array = new T [this->capacity];
+  //   for(int i = 0; i < other.size(); i++) {
+  //     this->array[i] = other.array[i];
+  //   }
+  //
+  //   return *this;
+  // }
+
+
+  int size() const {
+    return this->logicalSize;
   }
 
 
   void push_back(T el) {
     if(this->logicalSize == this->capacity) {
-      T* aux = new T [2*capacity];
-      delete[] this->array;
-      this->array = aux;
-      this->capacity *= 2;
+      this->resize();
     }
     this->array[this->logicalSize++] = el;
   }
@@ -52,36 +75,19 @@ public:
   }
 
 
-  int find(const T key) const {
-    for(int i=0; i<this->logicalSize; i++)
-      if(this->array[i] == key)
-        return i;
-
-    return -1;
-  }
-
-  int size() const {
-    return this->logicalSize;
-  }
-
-
   void remove(int index) {
     if(index < 0 or index >= this->logicalSize) {
+
       throw std::exception();
     }
 
-    memcpy(
-      this->array+index,
-      this->array+index+1,
-      (this->logicalSize-index+1) * sizeof(T)
-    );
+    std::copy(this->array+index+1, this->array+logicalSize, this->array+index);
 
     this->logicalSize--;
   }
 
 
-  template <class U>
-  friend std::ostream& operator << (std::ostream& os, const Vector<U>& v) {
+  friend std::ostream& operator << (std::ostream& os, const Vector<T>& v) {
     for(int i=0; i<v.size(); i++) {
       os << i << ".   " << v[i] << '\n';
     }
