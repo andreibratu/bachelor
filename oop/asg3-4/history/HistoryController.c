@@ -33,7 +33,7 @@ void history_controller_applyUndo(HistoryController* hc, MedicationRepository* m
   switch (a->type) {
     case ADD:
       redo->type = DELETE;
-      repository_addMedication(mr, m);
+      repository_addMedication(mr, copy_medication(m));
       break;
     case DELETE:
       redo->type = ADD;

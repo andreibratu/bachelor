@@ -6,7 +6,7 @@
 
 Medication* medication_init(char* name, double c, int q, double p) {
   Medication* m = (Medication*)malloc(sizeof(Medication));
-  m->name = (char*)malloc(sizeof(name)+1);
+  m->name = (char*)malloc(strlen(name)+1);
   strcpy(m->name, name);
   m->concentration = c;
   m->quantity = q;
@@ -49,7 +49,7 @@ int sort_descending(const void* a, const void* b) {
 Medication* copy_medication(Medication* m) {
   Medication* new_medication = (Medication*)malloc(sizeof(Medication));
   new_medication->name = (char*)malloc(strlen(m->name)+1);
-  new_medication->name = m->name;
+  strcpy(new_medication->name, m->name);
   new_medication->concentration = m->concentration;
   new_medication->quantity = m->quantity;
   new_medication->price = m->price;
