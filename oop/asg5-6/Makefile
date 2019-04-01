@@ -1,81 +1,96 @@
 CC=g++
-LFLAGS=-c -g -Wall -Werror -std=c++11
-TFLAGS=-g -Wall -Werror -std=c++11
+LINK_COVERAGE_F=-c -g -O0 --coverage -Wall -Werror -std=c++11
+LINK_F=-c -g --coverage -Wall -Werror -std=c++11
+BUILD_F=-g --coverage -Wall -Werror -std=c++11
 
 
 movie.o:
-	$(CC) $(LFLAGS) -o movie.o model/Movie.cpp
+	$(CC) $(LINK_COVERAGE_F) -o movie.o model/Movie.cpp
 
 
 repo.o:
-	$(CC) $(LFLAGS) -o repo.o repo/Repository.cpp
+	$(CC) $(LINK_COVERAGE_F) -o repo.o repo/Repository.cpp
 
 
 admin_controller.o:
-	$(CC) $(LFLAGS) -o admin_controller.o controller/AdminController.cpp
+	$(CC) $(LINK_COVERAGE_F) -o admin_controller.o controller/AdminController.cpp
 
 
 user_controller.o:
-	$(CC) $(LFLAGS) -o user_controller.o controller/UserController.cpp
+	$(CC) $(LINK_COVERAGE_F) -o user_controller.o controller/UserController.cpp
 
 
 movie_test.o:
-	$(CC) $(LFLAGS) -o movie_test.o tests/MovieTest.cpp
+	$(CC) $(LINK_F) -o movie_test.o tests/MovieTest.cpp
 
 
 vector_test.o:
-	$(CC) $(LFLAGS) -o vector_test.o tests/VectorTest.cpp
+	$(CC) $(LINK_F) -o vector_test.o tests/VectorTest.cpp
 
 
-repository_test.o:
-	$(CC) $(LFLAGS) -o repository_test.o tests/RepositoryTest.cpp
+repo_test.o:
+	$(CC) $(LINK_F) -o repo_test.o tests/RepositoryTest.cpp
 
 
 admin_test.o:
-	$(CC) $(LFLAGS) -o admin_test.o tests/AdminControllerTest.cpp
+	$(CC) $(LINK_F) -o admin_test.o tests/AdminControllerTest.cpp
+
+
+user_test.o:
+	$(CC) $(LINK_F) -o user_test.o tests/UserControllerTest.cpp
 
 
 ui.o:
-		$(CC) $(LFLAGS) -o ui.o ui/AdminUI.cpp
+		$(CC) $(LINK_F) -o ui.o ui/AdminUI.cpp
 
 
 user_ui.o:
-	$(CC) $(LFLAGS) -o user_ui.o ui/UserUI.cpp
+	$(CC) $(LINK_F) -o user_ui.o ui/UserUI.cpp
+
+
+main_test.o:
+	$(CC) $(LINK_F) -o main_test.o tests/Test.cpp
 
 
 main.o:
-		$(CC) $(LFLAGS) -o main.o main.cpp
+		$(CC) $(LINK_F) -o main.o main.cpp
+
+
+TestMovie: movie.o movie_test.o
+	$(CC) $(BUILD_F) -o TestMovie.o movie.o movie_test.o
+	./TestMovie.o
+	gcov movie.gcno
 
 
 TestVector: vector_test.o movie.o
-	$(CC) $(TFLAGS) -o VectorTest.o vector_test.o movie.o
-	./VectorTest.o
-	valgrind ./VectorTest.o
+	$(CC) $(BUILD_F) -o TestVector.o vector_test.o movie.o
+	./TestVector.o
 
 
-TestMovie: movie_test.o movie.o
-	$(CC) $(TFLAGS) -o MovieTest.o movie_test.o movie.o
-	./MovieTest.o
-	valgrind ./MovieTest.o
+TestRepo: movie.o repo.o repo_test.o
+	$(CC) $(BUILD_F) -o TestRepository.o repo_test.o repo.o movie.o
+	./TestRepository.o
+	gcov repo.gcno
 
 
-TestRepository: repo.o movie.o repository_test.o
-	$(CC) $(TFLAGS) -o RepositoryTest.o repo.o movie.o repository_test.o
-	./RepositoryTest.o
-	valgrind ./RepositoryTest.o
+TestAdmin: movie.o repo.o admin_controller.o admin_test.o
+	$(CC) $(BUILD_F) -o TestAdmin.o movie.o repo.o admin_controller.o admin_test.o
+	./TestAdmin.o
+	gcov admin_controller.gcno
 
 
-TestAdmin: repo.o movie.o admin_controller.o admin_test.o
-	$(CC) $(TFLAGS) -o AdminTest.o repo.o movie.o admin_controller.o admin_test.o
-	./AdminTest.o
-	valgrind ./AdminTest.o
+TestUser: movie.o repo.o user_controller.o user_test.o
+	$(CC) $(BUILD_F) -o TestUser.o movie.o repo.o user_controller.o user_test.o
+	./TestUser.o
+	gcov user_controller.gcno
 
 
 Build: movie.o repo.o admin_controller.o ui.o main.o user_ui.o user_controller.o
-	$(CC) $(TFLAGS) -o output.o movie.o repo.o admin_controller.o ui.o main.o user_ui.o user_controller.o
+	$(CC) $(BUILD_F) -o output.o movie.o repo.o admin_controller.o ui.o main.o user_ui.o user_controller.o
+
 
 .PHONY: clean
 
 clean:
-	find -name "*.o" | xargs rm
-	find -name "*.h.gch" | xargs rm
+	ls -p | grep -v / | grep -v "main.cpp" | grep -v "Makefile" | xargs rm
+	find "*.h.gch" | xargs rm

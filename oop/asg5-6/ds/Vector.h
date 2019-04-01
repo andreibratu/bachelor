@@ -32,25 +32,28 @@ public:
   }
 
 
-  // Vector(const Vector& v) {
-  //   this->logicalSize = v.logicalSize;
-  //   this->capacity = 1;
-  //   this->array = new T [this->capacity];
-  //   for(int i = 0; i < v.size(); i++) {
-  //     this->array[i] = v.array[i];
-  //   }
-  // }
+  Vector(const Vector& v) {
+    logicalSize = v.logicalSize;
+    capacity = v.capacity;
+    this->array = new T [this->capacity];
+    for(int i = 0; i < v.size(); i++) {
+      this->array[i] = v.array[i];
+    }
+  }
 
-  // Vector<T>& operator = (const Vector<T>& other) {
-  //   this->logicalSize = other.logicalSize;
-  //   this->capacity = other.capacity;
-  //   this->array = new T [this->capacity];
-  //   for(int i = 0; i < other.size(); i++) {
-  //     this->array[i] = other.array[i];
-  //   }
-  //
-  //   return *this;
-  // }
+  Vector<T>& operator = (const Vector<T>& other) {
+    this->logicalSize = other.logicalSize;
+    this->capacity = other.capacity;
+
+    delete[] this->array;
+
+    this->array = new T [this->capacity];
+    for(int i = 0; i < other.size(); i++) {
+      this->array[i] = other.array[i];
+    }
+
+    return *this;
+  }
 
 
   int size() const {

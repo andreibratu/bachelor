@@ -6,11 +6,11 @@
 
 class AdminController {
 private:
-  Repository repository;
+  Repository& repository;
 public:
   AdminController(Repository& r);
 
-  Vector<Movie>& getAll();
+  Vector<Movie> getAll();
 
   void addMovie(const std::string& n, const std::string& g, const std::string& t, int y);
 

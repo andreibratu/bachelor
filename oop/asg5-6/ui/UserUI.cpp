@@ -9,17 +9,29 @@ void UserUI::queryByGenre() {
   std::string query;
   std::cout << "Input query: ";
   std::getline(std::cin, query);
-  Vector<Movie> ans = this->c.queryByGenre(query);
+  this->c.queryByGenre(query);
 
   int option;
   bool input_flag = 1;
 
   system("clear");
 
+  if(!this->c.getQuery().size()) {
+    std::cout << "No movie matching the query!\n";
+    return;
+  }
+
   while(input_flag) {
-    std::cout << ans << '\n';
+    try {
+      this->seeDetails();
+    }
+    catch(std::exception e) {
+      std::cout << "No movies left!\n";
+      input_flag = false;
+      continue;
+    }
     std::cout << "Menu:\n\
-1. See details\n\
+1. Play the trailer\n\
 2. Next movie\n\
 3. Add to watchlist\n\
 4. Exit\n\
@@ -29,7 +41,7 @@ Your option: ";
     switch (option) {
       case 1:
         system("clear");
-        this->seeDetails();
+        this->playTrailer();
         break;
       case 2:
         this->nextMovie();
@@ -37,6 +49,7 @@ Your option: ";
         break;
       case 3:
         this->addToWatchlist();
+        system("clear");
         break;
       case 4:
         input_flag = 0;
@@ -58,11 +71,16 @@ void UserUI::nextMovie() {
 
 void UserUI::seeDetails() {
   Movie m = this->c.seeDetails();
+  std::cout << m << "\n\n";
+}
+
+
+void UserUI::playTrailer() {
+  Movie m = this->c.seeDetails();
   std::stringstream ss;
   ss << "google-chrome " << m.getTrailer();
   system(ss.str().c_str());
   system("clear");
-  std::cout << m << "\n\n";
 }
 
 

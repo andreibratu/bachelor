@@ -11,7 +11,7 @@ private:
 public:
   Repository();
 
-  Vector<Movie>& getAll();
+  Vector<Movie> getAll();
 
   void addMovie(const Movie& m);
 

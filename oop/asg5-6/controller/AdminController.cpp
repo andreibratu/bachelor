@@ -5,7 +5,7 @@
 AdminController::AdminController(Repository& r) : repository{r} {}
 
 
-Vector<Movie>& AdminController::getAll() {
+Vector<Movie> AdminController::getAll() {
   return this->repository.getAll();
 }
 

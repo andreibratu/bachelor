@@ -23,6 +23,17 @@ Movie::Movie(const Movie& m) {
 }
 
 
+Movie& Movie::operator = (const Movie& m) {
+  name = std::string(m.getName());
+  genre = std::string(m.getGenre());
+  trailer = std::string(m.getTrailer());
+  year = m.getYear();
+  likes = m.getLikes();
+
+  return *this;
+}
+
+
 void Movie::setName(std::string n) {
   this->name = n;
 }

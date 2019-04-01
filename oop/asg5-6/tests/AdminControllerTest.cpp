@@ -24,5 +24,6 @@ int main() {
   assert(!c.updateName(42, "qwerty"));
   assert(!c.deleteMovie(42));
   assert(!c.updateTrailer(42, "vaidemine"));
+
   return 0;
 }

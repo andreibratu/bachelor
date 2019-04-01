@@ -6,26 +6,28 @@ UserController::UserController(Repository& repo): r{repo} {
 }
 
 
-Vector<Movie> UserController::queryByGenre(const std::string& genre) {
-  std::cout << genre << '\n';
+void UserController::queryByGenre(const std::string& genre) {
   Movie key{"", genre, "", -1};
   Vector<Movie> ans{};
 
   Vector<Movie> all = this->r.getAll();
 
-  std::cout << all.size() << '\n';
-
   for(int i = 0; i < all.size(); i++) {
     if(all[i] == key) {
-      ans.push_back(all[i]);
+      ans.push_back(Movie(all[i]));
     }
   }
 
-  std::cout << this->query.size() << '\n';
+  for(int i = 0; i < ans.size(); i++) {
+    for(int j = 0; j < this->watchlist.size(); j++) {
+      if(ans[i] == this->watchlist[j]) {
+        ans.remove(i);
+      }
+    }
+  }
+
   this->query = ans;
   this->current = 0;
-
-  return ans;
 }
 
 
@@ -37,8 +39,10 @@ void UserController::nextMovie() {
 
 
 void UserController::addToWatchList() {
-  this->watchlist.push_back(this->query[this->current]);
-  this->nextMovie();
+  if(!this->query.size()) return;
+
+  this->watchlist.push_back(Movie(this->query[this->current]));
+  this->query.remove(this->current);
 }
 
 
@@ -65,6 +69,13 @@ void UserController::removeWatchlist(int idx, int was_liked) {
 }
 
 
+Vector<Movie> UserController::getQuery() {
+  if(this->current == -1) throw std::exception();
+
+  return Vector<Movie>(this->query);
+}
+
+
 Vector<Movie> UserController::getWatchlist() {
-  return this->watchlist;
+  return Vector<Movie>(this->watchlist);
 }

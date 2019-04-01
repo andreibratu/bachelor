@@ -4,8 +4,8 @@
 Repository::Repository() {}
 
 
-Vector<Movie>& Repository::getAll() {
-  return this->movies;
+Vector<Movie> Repository::getAll() {
+  return Vector<Movie>(this->movies);
 }
 
 
@@ -63,7 +63,7 @@ bool Repository::updateYear(int idx, int year) {
     this->movies[idx].setYear(year);
     return true;
   }
-  catch(std::exception()) {
+  catch(std::exception e) {
     return false;
   }
 }
@@ -74,7 +74,7 @@ bool Repository::incrementLikes(int idx) {
     this->movies[idx]++;
     return true;
   }
-  catch(std::exception()) {
+  catch(std::exception e) {
     return false;
   }
 }

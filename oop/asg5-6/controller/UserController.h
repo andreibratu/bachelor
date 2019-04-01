@@ -13,7 +13,7 @@ private:
 public:
   UserController(Repository& repo);
 
-  Vector<Movie> queryByGenre(const std::string&);
+  void queryByGenre(const std::string&);
 
   void addToWatchList();
 
@@ -24,6 +24,8 @@ public:
   void removeWatchlist(int, int);
 
   Vector<Movie> getWatchlist();
+
+  Vector<Movie> getQuery();
 };
 
 #endif

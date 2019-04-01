@@ -69,8 +69,8 @@ void history_controller_applyRedo(HistoryController* hc, MedicationRepository* m
       undo->type = DELETE;
       break;
     case DELETE:
-      repository_deleteMedication(mr, a->name, a->concentration);
       undo->type = ADD;
+      repository_deleteMedication(mr, a->name, a->concentration);
       break;
     case UPDATEQ:
       repository_updateMedicationQuantity(mr, a->name, a->concentration, a->amount);

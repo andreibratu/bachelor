@@ -17,6 +17,8 @@ public:
 
   Movie(const Movie& m);
 
+  Movie& operator = (const Movie&);
+
   void setName(std::string name);
 
   std::string getName() const;
