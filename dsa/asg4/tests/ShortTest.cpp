@@ -22,6 +22,7 @@ void testAll() {
 	assert(s1.add(5) == true);
 	assert(s1.add(1) == true);
 	assert(s1.add(10) == true);
+	assert(s1.size() == 3);
 	SortedSetIterator it1 = s1.iterator();
 	it1.first();
 	e = it1.getCurrent();

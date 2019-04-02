@@ -13,38 +13,26 @@ bool SortedSet::add(TComp e) {
   for(; it.valid(); it.next()) {
     Relation comp = *this->r;
     if(comp(e, it.getCurrent())) {
-      this->items.addBefore(it.getIdx(), e);
+      this->items.addBefore(it.getCurrent(), e);
       return true;
     }
   }
 
-  this->items.insert(e);
+  this->items.addEnd(e);
   return true;
 }
 
 
 bool SortedSet::remove(TComp e) {
-  SortedSetIterator it = this->items.getIterator();
-  for(; it.valid(); it.next()) {
-    if(it.getCurrent() == e) {
-      this->items.remove(it.getIdx());
-      return true;
-    }
-  }
+  if(!this->items.search(e)) return false;
 
-  return false;
+  this->items.remove(e);
+  return true;
 }
 
 
 bool SortedSet::search(TComp e) const {
-  SortedSetIterator it = this->items.getIterator();
-  for(; it.valid(); it.next()) {
-    if(it.getCurrent() == e) {
-      return true;
-    }
-  }
-
-  return false;
+  return this->items.search(e);
 }
 
 
