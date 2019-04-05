@@ -29,7 +29,5 @@ int main() {
   c.queryByGenre("drama");
   assert(c.getQuery()[0].getLikes() == 1);
 
-
-
   return 0;
 }

@@ -24,10 +24,6 @@ movie_test.o:
 	$(CC) $(LINK_F) -o movie_test.o tests/MovieTest.cpp
 
 
-vector_test.o:
-	$(CC) $(LINK_F) -o vector_test.o tests/VectorTest.cpp
-
-
 repo_test.o:
 	$(CC) $(LINK_F) -o repo_test.o tests/RepositoryTest.cpp
 
@@ -60,11 +56,6 @@ TestMovie: movie.o movie_test.o
 	$(CC) $(BUILD_F) -o TestMovie.o movie.o movie_test.o
 	./TestMovie.o
 	gcov movie.gcno
-
-
-TestVector: vector_test.o movie.o
-	$(CC) $(BUILD_F) -o TestVector.o vector_test.o movie.o
-	./TestVector.o
 
 
 TestRepo: movie.o repo.o repo_test.o

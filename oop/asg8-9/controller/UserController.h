@@ -1,14 +1,13 @@
 #ifndef USER_C_H
 #define USER_C_H
 
-#include "../ds/Vector.h"
 #include "../repo/Repository.h"
 
 class UserController {
 private:
   Repository& r;
-  Vector<Movie> watchlist;
-  Vector<Movie> query;
+  std::vector<Movie> watchlist;
+  std::vector<Movie> query;
   int current;
 public:
   UserController(Repository& repo);
@@ -23,9 +22,9 @@ public:
 
   void removeWatchlist(int, int);
 
-  Vector<Movie> getWatchlist();
+  std::vector<Movie> getWatchlist();
 
-  Vector<Movie> getQuery();
+  std::vector<Movie> getQuery();
 };
 
 #endif

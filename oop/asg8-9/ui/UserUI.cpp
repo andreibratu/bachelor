@@ -85,10 +85,12 @@ void UserUI::playTrailer() {
 
 
 void UserUI::getWatchlist() {
-  Vector<Movie> wl = this->c.getWatchlist();
+  std::vector<Movie> wl = this->c.getWatchlist();
 
   if(wl.size()) {
-    std::cout << wl;
+    for(int i = 0; i < (int)wl.size(); i++) {
+      std::cout << i << ". " << wl[i] << '\n';
+    }
   }
   else {
     std::cout << "Watchlist is empty!\n";
@@ -111,7 +113,6 @@ void UserUI::removeWatchlist() {
   std::cout << "Did you like it (0/1) ? ";
   std::cin >> liked;
 
-  std::cout << "GOT HERE\n";
   try {
     this->c.removeWatchlist(idx, liked);
     system("clear");

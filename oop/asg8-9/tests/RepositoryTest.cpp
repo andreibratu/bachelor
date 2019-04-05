@@ -6,10 +6,10 @@ int main() {
   Repository r;
   r.addMovie(Movie{"asdf", "comedy", "asdf", 2007});
   r.addMovie(Movie{"asdf2", "comedy", "erty", 2009});
-  Vector<Movie> all = r.getAll();
+  std::vector<Movie> all = r.getAll();
   assert(all.size() == 2);
 
-  all.remove(0);
+  all.erase(all.begin());
 
   all[0].setName("megacool");
   assert(r[0].getName() != "megacool");
@@ -36,14 +36,5 @@ int main() {
 
   assert(r.incrementLikes(0));
   assert(!r.incrementLikes(42));
-
-
-  std::cout << all << '\n';
-  // 
-  // for(int i = 0; i < 10; i++) {
-  //   all.push_back(Movie{"asdf", "comedy", "asdf", 2007});
-  // }
-  // all = r.getAll();
-  // Vector<Movie> other = Vector<Movie>(all);
   return 0;
 }

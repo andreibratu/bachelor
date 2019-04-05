@@ -10,7 +10,7 @@ private:
 public:
   AdminController(Repository& r);
 
-  Vector<Movie> getAll();
+  std::vector<Movie> getAll();
 
   void addMovie(const std::string& n, const std::string& g, const std::string& t, int y);
 

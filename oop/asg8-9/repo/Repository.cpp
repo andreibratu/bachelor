@@ -4,8 +4,8 @@
 Repository::Repository() {}
 
 
-Vector<Movie> Repository::getAll() {
-  return Vector<Movie>(this->movies);
+std::vector<Movie> Repository::getAll() {
+  return std::vector<Movie>(this->movies);
 }
 
 
@@ -15,71 +15,53 @@ void Repository::addMovie(const Movie& m) {
 
 
 bool Repository::deleteMovie(int idx) {
-  try {
-    this->movies.remove(idx);
-    return true;
-  }
-  catch(std::exception e) {
-    return false;
-  }
+  if(idx >= (int)this->movies.size()) return false;
+
+  this->movies.erase(this->movies.begin()+idx);
+  return true;
 }
 
 
 bool Repository::updateName(int idx, const std::string& name) {
-  try {
-    this->movies[idx].setName(name);
-    return true;
-  }
-  catch(std::exception e) {
-    return false;
-  }
+  if(idx >= (int)this->movies.size()) return false;
+
+  this->movies[idx].setName(name);
+  return true;
 }
 
 
 bool Repository::updateGenre(int idx, const std::string& genre) {
-  try {
-    this->movies[idx].setGenre(genre);
-    return true;
-  }
-  catch(std::exception e) {
-    return false;
-  }
+  if(idx >= (int)this->movies.size()) return false;
+
+  this->movies[idx].setGenre(genre);
+  return true;
 }
 
 
 bool Repository::updateTrailer(int idx, const std::string& trailer) {
-  try {
-    this->movies[idx].setTrailer(trailer);
-    return true;
-  }
-  catch(std::exception e) {
-    return false;
-  }
+  if(idx >= (int)this->movies.size()) return false;
+
+  this->movies[idx].setTrailer(trailer);
+  return true;
 }
 
 
 bool Repository::updateYear(int idx, int year) {
-  try {
-    this->movies[idx].setYear(year);
-    return true;
-  }
-  catch(std::exception e) {
-    return false;
-  }
+  if(idx >= (int)this->movies.size()) return false;
+
+  this->movies[idx].setYear(year);
+  return true;
 }
 
 
 bool Repository::incrementLikes(int idx) {
-  try {
-    this->movies[idx]++;
-    return true;
-  }
-  catch(std::exception e) {
-    return false;
-  }
+  if(idx >= (int)this->movies.size()) return false;
+
+  this->movies[idx].setLikes(this->movies[idx].getLikes() + 1);
+  return true;
 }
 
 
-Movie& Repository::operator [] (int idx) const {
+Movie Repository::operator [] (int idx) const {
   return this->movies[idx];
 }

@@ -1,11 +1,12 @@
-#include "AdminController.h"
 #include <iostream>
+#include <vector>
+#include "AdminController.h"
 
 
 AdminController::AdminController(Repository& r) : repository{r} {}
 
 
-Vector<Movie> AdminController::getAll() {
+std::vector<Movie> AdminController::getAll() {
   return this->repository.getAll();
 }
 

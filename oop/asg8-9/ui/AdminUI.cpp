@@ -7,7 +7,10 @@ AdminUI::AdminUI(AdminController& c): cntrl{c} {}
 
 
 void AdminUI::displayAll() {
-  std::cout << this->cntrl.getAll() << '\n';
+  std::vector<Movie> all = this->cntrl.getAll();
+  for(int i = 0; i < (int)all.size(); i++) {
+    std::cout << i << ". " << all[i] << '\n';
+  }
 }
 
 

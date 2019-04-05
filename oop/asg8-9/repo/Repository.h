@@ -1,17 +1,18 @@
 #ifndef REPOSITORY_H
 #define REPOSITORY_H
+
 #include <string>
-#include "../ds/Vector.h"
+#include <vector>
 #include "../model/Movie.h"
 
 class Repository {
   friend class UserController;
 private:
-  Vector<Movie> movies;
+  std::vector<Movie> movies;
 public:
   Repository();
 
-  Vector<Movie> getAll();
+  std::vector<Movie> getAll();
 
   void addMovie(const Movie& m);
 
@@ -27,7 +28,7 @@ public:
 
   bool incrementLikes(int idx);
 
-  Movie& operator [] (int idx) const;
+  Movie operator [] (int idx) const;
 };
 
 #endif
