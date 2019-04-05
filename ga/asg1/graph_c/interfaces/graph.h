@@ -19,6 +19,10 @@ public:
   // Graph constructor
   Graph();
 
+  Graph(const Graph&);
+
+  Graph& operator = (const Graph&);
+
   /**
     Check if given edge exists.
 
@@ -27,7 +31,6 @@ public:
     @return Edge exists.
   */
   bool is_edge(int out, int in) const;
-
 
   /**
     Add new vertex into graph.

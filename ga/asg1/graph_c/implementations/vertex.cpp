@@ -8,6 +8,22 @@ Vertex::Vertex(int label) {
 }
 
 
+Vertex::Vertex(const Vertex& v) {
+  this->label = v.label;
+  this->inbound = std::vector<int>(v.inbound);
+  this->outbound = std::vector<int>(v.outbound);
+}
+
+
+Vertex& Vertex::operator = (const Vertex& v) {
+  this->label = v.label;
+  this->inbound = std::vector<int>(v.inbound);
+  this->outbound = std::vector<int>(v.outbound);
+
+  return *this;
+}
+
+
 void Vertex::remove_inbound(int label) {
   auto it = std::find(this->inbound.begin(), this->inbound.end(), label);
 

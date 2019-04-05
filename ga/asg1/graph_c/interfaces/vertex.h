@@ -20,6 +20,10 @@ public:
   Vertex(int label);
 
 
+  Vertex(const Vertex&);
+
+  Vertex& operator = (const Vertex&);
+
   // @return: How many inbound edges.
   int get_degree_in() const;
 

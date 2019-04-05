@@ -8,7 +8,7 @@ Graph generate_random_graph(int vertices, int edges) {
 
   typedef std::pair<int, int> Edge;
   srand(time(NULL));
-  assert(edges <= vertices*(vertices-1));
+  assert(edges <= vertices*vertices);
 
   std::unordered_set<Edge, boost::hash<Edge>> used_edges;
   Graph g;

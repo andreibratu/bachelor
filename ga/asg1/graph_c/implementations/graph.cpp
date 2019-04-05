@@ -9,6 +9,24 @@
 Graph::Graph() {}
 
 
+Graph::Graph(const Graph& g) {
+  for(auto x:g.vertices) {
+    this->vertices.push_back(Vertex(x));
+  }
+  this->edges = std::unordered_map<Edge, int, boost::hash<Edge>>(g.edges);
+}
+
+
+Graph& Graph::operator = (const Graph& g) {
+  for(auto x:g.vertices) {
+    this->vertices.push_back(Vertex(x));
+  }
+  this->edges = std::unordered_map<Edge, int, boost::hash<Edge>>(g.edges);
+
+  return *this;
+}
+
+
 std::vector<Vertex>::iterator Graph::find_vertex(int label) {
   return std::find_if(
     this->vertices.begin(),

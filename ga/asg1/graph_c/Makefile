@@ -20,9 +20,3 @@ test.o: vertex.o graph.o iterator.o generator.o
 test: test.o vertex.o graph.o iterator.o generator.o test.o generator.o
 	$(CC) $(EXECARGS) -o output.o vertex.o graph.o iterator.o generator.o test.o
 	./output.o
-
-.PHONY: clean
-
-clean:
-	rm *.o 2> /dev/null
-	rm interfaces/*.h.gch 2> /dev/null

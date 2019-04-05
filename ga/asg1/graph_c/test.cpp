@@ -16,6 +16,11 @@ int main() {
   g.remove_vertex(5);
   assert(!g.remove_edge(5, 6));
   assert(g.size() == 99);
+  Iterator<Vertex> it0 = g.get_graph_iterator();
+  for(; it0.valid(); it0.next()) {
+    assert(it0.getCurrent().label != 100);
+  }
+
   g.remove_vertex(6);
   assert(g.size() == 98);
   assert(!g.remove_vertex(99));
@@ -56,6 +61,12 @@ int main() {
   // Copy a graph
   Graph g2 = g1;
   g2.add_vertex(567);
+  g2.add_edge(4, 1);
+  try {
+    g1.get_edge_property(4, 1);
+    assert(false);
+  }
+  catch(std::exception) {}
   assert(!g1.remove_vertex(567));
   return 0;
 }
