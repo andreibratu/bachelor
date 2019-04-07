@@ -41,8 +41,7 @@ void AdminUI::deleteMovie() {
   std::cout << "Index: ";
   std::cin >> idx;
 
-  bool result = this->cntrl.deleteMovie(idx);
-  if(!result) std::cout << "Invalid index!\n";
+  this->cntrl.deleteMovie(idx);
 }
 
 
@@ -57,8 +56,7 @@ void AdminUI::newName() {
   std::cout << "New name: ";
   std::getline(std::cin, name);
 
-  bool result = this->cntrl.updateName(idx, name);
-  if(!result) std::cout << "Invalid index!\n";
+  this->cntrl.updateName(idx, name);
 }
 
 
@@ -73,8 +71,7 @@ void AdminUI::newGenre() {
   std::cout << "New genre: ";
   std::getline(std::cin, genre);
 
-  bool result = this->cntrl.updateGenre(idx, genre);
-  if(!result) std::cout << "Invalid index!\n";
+  this->cntrl.updateGenre(idx, genre);
 }
 
 
@@ -89,8 +86,7 @@ void AdminUI::newTrailer() {
   std::cout << "Trailer: ";
   std::getline(std::cin, trailer);
 
-  bool result = this->cntrl.updateTrailer(idx, trailer);
-  if(!result) std::cout << "Invalid index!\n";
+  this->cntrl.updateTrailer(idx, trailer);
 }
 
 
@@ -104,8 +100,7 @@ void AdminUI::newYear() {
   std::cout << "Year: ";
   std::cin >> year;
 
-  bool result = this->cntrl.updateYear(idx, year);
-  if(!result) std::cout << "Invalid index!\n";
+  this->cntrl.updateYear(idx, year);
 }
 
 
@@ -127,39 +122,44 @@ while (flag) {
 Your option: ";
     std::cin >> option;
     std::cin.ignore();
-    switch(option) {
-    case 1:
-        system("clear");
-        displayAll();
-        break;
-    case 2:
-        addMovie();
-        system("clear");
-        break;
-    case 3:
-        deleteMovie();
-        system("clear");
-        break;
-    case 4:
-        newName();
-        system("clear");
-        break;
-    case 5:
-        newGenre();
-        system("clear");
-        break;
-    case 6:
-        newTrailer();
-        system("clear");
-        break;
-    case 7:
-        newYear();
-        system("clear");
-        break;
-    case 8:
-        flag = false;
-        system("clear");
-        break;
+    try {
+      switch(option) {
+      case 1:
+          system("clear");
+          displayAll();
+          break;
+      case 2:
+          addMovie();
+          system("clear");
+          break;
+      case 3:
+          deleteMovie();
+          system("clear");
+          break;
+      case 4:
+          newName();
+          system("clear");
+          break;
+      case 5:
+          newGenre();
+          system("clear");
+          break;
+      case 6:
+          newTrailer();
+          system("clear");
+          break;
+      case 7:
+          newYear();
+          system("clear");
+          break;
+      case 8:
+          flag = false;
+          system("clear");
+          break;
+      }
+    }
+    catch(std::exception e) {
+      std::cout << e.what() << '\n';
     }
   }
 }

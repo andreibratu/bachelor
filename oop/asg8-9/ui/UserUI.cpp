@@ -113,13 +113,7 @@ void UserUI::removeWatchlist() {
   std::cout << "Did you like it (0/1) ? ";
   std::cin >> liked;
 
-  try {
-    this->c.removeWatchlist(idx, liked);
-    system("clear");
-  }
-  catch(std::exception e) {
-    std::cout << "Invalid input!\n";
-  }
+  this->c.removeWatchlist(idx, liked);
 }
 
 
@@ -136,21 +130,26 @@ void UserUI::input_loop() {
 Your option: ";
     std::cin >> option;
     std::cin.ignore();
-    switch (option) {
-      case 1:
-        this->queryByGenre();
-        break;
-      case 2:
-        system("clear");
-        this->getWatchlist();
-        break;
-      case 3:
-        this->removeWatchlist();
-        break;
-      case 4:
-        input_flag = 0;
-        system("clear");
-        break;
+    try {
+      switch (option) {
+        case 1:
+          this->queryByGenre();
+          break;
+        case 2:
+          system("clear");
+          this->getWatchlist();
+          break;
+        case 3:
+          this->removeWatchlist();
+          break;
+        case 4:
+          input_flag = 0;
+          system("clear");
+          break;
+      }
+    }
+    catch(std::exception e) {
+      std::cout << e.what() << '\n';
     }
   }
 }

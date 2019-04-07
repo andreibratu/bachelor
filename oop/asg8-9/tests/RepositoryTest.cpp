@@ -19,22 +19,17 @@ int main() {
   r.deleteMovie(0);
   assert(r.getAll().size() == 1);
 
-  assert(!r.deleteMovie(42));
+  try {r.deleteMovie(42);} catch (std::exception e) {}
+  try {r.updateName(42, "boi");} catch (std::exception e) {}
+  try {r.updateGenre(42, "boi");} catch (std::exception e) {}
+  try {r.updateTrailer(42, "boi");} catch (std::exception e) {}
+  try {r.updateYear(1344, 1212);} catch (std::exception e) {}
+  try {r.incrementLikes(42);} catch (std::exception e) {}
 
-  assert(r.updateName(0, "supercool"));
-  assert(!r.updateName(42, "boi"));
 
-  assert(r.updateGenre(0, "sad"));
-  assert(!r.updateGenre(42, "boi"));
-
-
-  assert(r.updateTrailer(0, "wow.mp4"));
-  assert(!r.updateTrailer(42, "boi"));
-
-  assert(r.updateYear(0, 1345));
-  assert(!r.updateYear(1344, 1212));
-
-  assert(r.incrementLikes(0));
-  assert(!r.incrementLikes(42));
+  r.updateGenre(0, "sad");
+  r.updateTrailer(0, "wow.mp4");
+  r.updateYear(0, 1345);
+  r.incrementLikes(0);
   return 0;
 }

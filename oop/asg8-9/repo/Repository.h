@@ -16,17 +16,17 @@ public:
 
   void addMovie(const Movie& m);
 
-  bool deleteMovie(int idx);
+  void deleteMovie(int idx);
 
-  bool updateName(int idx, const std::string& name);
+  void updateName(int idx, const std::string& name);
 
-  bool updateGenre(int idx, const std::string& genre);
+  void updateGenre(int idx, const std::string& genre);
 
-  bool updateTrailer(int idx, const std::string& trailer);
+  void updateTrailer(int idx, const std::string& trailer);
 
-  bool updateYear(int idx, int year);
+  void updateYear(int idx, int year);
 
-  bool incrementLikes(int idx);
+  void incrementLikes(int idx);
 
   Movie operator [] (int idx) const;
 };

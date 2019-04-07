@@ -31,28 +31,28 @@ void AdminController::addMovie(const std::string& n, const std::string& g, const
 }
 
 
-bool AdminController::deleteMovie(int idx) {
-  return this->repository.deleteMovie(idx);
+void AdminController::deleteMovie(int idx) {
+  this->repository.deleteMovie(idx);
 }
 
 
-bool AdminController::updateName(int idx, const std::string& name) {
-  return this->repository.updateName(idx, name);
+void AdminController::updateName(int idx, const std::string& name) {
+  this->repository.updateName(idx, name);
 }
 
 
-bool AdminController::updateGenre(int idx, const std::string& genre) {
-  return this->repository.updateGenre(idx, genre);
+void AdminController::updateGenre(int idx, const std::string& genre) {
+  this->repository.updateGenre(idx, genre);
 }
 
 
-bool AdminController::updateTrailer(int idx, const std::string& trailer) {
-  return this->repository.updateTrailer(idx, trailer);
+void AdminController::updateTrailer(int idx, const std::string& trailer) {
+  this->repository.updateTrailer(idx, trailer);
 }
 
 
-bool AdminController::updateYear(int idx, int year) {
-  return this->repository.updateYear(idx, year);
+void AdminController::updateYear(int idx, int year) {
+  this->repository.updateYear(idx, year);
 }
 
 

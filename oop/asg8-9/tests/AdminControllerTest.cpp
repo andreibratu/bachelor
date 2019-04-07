@@ -6,6 +6,11 @@ int main() {
   Repository r;
   AdminController c{r};
 
+  // Remove Movies read from .csv for a blank slate
+  while(c.getAll().size()) {
+    c.deleteMovie(0);
+  }
+
   r.addMovie(Movie{"asdf", "asdf", "asdf", 1998});
   assert(c.getAll().size() == 1);
   c.addMovie("super", "cool", "uber", 2019);
@@ -20,10 +25,10 @@ int main() {
   assert(c.getAll()[2].getTrailer() == "foobar");
   c.updateYear(2, 2019);
   assert(c.getAll()[2].getYear() == 2019);
-  assert(c.deleteMovie(2));
-  assert(!c.updateName(42, "qwerty"));
-  assert(!c.deleteMovie(42));
-  assert(!c.updateTrailer(42, "vaidemine"));
+  c.deleteMovie(2);
+  try {c.updateName(42, "qwerty");} catch(std::exception e) {}
+  try {c.deleteMovie(42);} catch(std::exception e) {}
+  try {c.updateTrailer(42, "vaidemine");} catch(std::exception e) {}
 
   return 0;
 }

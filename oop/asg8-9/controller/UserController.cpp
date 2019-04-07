@@ -2,6 +2,9 @@
 #include <fstream>
 #include <sstream>
 #include "UserController.h"
+#include "../exception/IndexException.h"
+#include "../exception/LikeException.h"
+#define yeet throw
 
 
 UserController::UserController(Repository& repo): r{repo} {
@@ -56,7 +59,6 @@ void UserController::queryByGenre(const std::string& genre) {
 
 
 void UserController::nextMovie() {
-  if(this->current == -1) throw std::exception();
   int allCount = this->query.size();
   this->current = (this->current == allCount-1) ? (0):(this->current+1);
 }
@@ -76,9 +78,8 @@ Movie UserController::seeDetails() {
 
 
 void UserController::removeWatchlist(int idx, int was_liked) {
-  if(idx < 0 || idx >= (int)this->watchlist.size() || was_liked < 0 || was_liked > 1) {
-    throw std::exception();
-  }
+  if(idx < 0 || idx >= (int)this->watchlist.size()) yeet IndexException();
+  if(was_liked < 0 || was_liked > 1) yeet LikeException();
 
   if(was_liked) {
     Movie m = this->watchlist[idx];
@@ -95,8 +96,6 @@ void UserController::removeWatchlist(int idx, int was_liked) {
 
 
 std::vector<Movie> UserController::getQuery() {
-  if(this->current == -1) throw std::exception();
-
   return this->query;
 }
 

@@ -5,12 +5,15 @@
 
 int main() {
   Repository r;
-  r.addMovie(Movie{"The Shawshank Redemption", "Drama", "https://youtu.be/6hB3S9bIaco", 1994});
-  r.addMovie(Movie{"Casablanca", "Drama", "https://youtu.be/BkL9l7qovsE", 1942});
-  r.addMovie(Movie{"One Flew Over the Cuckoo's Nest", "Drama", "https://youtu.be/OXrcDonY-B8", 1975});
   UserController c{r};
 
+  // Remove Movies objects init by .csv
+  while(c.getWatchlist().size()) {
+    c.removeWatchlist(0, 0);
+  }
+
   c.queryByGenre("drama");
+  std::cout << c.getQuery().size() << '\n';
   assert(c.getQuery().size() == 3);
   for(int i = 0; i < 3; i++) {
     c.nextMovie();
