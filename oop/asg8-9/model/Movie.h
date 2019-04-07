@@ -46,6 +46,8 @@ public:
   Movie& operator ++ (int);
 
   friend std::ostream& operator << (std::ostream& os, const Movie& m);
+
+  friend std::istream& operator >> (std::istream& is, Movie& m);
 };
 
 #endif

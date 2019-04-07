@@ -1,10 +1,30 @@
 #include <algorithm>
-#include <assert.h>
+#include <fstream>
+#include <sstream>
 #include "UserController.h"
 
 
 UserController::UserController(Repository& repo): r{repo} {
   this->current = -1;
+  std::fstream fin_movies("./admin.csv", std::ios::in);
+  std::string line;
+  Movie m;
+
+  while (std::getline(fin_movies, line)) {
+    std::stringstream s(line);
+    s >> m;
+    this->r.addMovie(m);
+  }
+
+  fin_movies.close();
+
+
+  std::fstream fin_watchlist("./user.csv", std::ios::in);
+  while (std::getline(fin_watchlist, line)) {
+    std::stringstream s(line);
+    s >> m;
+    this->watchlist.push_back(m);
+  }
 }
 
 
@@ -83,4 +103,14 @@ std::vector<Movie> UserController::getQuery() {
 
 std::vector<Movie> UserController::getWatchlist() {
   return this->watchlist;
+}
+
+
+UserController::~UserController() {
+  std::fstream fout("./user.csv", std::ios::out | std::ios::trunc);
+  for(auto& x: this->watchlist) {
+    fout << x << '\n';
+  }
+
+  fout.close();
 }

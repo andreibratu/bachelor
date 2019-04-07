@@ -120,9 +120,28 @@ Movie& Movie::operator ++ (int) {
 }
 
 
-std::ostream& operator << (std::ostream& os,  const Movie& m) {
+std::ostream& operator << (std::ostream& os, const Movie& m) {
 
-  os << m.getName() << " | " << m.getGenre() << " | " << m.getTrailer() << " | " << m.getYear() << " | " << m.getLikes();
+  os << m.getName() << ',' << m.getGenre() << ',' << m.getTrailer() << ',' << m.getYear() << ',' << m.getLikes();
 
   return os;
+}
+
+
+std::istream& operator >> (std::istream& is, Movie& m) {
+  std::string x;
+
+  getline(is, x, ',');
+  m.setName(x);
+
+  getline(is, x, ',');
+  m.setGenre(x);
+
+  getline(is, x, ',');
+  m.setTrailer(x);
+
+  getline(is, x, ',');
+  m.setYear(std::stoi(x));
+
+  return is;
 }

@@ -83,5 +83,5 @@ Build: movie.o repo.o admin_controller.o ui.o main.o user_ui.o user_controller.o
 .PHONY: clean
 
 clean:
-	ls -p | grep -v / | grep -v "main.cpp" | grep -v "Makefile" | xargs rm
+	ls -p | grep -v / | grep -v "main.cpp" | grep -v "Makefile" | grep -v ".csv" | xargs rm
 	find "*.h.gch" | xargs rm

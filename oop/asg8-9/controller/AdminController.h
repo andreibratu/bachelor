@@ -23,6 +23,8 @@ public:
   bool updateTrailer(int idx, const std::string& trailer);
 
   bool updateYear(int idx, int year);
+
+  ~AdminController();
 };
 
 #endif

@@ -25,6 +25,8 @@ public:
   std::vector<Movie> getWatchlist();
 
   std::vector<Movie> getQuery();
+
+  ~UserController();
 };
 
 #endif

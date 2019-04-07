@@ -36,3 +36,7 @@
 
 # Compiled python files
 *.pyc
+
+
+# Data files
+*.csv
