@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <assert.h>
 #include "UserController.h"
 
 
@@ -8,23 +10,25 @@ UserController::UserController(Repository& repo): r{repo} {
 
 void UserController::queryByGenre(const std::string& genre) {
   Movie key{"", genre, "", -1};
-  std::vector<Movie> ans;
 
   std::vector<Movie> all = this->r.getAll();
+  std::vector<Movie> ans(all.size());
 
-  for(int i = 0; i < (int)all.size(); i++) {
-    if(all[i] == key) {
-      ans.push_back(Movie(all[i]));
+  auto copy_it = std::copy_if(
+    all.begin(),
+    all.end(),
+    ans.begin(),
+    [&](const Movie& m){ return
+      m == key &&
+      (std::find_if(
+        this->watchlist.begin(),
+        this->watchlist.end(),
+        [&](const Movie& mw) {return m.getName() == mw.getName();}
+      ) == this->watchlist.end());
     }
-  }
+  );
 
-  for(int i = 0; i < (int)ans.size(); i++) {
-    for(int j = 0; j < (int)this->watchlist.size(); j++) {
-      if(ans[i] == this->watchlist[j]) {
-        ans.erase(ans.begin() + i);
-      }
-    }
-  }
+  ans.resize(std::distance(ans.begin(), copy_it));
 
   this->query = ans;
   this->current = 0;
@@ -56,13 +60,14 @@ void UserController::removeWatchlist(int idx, int was_liked) {
     throw std::exception();
   }
 
-  Movie m = this->watchlist[idx];
-  for(int i = 0; i < (int)this->r.movies.size() && was_liked; i++) {
-    if(this->r.movies[i] == m) {
-      int likes = this->r.movies[i].getLikes() + 1;
-      this->r.movies[i].setLikes(likes);
-      break;
-    }
+  if(was_liked) {
+    Movie m = this->watchlist[idx];
+    auto search_it = std::find_if(
+      this->r.movies.begin(),
+      this->r.movies.end(),
+      [&](const Movie& m_repo) {return m_repo == m;}
+    );
+    search_it->setLikes(search_it->getLikes() + 1);
   }
 
   this->watchlist.erase(this->watchlist.begin() + idx);
