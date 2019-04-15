@@ -40,7 +40,12 @@ public:
 
 	//returns an iterator for the sorted set
 	SortedSetIterator iterator() const;
-
+
+
+	// Empty the set
+	void empty();
+
+
 	// destructor
 	~SortedSet();
 

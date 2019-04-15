@@ -25,6 +25,8 @@ TElem Matrix::element(int i, int j) const {
   DLLIterator<Record> it = this->list.getIterator();
   for(; it.valid(); it.forward()) {
     Record r = this->list.get(it.get());
+    if(r.row == i && r.col > j) return NULL_TELEM;
+    if(r.row > i) return NULL_TELEM;
     if(r.row == i && r.col == j) return r.val;
   }
 
@@ -43,6 +45,10 @@ TElem Matrix::modify(int i, int j, TElem e) {
       if(r.col < j) continue;
       if(r.col == j) {
         TElem old_val = r.val;
+        if(e == NULL_TELEM) {
+          this->list.remove(it.get());
+          return old_val;
+        }
         this->list.update(it.get(), {i, j, e});
         return old_val;
       }
@@ -53,4 +59,9 @@ TElem Matrix::modify(int i, int j, TElem e) {
 
   this->list.insert(0, {i, j, e});
   return NULL_TELEM;
+}
+
+
+MatrixIterator Matrix::iterator() const {
+  return MatrixIterator(this->list.getIterator());
 }

@@ -46,6 +46,13 @@ public:
   }
 
 
+  void remove(Node<T>* n) {
+    n->before->next = n->next;
+    n->next->before = n->before;
+    delete n;
+  }
+
+
   // Update value in given node
   // Node pointers can be obtained via DLLIterator
   // O(1) due to pointer reference

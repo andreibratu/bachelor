@@ -70,4 +70,6 @@ void testAll() {
 	}
 	assert((vverif[0] == -3) && (vverif[1] == 5) && (vverif[2] == 7) && (vverif[3] == 10));
 
+	s.empty();
+	assert(s.isEmpty());
 }

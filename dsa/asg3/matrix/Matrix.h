@@ -3,22 +3,21 @@
 
 #include "../dll/DLL.h"
 #include "../iter/DLLIterator.h"
-typedef int TElem;
+#include "../matrix/Matrix.h"
+#include "../iter/MatrixIterator.h"
+#include "../Record.h"
+
+#ifndef TElem
+#define int TElem;
+#endif
 
 #define NULL_TELEM 0
 
-
-
 class Matrix {
 
+friend class MatrixIterator;
+
 private:
-
-	typedef struct {
-		int row;
-		int col;
-		TElem val;
-	} Record;
-
 	DLL<Record> list;
 	int r;
 	int c;
@@ -53,9 +52,11 @@ public:
 	//modifies the value from line i and column j
 	//returns the previous value from the position
 	//throws exception if (i,j) is not a valid position in the Matrix
-	// O(N), the DLL must be traversed 
+	// O(N), the DLL must be traversed
 	TElem modify(int i, int j, TElem e);
 
+
+	MatrixIterator iterator() const;
 };
 
 

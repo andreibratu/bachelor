@@ -11,4 +11,10 @@ void testAll() {
 	assert(m.element(1, 1) == 5);
 	m.modify(1, 1, 6);
 	assert(m.element(1, 2) == 0);
+	int i = 0;
+	MatrixIterator it = m.iterator();
+	for(; it.valid() ; it.next()) {
+		i++;
+	}
+	assert(i==2);
 }

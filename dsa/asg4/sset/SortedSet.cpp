@@ -51,4 +51,9 @@ SortedSetIterator SortedSet::iterator() const {
 }
 
 
+void SortedSet::empty() {
+  this->items = LLA<int>();
+}
+
+
 SortedSet::~SortedSet() {}
