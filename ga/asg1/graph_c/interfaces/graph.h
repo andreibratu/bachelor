@@ -95,7 +95,7 @@ public:
 
     @return Number of vertices
   */
-  int size();
+  int size() const;
 
 
   /**

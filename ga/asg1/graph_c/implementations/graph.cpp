@@ -126,7 +126,7 @@ bool Graph::remove_edge(int out, int in) {
 }
 
 
-int Graph::size() {
+int Graph::size() const {
   return (int)this->vertices.size();
 }
 
