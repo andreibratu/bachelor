@@ -1,13 +1,20 @@
 #include <iostream>
+#include <algorithm>
+#include <functional>
 #include "../controller/AdminController.h"
 #include "AdminUI.h"
-
+#include "../comparator/ComparatorMovieTitleAscending.h"
 
 AdminUI::AdminUI(AdminController& c): cntrl{c} {}
 
 
 void AdminUI::displayAll() {
   std::vector<Movie> all = this->cntrl.getAll();
+
+  // ComparatorMovieTitleAscending comp = ComparatorMovieTitleAscending();
+  // std::function<bool(const Movie&, const Movie&)> f = &(ComparatorMovieTitleAscending::compare);
+  // std::sort(all.begin(), all.end(), f);
+
   for(int i = 0; i < (int)all.size(); i++) {
     std::cout << i << ". " << all[i] << '\n';
   }
