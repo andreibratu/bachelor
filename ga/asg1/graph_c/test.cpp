@@ -35,6 +35,7 @@ int main() {
   i = 0;
   Iterator<int> it2 = g.get_inbound_edges_it(1);
   for(; it2.valid(); i++, it2.next());
+  assert(i == 1);
 
   // Edges are directed
   assert(!g.is_edge(1, 3));

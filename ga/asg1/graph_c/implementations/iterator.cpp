@@ -5,20 +5,20 @@
 
 
 template <class T>
-Iterator<T>::Iterator(const std::vector<T>& c): c{c} {
-  this->it = this->c.begin();
+Iterator<T>::Iterator(const std::vector<T>& c): container{c} {
+  this->it = this->container.begin();
 }
 
 
 template <class T>
 void Iterator<T>::first() {
-  this->it = this->c.begin();
+  this->it = this->container.begin();
 }
 
 
 template <class T>
 bool Iterator<T>::valid() const {
-  return this->it != this->c.end();
+  return this->it != this->container.end();
 }
 
 
@@ -26,7 +26,7 @@ bool Iterator<T>::valid() const {
 template <class T>
 T Iterator<T>::getCurrent() const {
   if(this->valid())
-    return *this->it;
+    return *(this->it);
   else
     throw std::exception();
 }
@@ -34,5 +34,5 @@ T Iterator<T>::getCurrent() const {
 
 template <class T>
 void Iterator<T>::next() {
-  this->it++;
+  (this->it)++;
 }

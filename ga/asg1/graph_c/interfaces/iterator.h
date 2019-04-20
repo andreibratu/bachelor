@@ -8,7 +8,7 @@ class Vertex;
 template <class T>
 class Iterator {
 private:
-  const std::vector<T>& c;
+  const std::vector<T>& container;
   typename std::vector<T>::const_iterator it;
 public:
   /**
