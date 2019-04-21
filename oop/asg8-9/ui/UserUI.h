@@ -4,7 +4,7 @@
 
 class UserUI {
 private:
-  UserController& c;
+  UserController& controller;
 
   void queryByGenre();
 
@@ -20,7 +20,7 @@ private:
 
   void playTrailer();
 public:
-  UserUI(UserController& cntrl);
+  UserUI(UserController& controller);
 
   void input_loop();
 };

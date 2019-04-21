@@ -8,8 +8,8 @@ private:
   std::string name;
   std::string genre;
   std::string trailer;
-  int year;
-  int likes;
+  int year{};
+  int likes{};
 public:
   Movie();
 
@@ -39,11 +39,11 @@ public:
 
   int getLikes() const;
 
-  bool operator == (const Movie other) const;
+  bool operator == (const Movie& other) const;
 
   Movie& operator ++ ();
 
-  Movie& operator ++ (int);
+  const Movie  operator ++ (int);
 
   friend std::ostream& operator << (std::ostream& os, const Movie& m);
 

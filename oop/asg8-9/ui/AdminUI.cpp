@@ -5,11 +5,11 @@
 #include "AdminUI.h"
 #include "../comparator/ComparatorMovieTitleAscending.h"
 
-AdminUI::AdminUI(AdminController& c): cntrl{c} {}
+AdminUI::AdminUI(AdminController& c): controller{c} {}
 
 
 void AdminUI::displayAll() {
-  std::vector<Movie> all = this->cntrl.getAll();
+  std::vector<Movie> all = this->controller.getAll();
 
   // ComparatorMovieTitleAscending comp = ComparatorMovieTitleAscending();
   // std::function<bool(const Movie&, const Movie&)> f = &(ComparatorMovieTitleAscending::compare);
@@ -39,7 +39,7 @@ void AdminUI::addMovie() {
   std::cout << "Year: ";
   std::cin >> year;
 
-  this->cntrl.addMovie(name, genre, trailer, year);
+  this->controller.addMovie(name, genre, trailer, year);
 }
 
 
@@ -48,7 +48,7 @@ void AdminUI::deleteMovie() {
   std::cout << "Index: ";
   std::cin >> idx;
 
-  this->cntrl.deleteMovie(idx);
+  this->controller.deleteMovie(idx);
 }
 
 
@@ -63,7 +63,7 @@ void AdminUI::newName() {
   std::cout << "New name: ";
   std::getline(std::cin, name);
 
-  this->cntrl.updateName(idx, name);
+  this->controller.updateName(idx, name);
 }
 
 
@@ -78,7 +78,7 @@ void AdminUI::newGenre() {
   std::cout << "New genre: ";
   std::getline(std::cin, genre);
 
-  this->cntrl.updateGenre(idx, genre);
+  this->controller.updateGenre(idx, genre);
 }
 
 
@@ -93,7 +93,7 @@ void AdminUI::newTrailer() {
   std::cout << "Trailer: ";
   std::getline(std::cin, trailer);
 
-  this->cntrl.updateTrailer(idx, trailer);
+  this->controller.updateTrailer(idx, trailer);
 }
 
 
@@ -107,7 +107,7 @@ void AdminUI::newYear() {
   std::cout << "Year: ";
   std::cin >> year;
 
-  this->cntrl.updateYear(idx, year);
+  this->controller.updateYear(idx, year);
 }
 
 
@@ -163,9 +163,11 @@ Your option: ";
           flag = false;
           system("clear");
           break;
+      default:
+          break;
       }
     }
-    catch(std::exception e) {
+    catch(std::exception& e) {
       std::cout << e.what() << '\n';
     }
   }

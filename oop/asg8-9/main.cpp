@@ -1,4 +1,6 @@
-#include "repo/Repository.h"
+#include <db/DbMovieRepo.h>
+#include "repo/abstract/AbstractRepository.h"
+#include "repo/CSVMovieRepo.h"
 #include "controller/AdminController.h"
 #include "controller/UserController.h"
 #include "ui/AdminUI.h"
@@ -6,26 +8,26 @@
 
 
 int main() {
-  Repository r;
+    DbMovieRepo dbr{"movies.csv"};
+//    CSVMovieRepo r{"admin.csv"};
+//
+//    bool option = false;
+//    std::cout << "Admin(0) / User(1)? ";
+//    std::cin >> option;
+//
+//    std::cin.ignore();
+//
+//    if(!option) {
+//        AdminController c{r};
+//        AdminUI ui{c};
+//        ui.input_loop();
+//    }
+//    else {
+//        CSVMovieRepo watchlist{"user.csv"};
+//        UserController c{r, watchlist};
+//        UserUI ui{c};
+//        ui.input_loop();
+//    }
 
-  int option = -1;
-  while(option < 0 || option > 1) {
-    std::cout << "Admin(0) / User(1)? ";
-    std::cin >> option;
-  }
-
-  std::cin.ignore();
-
-  if(!option) {
-    AdminController c{r};
-    AdminUI ui{c};
-    ui.input_loop();
-  }
-  else {
-    UserController c{r};
-    UserUI ui{c};
-    ui.input_loop();
-  }
-
-  return 0;
+    return 0;
 }

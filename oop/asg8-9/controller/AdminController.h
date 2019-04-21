@@ -1,14 +1,14 @@
 #ifndef ADMIN_CONTROLLER_H
 #define ADMIN_CONTROLLER_H
 
-#include "../repo/Repository.h"
+#include "../repo/movie/MovieRepository.h"
+#include "../model/Movie.h"
 
-
-class AdminController {
+class AdminController{
 private:
-  Repository& repository;
+  MovieRepository& repository;
 public:
-  AdminController(Repository& r);
+  explicit AdminController(MovieRepository& r);
 
   std::vector<Movie> getAll();
 
@@ -23,8 +23,5 @@ public:
   void updateTrailer(int idx, const std::string& trailer);
 
   void updateYear(int idx, int year);
-
-  ~AdminController();
 };
-
 #endif

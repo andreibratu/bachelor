@@ -1,16 +1,16 @@
 #ifndef USER_C_H
 #define USER_C_H
 
-#include "../repo/Repository.h"
+#include "../repo/movie/MovieRepository.h"
 
 class UserController {
 private:
-  Repository& r;
-  std::vector<Movie> watchlist;
-  std::vector<Movie> query;
   int current;
+  MovieRepository& watchlist;
+  MovieRepository& repository;
+  std::vector<Movie> query;
 public:
-  UserController(Repository& repo);
+  UserController(MovieRepository& repo, MovieRepository& watchlist);
 
   void queryByGenre(const std::string&);
 
@@ -25,8 +25,6 @@ public:
   std::vector<Movie> getWatchlist();
 
   std::vector<Movie> getQuery();
-
-  ~UserController();
 };
 
 #endif

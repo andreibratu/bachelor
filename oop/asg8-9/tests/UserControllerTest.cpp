@@ -1,11 +1,12 @@
 #include "assert.h"
-#include "../repo/Repository.h"
+#include "../repo/movie/MovieRepository.h"
 #include "../controller/UserController.h"
 
 
 int main() {
-  Repository r;
-  UserController c{r};
+  MovieRepository r;
+  MovieRepository w;
+  UserController c{r, w};
 
   // Remove Movies objects init by .csv
   while(c.getWatchlist().size()) {

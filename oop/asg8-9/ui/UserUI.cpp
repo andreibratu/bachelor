@@ -2,21 +2,21 @@
 #include <sstream>
 
 
-UserUI::UserUI(UserController& cntrl): c{cntrl} {}
+UserUI::UserUI(UserController& cntrl): controller{cntrl} {}
 
 
 void UserUI::queryByGenre() {
   std::string query;
   std::cout << "Input query: ";
   std::getline(std::cin, query);
-  this->c.queryByGenre(query);
+  this->controller.queryByGenre(query);
 
   int option;
-  bool input_flag = 1;
+  bool input_flag = true;
 
   system("clear");
 
-  if(!this->c.getQuery().size()) {
+  if(this->controller.getQuery().empty()) {
     std::cout << "No movie matching the query!\n";
     return;
   }
@@ -25,7 +25,7 @@ void UserUI::queryByGenre() {
     try {
       this->seeDetails();
     }
-    catch(std::exception e) {
+    catch(std::exception& e) {
       std::cout << "No movies left!\n";
       input_flag = false;
       continue;
@@ -52,7 +52,9 @@ Your option: ";
         system("clear");
         break;
       case 4:
-        input_flag = 0;
+        input_flag = false;
+        break;
+    default:
         break;
     }
   }
@@ -60,23 +62,23 @@ Your option: ";
 
 
 void UserUI::addToWatchlist() {
-  this->c.addToWatchList();
+  this->controller.addToWatchList();
 }
 
 
 void UserUI::nextMovie() {
-  this->c.nextMovie();
+  this->controller.nextMovie();
 }
 
 
 void UserUI::seeDetails() {
-  Movie m = this->c.seeDetails();
+  Movie m = this->controller.seeDetails();
   std::cout << m << "\n\n";
 }
 
 
 void UserUI::playTrailer() {
-  Movie m = this->c.seeDetails();
+  Movie m = this->controller.seeDetails();
   std::stringstream ss;
   ss << "google-chrome " << m.getTrailer();
   system(ss.str().c_str());
@@ -85,7 +87,7 @@ void UserUI::playTrailer() {
 
 
 void UserUI::getWatchlist() {
-  std::vector<Movie> wl = this->c.getWatchlist();
+  std::vector<Movie> wl = this->controller.getWatchlist();
 
   if(wl.size()) {
     for(int i = 0; i < (int)wl.size(); i++) {
@@ -99,7 +101,7 @@ void UserUI::getWatchlist() {
 
 
 void UserUI::removeWatchlist() {
-  if(!this->c.getWatchlist().size()) {
+  if(!this->controller.getWatchlist().size()) {
     system("clear");
     std::cout << "Watchlist is empty!\n";
     return;
@@ -113,7 +115,7 @@ void UserUI::removeWatchlist() {
   std::cout << "Did you like it (0/1) ? ";
   std::cin >> liked;
 
-  this->c.removeWatchlist(idx, liked);
+  this->controller.removeWatchlist(idx, liked);
 }
 
 

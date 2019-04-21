@@ -6,7 +6,7 @@
 
 class AdminUI {
 private:
-  AdminController& cntrl;
+  AdminController& controller;
 
   void addMovie();
 
@@ -22,7 +22,7 @@ private:
 
   void displayAll();
 public:
-  AdminUI(AdminController&);
+  explicit AdminUI(AdminController& controller);
 
   void input_loop();
 };

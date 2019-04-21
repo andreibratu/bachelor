@@ -3,7 +3,7 @@
 
 
 int main() {
-  Repository r;
+  MovieRepository r;
   AdminController c{r};
 
   // Remove Movies read from .csv for a blank slate
@@ -11,7 +11,7 @@ int main() {
     c.deleteMovie(0);
   }
 
-  r.addMovie(Movie{"asdf", "asdf", "asdf", 1998});
+  r.add(Movie{"asdf", "asdf", "asdf", 1998});
   assert(c.getAll().size() == 1);
   c.addMovie("super", "cool", "uber", 2019);
   assert(c.getAll().size() == 2);

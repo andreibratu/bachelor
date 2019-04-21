@@ -5,19 +5,7 @@
 #include "AdminController.h"
 
 
-AdminController::AdminController(Repository& r) : repository{r} {
-  std::fstream fin("./admin.csv", std::ios::in);
-  std::string line;
-  Movie m;
-
-  while (std::getline(fin, line)) {
-    std::stringstream s(line);
-    s >> m;
-    this->repository.addMovie(m);
-  }
-
-  fin.close();
-}
+AdminController::AdminController(MovieRepository& r): repository{r} {}
 
 
 std::vector<Movie> AdminController::getAll() {
@@ -27,12 +15,12 @@ std::vector<Movie> AdminController::getAll() {
 
 void AdminController::addMovie(const std::string& n, const std::string& g, const std::string& t, int y) {
   Movie m{n, g, t, y};
-  this->repository.addMovie(m);
+  this->repository.add(m);
 }
 
 
 void AdminController::deleteMovie(int idx) {
-  this->repository.deleteMovie(idx);
+  this->repository.remove(idx);
 }
 
 
@@ -53,14 +41,4 @@ void AdminController::updateTrailer(int idx, const std::string& trailer) {
 
 void AdminController::updateYear(int idx, int year) {
   this->repository.updateYear(idx, year);
-}
-
-
-AdminController::~AdminController() {
-  std::fstream fout("./admin.csv", std::ios::out | std::ios::trunc);
-  for(auto& x: this->repository.getAll()) {
-    fout << x << '\n';
-  }
-
-  fout.close();
 }

@@ -1,8 +1,12 @@
+#include <utility>
+
+#include <utility>
+
+#include <utility>
+
 #include "Movie.h"
 #include <algorithm>
-#include <assert.h>
-
-Movie::Movie() {}
+#include <cassert>
 
 
 Movie::Movie(const std::string& n, const std::string& g, const std::string& t, int y) {
@@ -35,7 +39,7 @@ Movie& Movie::operator = (const Movie& m) {
 
 
 void Movie::setName(std::string n) {
-  this->name = n;
+  this->name = std::move(n);
 }
 
 
@@ -44,8 +48,8 @@ std::string Movie::getName() const {
 }
 
 
-void Movie::setGenre(std::string genre) {
-  this->genre = genre;
+void Movie::setGenre(std::string g) {
+  this->genre = std::move(g);
 }
 
 
@@ -54,8 +58,8 @@ std::string Movie::getGenre() const {
 }
 
 
-void Movie::setTrailer(std::string trailer) {
-  this->trailer = trailer;
+void Movie::setTrailer(std::string t) {
+  this->trailer = std::move(t);
 }
 
 
@@ -64,8 +68,8 @@ std::string Movie::getTrailer() const {
 }
 
 
-void Movie::setYear(int year) {
-  this->year = year;
+void Movie::setYear(int y) {
+  this->year = y;
 }
 
 
@@ -74,8 +78,8 @@ int Movie::getYear() const {
 }
 
 
-void Movie::setLikes(int likes) {
-  this->likes = likes;
+void Movie::setLikes(int l) {
+  this->likes = l;
 }
 
 
@@ -84,11 +88,11 @@ int Movie::getLikes() const {
 }
 
 
-bool Movie::operator == (const Movie other) const {
+bool Movie::operator == (const Movie& other) const {
   // Search by genre use case
 
   if(other.getYear() == -1) {
-    if(other.getGenre().size() == 0) return true;
+    if(other.getGenre().empty()) return true;
 
     std::string copy1 = std::string(this->getGenre());
     std::string copy2 = std::string(other.getGenre());
@@ -114,7 +118,7 @@ Movie& Movie::operator ++ () {
 }
 
 
-Movie& Movie::operator ++ (int) {
+const Movie Movie::operator ++ (int) {
   ++(*this);
   return *this;
 }
@@ -143,5 +147,14 @@ std::istream& operator >> (std::istream& is, Movie& m) {
   getline(is, x, ',');
   m.setYear(std::stoi(x));
 
+  getline(is, x, ',');
+  m.setLikes(std::stoi(x));
+
   return is;
+}
+
+
+Movie::Movie() {
+    this->likes = 0;
+    this->year = 0;
 }
