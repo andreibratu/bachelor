@@ -1,7 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <functional>
-#include "../controller/AdminController.h"
+#include "base/AdminController.h"
 #include "AdminUI.h"
 #include "../comparator/ComparatorMovieTitleAscending.h"
 
@@ -125,7 +125,8 @@ while (flag) {
 5. Update genre\n\
 6. Update trailer\n\
 7. Update year\n\
-8. Exit\n\
+8. Show\n\
+9. Exit\n\
 Your option: ";
     std::cin >> option;
     std::cin.ignore();
@@ -160,6 +161,10 @@ Your option: ";
           system("clear");
           break;
       case 8:
+          show();
+          system("clear");
+          break;
+      case 9:
           flag = false;
           system("clear");
           break;
@@ -171,4 +176,9 @@ Your option: ";
       std::cout << e.what() << '\n';
     }
   }
+}
+
+
+void AdminUI::show() {
+    this->controller.show();
 }

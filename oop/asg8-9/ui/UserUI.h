@@ -1,6 +1,6 @@
 #ifndef USER_UI_H
 #define USER_UI_H
-#include "../controller/UserController.h"
+#include "base/UserController.h"
 
 class UserUI {
 private:

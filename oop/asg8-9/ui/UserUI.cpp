@@ -101,7 +101,7 @@ void UserUI::getWatchlist() {
 
 
 void UserUI::removeWatchlist() {
-  if(!this->controller.getWatchlist().size()) {
+  if(this->controller.getWatchlist().empty()) {
     system("clear");
     std::cout << "Watchlist is empty!\n";
     return;

@@ -4,9 +4,13 @@
 
 template <class T>
 class PersistentRepository: virtual protected AbstractRepository<T> {
-protected:
-  virtual void load() = 0;
 
-  virtual void save() = 0;
+protected:
+    std::string filename;
+
+protected:
+    virtual void load() = 0;
+
+    virtual void save() = 0;
 };
 #endif

@@ -3,8 +3,8 @@
 #include <sstream>
 
 #include "UserController.h"
-#include "../exception/IndexException.h"
-#include "../exception/LikeException.h"
+#include "IndexException.h"
+#include "LikeException.h"
 
 
 UserController::UserController(

@@ -1,6 +1,6 @@
 #include "assert.h"
 #include "../repo/movie/MovieRepository.h"
-#include "../controller/UserController.h"
+#include "base/UserController.h"
 
 
 int main() {

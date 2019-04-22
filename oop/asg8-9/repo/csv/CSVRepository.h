@@ -10,8 +10,6 @@
 template <class T>
 class CSVRepository: virtual protected PersistentRepository<T> {
 private:
-    std::string filename;
-
     void load() {
         std::fstream fin(this->filename, std::ios::in);
 

@@ -1,7 +1,7 @@
 #ifndef ADMIN_UI_H
 #define ADMIN_UI_H
 
-#include "../controller/AdminController.h"
+#include "base/AdminController.h"
 
 
 class AdminUI {
@@ -21,6 +21,8 @@ private:
   void newYear();
 
   void displayAll();
+
+  void show();
 public:
   explicit AdminUI(AdminController& controller);
 

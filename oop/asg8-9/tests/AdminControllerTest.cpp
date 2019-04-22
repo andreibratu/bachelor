@@ -1,5 +1,5 @@
 #include <assert.h>
-#include "../controller/AdminController.h"
+#include "base/AdminController.h"
 
 
 int main() {

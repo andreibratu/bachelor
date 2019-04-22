@@ -1,11 +1,10 @@
+#include <utility>
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <vector>
 #include "AdminController.h"
-
-
-AdminController::AdminController(MovieRepository& r): repository{r} {}
 
 
 std::vector<Movie> AdminController::getAll() {
@@ -41,4 +40,8 @@ void AdminController::updateTrailer(int idx, const std::string& trailer) {
 
 void AdminController::updateYear(int idx, int year) {
   this->repository.updateYear(idx, year);
+}
+
+AdminController::AdminController(MovieRepository &r): repository{r} {
+
 }
