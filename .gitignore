@@ -45,3 +45,5 @@
 # Intellij stuff
 **/.idea/
 **/cmake-build-debug/*
+*.db
+oop/asg8-9/*.html
