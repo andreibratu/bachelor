@@ -21,9 +21,17 @@ bfs.o:
 test.o:
 	$(CC) $(ARGS) -o test.o ./test.cpp
 
-test: test.o vertex.o graph.o iterator.o generator.o test.o generator.o bfs.o
+bonus.o:
+	$(CC) $(ARGS) -o bonus.o ./bonus.cpp
+
+test: test.o vertex.o graph.o iterator.o generator.o test.o bfs.o
 	$(CC) $(EXECARGS) -o output.o vertex.o graph.o iterator.o generator.o test.o bfs.o
 	./output.o
+
+
+bonus_run: vertex.o graph.o iterator.o bfs.o bonus.o
+	$(CC) $(EXECARGS) -o bonus_run.o vertex.o graph.o iterator.o bfs.o bonus.o
+	./bonus_run.o
 
 
 .PHONY: clean

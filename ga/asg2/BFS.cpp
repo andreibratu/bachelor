@@ -13,7 +13,7 @@ std::vector<int> backwardBFS(Graph& g, int source, int dest) {
   Q.push(dest);
   seen[dest] = true;
 
-  while(Q.size()) {
+  while(!Q.empty()) {
     int currNode = Q.front();
     Q.pop();
     Iterator<int> it = g.get_inbound_edges_it(currNode);

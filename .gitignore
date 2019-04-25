@@ -40,3 +40,8 @@
 
 # Data files
 *.csv
+
+
+# Intellij stuff
+**/.idea/
+**/cmake-build-debug/*
