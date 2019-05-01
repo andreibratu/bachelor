@@ -132,12 +132,12 @@ int Graph::size() const {
 
 
 Iterator<Vertex> Graph::get_graph_iterator() const {
-  return Iterator<Vertex>(this->vertices);
+  return {this->vertices};
 }
 
 
 int Graph::get_edge_property(int out, int in) {
-  if(!this->is_edge(in, out)) {
+  if(!this->is_edge(out, in)) {
     throw std::exception();
   }
 
