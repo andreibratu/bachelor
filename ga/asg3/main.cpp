@@ -24,9 +24,9 @@ int main() {
     g.set_edge_property(1, 3, 7);
 
     g.add_edge(2, 3);
-    g.set_edge_property(2, 3, 5);
+    g.set_edge_property(2, 3, 4);
 
     int result = dp_min_walk(g, 0, 3);
-    assert(result == 14);
+    assert(result == 13);
     return 0;
 }

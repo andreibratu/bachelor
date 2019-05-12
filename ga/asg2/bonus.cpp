@@ -11,6 +11,8 @@ with the cabbage. Find a shortest sequence of moves for crossing the river.
 #include <queue>
 #include "BFS.h"
 
+#define START_STATE 240
+#define END_STATE 15
 
 bool was_seen(std::unordered_set<int>& memo, int& bitmask) {
   return memo.find(bitmask) != memo.end();
@@ -35,7 +37,7 @@ bool valid(int& bitmask) {
 
 
 bool is_final(int& bitmask) {
-    return bitmask == 15;
+    return bitmask == END_STATE;
 }
 
 
@@ -92,10 +94,10 @@ void get_neighbours(Graph& g, std::queue<int>& q, int cNode) {
 
 int main() {
   Graph g;
-  g.add_vertex(240);
+  g.add_vertex(START_STATE);
   std::unordered_set<int> seen;
   std::queue<int> q;
-  q.push(240);
+  q.push(START_STATE);
   while(true) {
     int state = q.front();
     std::cout << "--------\nCurrent: " << state << '\n';
