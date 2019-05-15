@@ -5,6 +5,6 @@
 
 int main() {
     testAll();
-//    testAllExtended();
+    testAllExtended();
     return 0;
 }

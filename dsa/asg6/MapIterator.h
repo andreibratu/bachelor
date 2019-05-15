@@ -6,8 +6,6 @@
 #define ASG6_MAPITERATOR_H
 
 #include "Map.h"
-#include "HashTable.h"
-
 
 class Map;
 typedef std::pair<int, int> TElem;
@@ -17,10 +15,10 @@ class MapIterator {
 friend class Map;
 
 private:
-    explicit MapIterator(const Map&);
+    explicit MapIterator(const Map& m);
 
-    const Map& map;
-    int idx{};
+    const Map& container;
+    int idx;
 public:
     void first();
 
@@ -30,6 +28,5 @@ public:
 
     TElem getCurrent() const;
 };
-
 
 #endif //ASG6_MAPITERATOR_H

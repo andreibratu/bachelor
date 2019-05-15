@@ -1,32 +1,37 @@
 //
-// Created by andreib on 27.04.2019.
+// Created by andreib on 15.05.2019.
 //
 
+#include <exception>
 #include "MapIterator.h"
 
-MapIterator::MapIterator(const Map& c): map{c} {
-    this->first();
+
+MapIterator::MapIterator(const Map& m): container{m} {
+    idx=0;
+    first();
 }
 
+
 void MapIterator::first() {
-    this->idx = 0;
-    while(this->map.hashTable.array[this->idx].first == -1) {
-        this->idx++;
+    idx = 0;
+    while(container.table.values[idx] == container.table.EMPTY_ELEM) {
+        idx++;
     }
 }
 
 void MapIterator::next() {
-    if(!this->valid()) throw std::exception();
-    while(this->map.hashTable.array[this->idx].first == -1) {
-        this->idx++;
+    if(!valid()) throw std::exception();
+    idx++;
+    while(container.table.values[idx] == container.table.EMPTY_ELEM && idx < container.table.size) {
+        idx++;
     }
 }
 
 bool MapIterator::valid() const {
-    return this->idx < this->map.hashTable.m;
+    return idx != container.table.size;
 }
 
 TElem MapIterator::getCurrent() const {
-    if(!this->valid()) throw std::exception();
-    return this->map.hashTable.array[this->idx];
+    if(!valid()) throw std::exception();
+    return container.table.values[idx];
 }
