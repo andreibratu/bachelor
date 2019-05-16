@@ -2,7 +2,7 @@
 #include <QApplication>
 #include <QTableView>
 #include <QHeaderView>
-#include "moviemodel.h"
+#include "adminmoviemodel.h"
 
 int main(int argc, char *argv[])
 {

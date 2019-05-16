@@ -3,6 +3,8 @@
 
 #include <string>
 #include <iostream>
+#include <QString>
+#include <QVariant>
 
 class Movie {
 private:
@@ -15,6 +17,10 @@ public:
   Movie();
 
   Movie(const std::string& n, const std::string& g, const std::string& t, int y);
+
+  Movie(QString n , QString g, int l, int y, QString t);
+
+  Movie(QVariant n , QVariant g, QVariant l, QVariant y, QVariant t);
 
   Movie(const Movie& m);
 

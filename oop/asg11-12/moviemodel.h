@@ -11,33 +11,44 @@ class MovieModel : public QAbstractTableModel
 public:
     explicit MovieModel(QObject *parent = nullptr);
 
-    // Header:
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
+    MovieModel(QObject *parent = nullptr, QString read_from_filename = "", QString write_to_filename = "");
 
-    bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role = Qt::EditRole) override;
-
-    // Basic functionality:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
-    // Editable:
-    bool setData(const QModelIndex &index, const QVariant &value,
-                 int role = Qt::EditRole) override;
+    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const = 0;
 
-    Qt::ItemFlags flags(const QModelIndex& index) const override;
+    virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) = 0;
 
-    bool insertRows(int row, int count, const QModelIndex &parent) override;
+    virtual Qt::ItemFlags flags(const QModelIndex& index) const = 0;
 
-    ~MovieModel();
+    virtual bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+
+    virtual bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+
+    virtual ~MovieModel();
+
 private:
+    QString read_from_filename;
+
+    QString write_to_filename;
+
+    void readCSV();
+
+    void writeCSV();
+
+protected:
     std::vector<Movie> movies;
-    QString filename;
-    void loadFromCSV();
 
 public slots:
-    void addNewMovie(Movie);
+    void addMovie(Movie);
+
+    void deleteMovie(int);
+
+    void updateData(QModelIndex, QModelIndex, QVector<int>);
 };
 
 #endif // MOVIEMODEL_H

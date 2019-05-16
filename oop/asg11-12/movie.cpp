@@ -14,6 +14,23 @@ Movie::Movie(const std::string& n, const std::string& g, const std::string& t, i
 }
 
 
+Movie::Movie(QString n , QString g, int l, int y, QString t) {
+    name = n.toStdString();
+    genre = g.toStdString();
+    likes = l;
+    year = y;
+    trailer = t.toStdString();
+}
+
+
+Movie::Movie(QVariant n, QVariant g, QVariant l, QVariant y, QVariant t) {
+    name = n.toString().toStdString();
+    genre = g.toString().toStdString();
+    likes = l.toInt();
+    year = y.toInt();
+    trailer = t.toString().toStdString();
+}
+
 Movie::Movie(const Movie& m) {
   name = std::string(m.getName());
   genre = std::string(m.getGenre());

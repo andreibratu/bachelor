@@ -2,7 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <moviemodel.h>
+#include <adminmoviemodel.h>
+#include <usermoviemodel.h>
 #include <movie.h>
 
 namespace Ui {
@@ -20,12 +21,24 @@ public:
 private slots:
     void on_addMovieButton_clicked();
 
+    void on_deleteMovieButton_clicked();
+
+    void on_sendToPlaylistButton_clicked();
+
 signals:
     void newMovie(Movie);
 
+    void sendToPlaylist(Movie);
+
+    void sendFromPlaylist(Movie);
+
+    void movieWasDeleted(int);
+
 private:
     Ui::MainWindow *ui;
-    MovieModel* movieModel;
+    MovieModel* adminMovieModel;
+    MovieModel* userMovieModel;
+    MovieModel* playlistMovieModel;
 };
 
 #endif // MAINWINDOW_H

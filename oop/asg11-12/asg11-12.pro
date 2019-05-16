@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT += charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -27,15 +28,22 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     movie.cpp \
-    moviemodel.cpp
+    usermoviemodel.cpp \
+    adminmoviemodel.cpp \
+    moviemodel.cpp \
+    playlistmoviemodel.cpp
 
 HEADERS += \
         mainwindow.h \
     movie.h \
-    moviemodel.h
+    usermoviemodel.h \
+    adminmoviemodel.h \
+    moviemodel.h \
+    playlistmoviemodel.h
 
 FORMS += \
         mainwindow.ui
 
 DISTFILES += \
-    admin.csv
+    admin.csv \
+    playlist.csv

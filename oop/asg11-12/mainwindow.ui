@@ -21,7 +21,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="adminTab">
        <attribute name="title">
@@ -29,7 +29,7 @@
        </attribute>
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0" rowspan="4">
-         <widget class="QTableView" name="tableView">
+         <widget class="QTableView" name="adminTableView">
           <property name="minimumSize">
            <size>
             <width>400</width>
@@ -82,7 +82,7 @@
            </widget>
           </item>
           <item row="3" column="0">
-           <widget class="QLabel" name="yearLabel_2">
+           <widget class="QLabel" name="trailerLabel">
             <property name="text">
              <string>Trailer</string>
             </property>
@@ -98,14 +98,57 @@
             </property>
            </widget>
           </item>
+          <item row="4" column="0">
+           <widget class="QPushButton" name="deleteMovieButton">
+            <property name="text">
+             <string>Delete</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_2">
+      <widget class="QWidget" name="userTab">
        <attribute name="title">
         <string>User</string>
        </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QTableView" name="userTableView"/>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <widget class="QPushButton" name="sendToPlaylistButton">
+              <property name="text">
+               <string>&gt;</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="sendFromPlaylistButton">
+              <property name="text">
+               <string>&lt;</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QTableView" name="playlistTableView"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="statsTab">
+       <attribute name="title">
+        <string>Stats</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_2"/>
       </widget>
      </widget>
     </item>
