@@ -4,7 +4,7 @@
 
 #include <exception>
 #include "MapIterator.h"
-
+#define EMPTY_ELEM (std::make_pair(-1, -1))
 
 MapIterator::MapIterator(const Map& m): container{m} {
     idx=0;
@@ -14,7 +14,7 @@ MapIterator::MapIterator(const Map& m): container{m} {
 
 void MapIterator::first() {
     idx = 0;
-    while(container.table.values[idx] == container.table.EMPTY_ELEM) {
+    while(idx < container.table.size && container.table.values[idx] == EMPTY_ELEM) {
         idx++;
     }
 }
@@ -22,7 +22,7 @@ void MapIterator::first() {
 void MapIterator::next() {
     if(!valid()) throw std::exception();
     idx++;
-    while(container.table.values[idx] == container.table.EMPTY_ELEM && idx < container.table.size) {
+    while(idx < container.table.size && container.table.values[idx] == EMPTY_ELEM) {
         idx++;
     }
 }

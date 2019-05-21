@@ -7,7 +7,7 @@
 void testAll() { //call each function to see if it is implemented
     Map m;
     assert(m.isEmpty() == true);
-    assert(m.size() == 0); //add elements
+    assert(m.size() == 0); //insert elements
     assert(m.add(5,5)==NULL_TVALUE);
     assert(m.add(1,111)==NULL_TVALUE);
     assert(m.add(10,110)==NULL_TVALUE);

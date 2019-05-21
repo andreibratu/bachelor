@@ -8,7 +8,6 @@
 using namespace std;
 
 
-
 void testCreate() {
     Map m;
     assert(m.size() == 0);
@@ -50,7 +49,7 @@ void testAdd() {
     for (int i = -10; i < 0; i++) {
         assert(m.add(i, i) == NULL_TVALUE);
     }
-    for (int i = 0; i < 10; i++) {
+    for (int i = 1; i < 10; i++) {
         assert(m.add(i, i) == i);
     }
     for (int i = 10; i < 20; i++) {
@@ -255,3 +254,6 @@ void testAllExtended() {
     testIterator();
     testQuantity();
 }
+
+
+
