@@ -2,14 +2,14 @@
 #include <QTextStream>
 #include "adminmoviemodel.h"
 #include "movie.h"
+#include "helpers.h"
 #include <QTextStream>
 #include <QDebug>
 
-AdminMovieModel::AdminMovieModel(QObject *parent)
-    : MovieModel(parent, "/home/andreib/asg11-12/admin.csv", "/home/andreib/asg11-12/admin.csv")
+AdminMovieModel::AdminMovieModel(QObject *parent): MovieModel(parent)
 {
+    readCSV(this->movies, "/home/andreib/asg11-12/admin.csv");
 }
-
 
 QVariant AdminMovieModel::data(const QModelIndex &index, int role) const
 {
@@ -24,19 +24,19 @@ QVariant AdminMovieModel::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole:
         switch (column) {
         case 0:
-            return QString::fromStdString(m.getName());
+            return m.name;
             break;
         case 1:
-            return QString::fromStdString(m.getGenre());
+            return m.genre;
             break;
         case 2:
-            return QString::number(m.getLikes());
+            return m.likes;
             break;
         case 3:
-            return QString::number(m.getYear());
+            return m.year;
             break;
         case 4:
-            return QString::fromStdString(m.getTrailer());
+            return m.trailer;
             break;
         }
         break;
@@ -57,19 +57,19 @@ bool AdminMovieModel::setData(const QModelIndex &index, const QVariant &value, i
         Movie& movie = this->movies[row];
         switch(index.column()) {
         case 0:
-            movie.setName(value.toString().toStdString());
+            movie.name = value.toString();
             break;
         case 1:
-            movie.setGenre(value.toString().toStdString());
+            movie.genre = value.toString();
             break;
         case 2:
-            movie.setLikes(value.toInt());
+            movie.likes = value.toInt();
             break;
         case 3:
-            movie.setYear(value.toInt());
+            movie.year = value.toInt();
             break;
         case 4:
-            movie.setTrailer(value.toString().toStdString());
+            movie.trailer = value.toString();
             break;
         }
         emit dataChanged(index, index, QVector<int>() << role);
@@ -90,4 +90,8 @@ Qt::ItemFlags AdminMovieModel::flags(const QModelIndex &index) const
     default:
         return Qt::ItemIsEditable | QAbstractTableModel::flags(index);
     }
+}
+
+AdminMovieModel::~AdminMovieModel() {
+    writeCSV(this->movies, "/home/andreib/asg11-12/admin.csv");
 }

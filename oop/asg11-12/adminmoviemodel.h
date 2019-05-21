@@ -4,10 +4,9 @@
 #include "moviemodel.h"
 #include "movie.h"
 
-class AdminMovieModel : public MovieModel
+class AdminMovieModel: public MovieModel
 {
     Q_OBJECT
-
 public:
     explicit AdminMovieModel(QObject *parent = nullptr);
 
@@ -15,9 +14,9 @@ public:
 
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
-    Qt::ItemFlags flags(const QModelIndex& index) const override;
+    Qt::ItemFlags flags(const QModelIndex& index) const;
 
-    ~AdminMovieModel() = default;
+    ~AdminMovieModel() override;
 };
 
 #endif

@@ -7,54 +7,28 @@
 #include <QVariant>
 
 class Movie {
-private:
-  std::string name;
-  std::string genre;
-  std::string trailer;
-  int year;
-  int likes;
 public:
-  Movie();
+    QString name;
+    QString genre;
+    QString trailer;
+    int year;
+    int likes;
 
-  Movie(const std::string& n, const std::string& g, const std::string& t, int y);
+    Movie();
 
-  Movie(QString n , QString g, int l, int y, QString t);
+    Movie(QString n , QString g, QString t, int y, int l);
 
-  Movie(QVariant n , QVariant g, QVariant l, QVariant y, QVariant t);
+    Movie(QVariant n , QVariant g, QVariant t, QVariant l, QVariant y);
 
-  Movie(const Movie& m);
+    Movie(const Movie& m);
 
-  Movie& operator = (const Movie&);
+    Movie& operator = (const Movie&);
 
-  void setName(std::string name);
+    bool operator == (const Movie& other) const;
 
-  std::string getName() const;
+    friend std::ostream& operator << (std::ostream& os, const Movie& m);
 
-  void setGenre(std::string genre);
-
-  std::string getGenre() const;
-
-  void setTrailer(std::string trailer);
-
-  std::string getTrailer() const;
-
-  void setYear(int year);
-
-  int getYear() const;
-
-  void setLikes(int likes);
-
-  int getLikes() const;
-
-  bool operator == (const Movie& other) const;
-
-  Movie& operator ++ ();
-
-  const Movie  operator ++ (int);
-
-  friend std::ostream& operator << (std::ostream& os, const Movie& m);
-
-  friend std::istream& operator >> (std::istream& is, Movie& m);
+    friend std::istream& operator >> (std::istream& is, Movie& m);
 };
 
 #endif // MOVIE_H

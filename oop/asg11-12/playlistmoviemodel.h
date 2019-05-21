@@ -16,12 +16,7 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex& index) const override;
 
-    ~PlaylistMovieModel() = default;
-
-public slots:
-    void movieAddedToPlaylist(Movie);
-
-    void movieRemovedFromPlaylist(Movie);
+    ~PlaylistMovieModel() override;
 };
 
 #endif // PLAYLISTMOVIEMODEL_H

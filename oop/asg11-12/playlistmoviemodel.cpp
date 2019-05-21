@@ -1,8 +1,9 @@
 #include "playlistmoviemodel.h"
+#include "helpers.h"
 
-PlaylistMovieModel::PlaylistMovieModel(QObject *parent) :
-    MovieModel(parent, "/home/andreib/asg11-12/playlist.csv", "/home/andreib/asg11-12/playlist.csv")
+PlaylistMovieModel::PlaylistMovieModel(QObject *parent) : MovieModel(parent)
 {
+    readCSV(this->movies, "/home/andreib/asg11-12/playlist.csv");
 }
 
 QVariant PlaylistMovieModel::data(const QModelIndex &index, int role) const
@@ -18,19 +19,19 @@ QVariant PlaylistMovieModel::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole:
         switch (column) {
         case 0:
-            return QString::fromStdString(m.getName());
+            return m.name;
             break;
         case 1:
-            return QString::fromStdString(m.getGenre());
+            return m.genre;
             break;
         case 2:
-            return QString::number(m.getLikes());
+            return m.likes;
             break;
         case 3:
-            return QString::number(m.getYear());
+            return m.year;
             break;
         case 4:
-            return QString::fromStdString(m.getTrailer());
+            return m.trailer;
             break;
         }
         break;
@@ -51,19 +52,22 @@ bool PlaylistMovieModel::setData(const QModelIndex &index, const QVariant &value
         Movie& movie = this->movies[row];
         switch(index.column()) {
         case 0:
-            movie.setName(value.toString().toStdString());
+            movie.name = value.toString();
             break;
         case 1:
-            movie.setGenre(value.toString().toStdString());
+            movie.genre = value.toString();
             break;
         case 2:
-            movie.setLikes(value.toInt());
+            if(movie.likes < value.toInt())
+                movie.likes += 1;
+            else
+                movie.likes -= 1;
             break;
         case 3:
-            movie.setYear(value.toInt());
+            movie.year = value.toInt();
             break;
         case 4:
-            movie.setTrailer(value.toString().toStdString());
+            movie.trailer = value.toString();
             break;
         }
         emit dataChanged(index, index, QVector<int>() << role);
@@ -77,15 +81,13 @@ Qt::ItemFlags PlaylistMovieModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return Qt::NoItemFlags;
 
+    if(index.column() == 2) {
+        return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
+    }
+
     return QAbstractTableModel::flags(index);
 }
 
-void PlaylistMovieModel::movieAddedToPlaylist(Movie movie)
-{
-    this->addMovie(movie);
-}
-
-void PlaylistMovieModel::movieRemovedFromPlaylist(Movie movie)
-{
-
+PlaylistMovieModel::~PlaylistMovieModel() {
+    writeCSV(this->movies, "/home/andreib/asg11-12/playlist.csv");
 }

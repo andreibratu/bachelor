@@ -7,7 +7,6 @@
 class UserMovieModel : public MovieModel
 {
     Q_OBJECT
-
 public:
     explicit UserMovieModel(QObject *parent = nullptr);
 
@@ -17,7 +16,7 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex& index) const override;
 
-    ~UserMovieModel() = default;
+    ~UserMovieModel() override;
 };
 
 #endif

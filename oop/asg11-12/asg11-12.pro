@@ -30,6 +30,7 @@ SOURCES += \
     movie.cpp \
     usermoviemodel.cpp \
     adminmoviemodel.cpp \
+    helpers.cpp \
     moviemodel.cpp \
     playlistmoviemodel.cpp
 
@@ -38,6 +39,7 @@ HEADERS += \
     movie.h \
     usermoviemodel.h \
     adminmoviemodel.h \
+    helpers.h \
     moviemodel.h \
     playlistmoviemodel.h
 

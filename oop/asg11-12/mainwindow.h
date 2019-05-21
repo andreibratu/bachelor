@@ -25,20 +25,23 @@ private slots:
 
     void on_sendToPlaylistButton_clicked();
 
+    void on_sendFromPlaylistButton_clicked();
+
 signals:
-    void newMovie(Movie);
+    void adminAddMovie(Movie);
 
-    void sendToPlaylist(Movie);
+    void adminRemoveMovie(int);
 
-    void sendFromPlaylist(Movie);
+    void playlistAddMovie(Movie);
 
-    void movieWasDeleted(int);
+    void playlistRemoveMovie(int);
 
 private:
     Ui::MainWindow *ui;
-    MovieModel* adminMovieModel;
-    MovieModel* userMovieModel;
+    MovieModel *adminMovieModel;
+    MovieModel *userMovieModel;
     MovieModel* playlistMovieModel;
+    void setup_graph();
 };
 
 #endif // MAINWINDOW_H
