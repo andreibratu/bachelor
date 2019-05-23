@@ -5,6 +5,7 @@
 #include <assert.h>
 #include "SortedMultiMap.h"
 
+// Theta(1)
 SortedMultiMap::SortedMultiMap(Relation r) {
     capacity = 100;
     compare = r;
@@ -14,6 +15,7 @@ SortedMultiMap::SortedMultiMap(Relation r) {
 }
 
 // Recursively shift nodes in subtree due to a removal
+// O(n)
 void SortedMultiMap::recursiveDelete(int idx)
 {
     // Node to be removed is a leaf
@@ -52,6 +54,7 @@ void SortedMultiMap::recursiveDelete(int idx)
     recursiveDelete(rIdx);
 }
 
+// Theta(n)
 void SortedMultiMap::resize()
 {
     int newCap = capacity * 4;
@@ -63,6 +66,7 @@ void SortedMultiMap::resize()
     tree = newTree;
 }
 
+// O(D)
 int SortedMultiMap::locateKey(TKey c) const
 {
     int idx = 1;
@@ -77,6 +81,7 @@ int SortedMultiMap::locateKey(TKey c) const
     return idx;
 }
 
+// O(D)
 void SortedMultiMap::add(TKey c, TValue v)
 {
     auto p = std::make_pair(c, v);
@@ -92,6 +97,7 @@ void SortedMultiMap::add(TKey c, TValue v)
     count += 1;
 }
 
+// O(D)
 vector<TValue> SortedMultiMap::search(TKey c) const
 {
     std::vector<TValue> values{};
@@ -114,6 +120,7 @@ vector<TValue> SortedMultiMap::search(TKey c) const
     return values;
 }
 
+// O(D)
 bool SortedMultiMap::remove(TKey c, TValue v)
 {
     int idx = locateKey(c);
@@ -147,21 +154,25 @@ bool SortedMultiMap::remove(TKey c, TValue v)
     return true;
 }
 
+// Theta(1)
 int SortedMultiMap::size() const
 {
     return count;
 }
 
+// Theta(1)
 bool SortedMultiMap::isEmpty() const
 {
     return count == 0;
 }
 
+// Theta(1)
 SMMIterator SortedMultiMap::iterator() const
 {
     return SMMIterator(*this);
 }
 
+// Theta(n)
 SortedMultiMap::~SortedMultiMap()
 {
     delete[] tree;

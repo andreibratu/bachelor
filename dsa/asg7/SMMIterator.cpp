@@ -4,12 +4,14 @@
 
 #include "SMMIterator.h"
 
+// Theta(1)
 // Equivalent to a NULL node check on a dynamic memory implementation
 inline bool SMMIterator::posExists(int pos) const
 {
     return pos < container.capacity;
 }
 
+// Theta(n)
 void SMMIterator::traverse(int cIdx)
 {
     if(
@@ -31,28 +33,33 @@ void SMMIterator::traverse(int cIdx)
     }
 }
 
+// Theta(n)
 SMMIterator::SMMIterator(const SortedMultiMap &c): container{c}
 {
     if(container.size() >= 1) traverse(1);
     idx = 0;
 }
 
+// Theta(1)
 void SMMIterator::first()
 {
     idx = 0;
 }
 
+// Theta(1)
 void SMMIterator::next()
 {
     if(!valid()) throw std::exception();
     idx++;
 }
 
+// Theta(1)
 bool SMMIterator::valid() const
 {
     return idx < traversal.size();
 }
 
+// Theta(1)
 std::pair<int, int> SMMIterator::getCurrent() const
 {
     if(!valid()) throw std::exception();
