@@ -1,38 +1,103 @@
+#include <utility>
+
 //
 // Created by andreib on 26.04.2019.
 //
 
-
+#include "MinCostWalk.h"
 #include <limits.h>
 #include <vector>
 #include <iostream>
-#include "MinCostWalk.h"
+#include "../asg1/graph_c/interfaces/graph.h"
 
+typedef std::vector<std::vector<int>> Matrix;
 
-int dp_min_walk(Graph& g, int source, int destination) {
+void squareMatrix(Matrix& costs, Matrix& transition)
+{
+    int n = costs.size();
+
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            for(int k = 0; k < n; k++)
+            {
+                if (
+                    ((i == j) || (k == j) || (i == k)) ||
+                    (costs[i][k] == INT_MAX || costs[k][j] == INT_MAX)
+                )
+                {
+                    continue;
+                }
+
+                if(costs[i][j] > costs[i][k]+costs[k][j])
+                {
+                    transition[i][j] = k;
+                    costs[i][j] = costs[i][k]+costs[k][j];
+                }
+            }
+        }
+    }
+}
+
+std::vector<int> reconstructPath(Matrix& transition, int source, int destination)
+{
+    std::vector<int> answer;
+    while (source != destination)
+    {
+        answer.push_back(destination);
+        if(transition[source][destination] == -1) destination = source;
+        else destination = transition[source][destination];
+    }
+    answer.push_back(source);
+
+    return answer;
+}
+
+std::pair<std::vector<int>, int> matrixMultiplicationMinWalk(Graph &g, int source, int destination)
+{
+    if(source == destination) return {{}, 0};
+
     int n = g.size();
-    #define MAX_WALK_LENGTH (n*n+1)
-    #define NODES (n)
-    #define INF (INT_MAX)
-    std::vector<std::vector<int>> w(MAX_WALK_LENGTH, std::vector<int>(NODES, INF));
-    w[0][source] = 0;
-
-    for(int k=1; k < MAX_WALK_LENGTH; k++) {
-        for(int x = 0; x < NODES; x++) {
-            for(auto it = g.get_inbound_edges_it(x) ; it.valid(); it.next()) {
-                int y = it.getCurrent();
-                if(w[k-1][y] == INF) continue;
-
-                int cost = g.get_edge_property(y, x);
-                w[k][x] = std::min(w[k-1][x], w[k-1][y] + cost);
+    Matrix costs(n, std::vector<int>(n, 0));
+    Matrix transition(n, std::vector<int>(n, -1));
+    for(int i = 0; i < g.size(); i++)
+    {
+        for(int j = 0; j < g.size(); j++)
+        {
+            if(i == j)
+            {
+                costs[i][j] = 0;
+                continue;
+            }
+            try
+            {
+                costs[i][j] = g.get_edge_property(i, j);
+            }
+            catch (std::exception&)
+            {
+                // Edge does not exist
+                costs[i][j] = INT_MAX;
             }
         }
     }
 
-    int best = INF;
-    for(int i = 0; i < MAX_WALK_LENGTH; i++) best = std::min(best, w[i][destination]);
+    for(int i = 1; i < n; i*=2) squareMatrix(costs, transition);
 
-    if(best == INF) return -1;
+    Matrix negativeCostCheck(costs);
+    Matrix negativeTransitionCheck(transition);
 
-    return best;
+    // If the graph has a negative cycle costs could be infinitely improved
+    // Run on more iteration and check
+    squareMatrix(negativeCostCheck, negativeTransitionCheck);
+    for(int i = 0; i < n; i++)
+    {
+        if(costs[i][i] < 0)
+        {
+            throw std::exception();
+        }
+    }
+
+    std::vector<int> path = reconstructPath(transition, source, destination);
+    return {path, costs[source][destination]};
 }

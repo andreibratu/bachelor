@@ -18,7 +18,7 @@ int main() {
     g.set_edge_property(1, 2, 2);
 
     g.add_edge(2, 1);
-    g.set_edge_property(2, 1, -1);
+    g.set_edge_property(2, 1, 6);
 
     g.add_edge(1, 3);
     g.set_edge_property(1, 3, 7);
@@ -26,7 +26,10 @@ int main() {
     g.add_edge(2, 3);
     g.set_edge_property(2, 3, 4);
 
-    int result = dp_min_walk(g, 0, 3);
-    assert(result == 13);
+    std::pair<std::vector<int>, int> answer = matrixMultiplicationMinWalk(g, 0, 3);
+    std::cout << answer.second << '\n';
+    assert(answer.second == 13);
+    for(auto x: answer.first) std::cout << x << ' ';
+    std::cout << '\n';
     return 0;
 }

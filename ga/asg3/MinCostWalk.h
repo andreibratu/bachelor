@@ -7,6 +7,6 @@
 
 #include "../asg1/graph_c/interfaces/graph.h"
 
-int dp_min_walk(Graph& g, int source, int destination);
+std::pair<std::vector<int>, int> matrixMultiplicationMinWalk(Graph &g, int source, int destination);
 
 #endif //ASG3_MINCOSTWALK_H
