@@ -17,9 +17,9 @@ void testAll() { //call each function to see if it is implemented
     assert(m.add(-3,-3)==NULL_TVALUE);
     assert(m.size() == 5);
     assert(m.search(10) == 10);
-    assert(m.search(16) == -1);
+    assert(m.search(16) == NULL_TVALUE);
     assert(m.remove(1) == 1);
-    assert(m.remove(6) == -1);
+    assert(m.remove(6) == NULL_TVALUE);
     assert(m.size() == 4);
 
 

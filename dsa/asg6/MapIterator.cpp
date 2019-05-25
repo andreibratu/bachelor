@@ -4,34 +4,35 @@
 
 #include <exception>
 #include "MapIterator.h"
-#define EMPTY_ELEM (std::make_pair(-1, -1))
+#define EMPTY_ELEM (std::make_pair(INT_MIN, INT_MIN))
 
 MapIterator::MapIterator(const Map& m): container{m} {
     idx=0;
     first();
 }
 
-
 void MapIterator::first() {
     idx = 0;
-    while(idx < container.table.size && container.table.values[idx] == EMPTY_ELEM) {
+    while(idx < container.capacity && container.values[idx] == EMPTY_ELEM)
+    {
         idx++;
     }
 }
 
 void MapIterator::next() {
-    if(!valid()) throw std::exception();
+    if(!this->valid()) throw std::exception();
     idx++;
-    while(idx < container.table.size && container.table.values[idx] == EMPTY_ELEM) {
+    while(idx < container.capacity && container.values[idx] == EMPTY_ELEM)
+    {
         idx++;
     }
 }
 
 bool MapIterator::valid() const {
-    return idx != container.table.size;
+    return container.count > 0 && idx < container.capacity;
 }
 
 TElem MapIterator::getCurrent() const {
-    if(!valid()) throw std::exception();
-    return container.table.values[idx];
+    if(!this->valid()) throw std::exception();
+    return container.values[idx];
 }

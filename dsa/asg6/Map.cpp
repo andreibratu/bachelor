@@ -4,178 +4,218 @@
 #include <assert.h>
 #include <cmath>
 
-#define KNUTH_CT 0.6180339887
-#define FRAC(x) ((x) - ((long)x))
-#define EMPTY_ELEM (std::make_pair(-1, -1))
+#define EMPTY_ELEM (std::make_pair(INT_MIN, INT_MIN))
 
-void Map::init(Map::NotAHashTableClass& t, int size) {
-    t.size = size;
-    t.hashF = [size](TElem e){return abs(e.first) % size;};
-//    t.hashF = [&t](TKey e){return floor(t.size * FRAC(e * KNUTH_CT));};
-    t.values = new TElem [t.size];
-    t.next = new int [t.size];
-    std::fill(t.values+0, t.values+t.size, EMPTY_ELEM);
-    std::fill(t.next+0, t.next+t.size, NULL_TVALUE);
-    t.firstFree = 0;
+//void Map::debug()
+//{
+//    std::cout << "-----\n";
+//    std::cout << "Capacity: " << capacity << '\n';
+//    std::cout << "First free: " << firstFree << '\n';
+//    std::cout << "Count: " << count << '\n';
+//    for(int i = 0; i < capacity; i++) std::cout << values[i].first << ' ' << values[i].second << " | ";
+//    std::cout << '\n';
+//    for(int i = 0; i < capacity; i++) std::cout << next[i] << ' ';
+//    std::cout << '\n';
+//    std::cout << "-----\n";
+//}
+
+Map::Map()
+{
+    capacity = 50000;
+    values = new TElem [capacity];
+    next = new int [capacity];
+    std::fill(values+0, values+capacity, EMPTY_ELEM);
+    std::fill(next+0, next+capacity, NULL_TVALUE);
+    firstFree = 0;
+    count = 0;
 }
 
-void Map::resize(Map::NotAHashTableClass& t) {
-    NotAHashTableClass new_t{};
-    init(new_t, t.size*2);
+void Map::resize()
+{
+    int newCapacity = capacity * 2;
+    auto* newValues = new TElem [newCapacity];
+    auto* newNext = new int [newCapacity];
+    auto auxValues = new TElem [capacity];
 
-    // rehash
-    for(int i = 0; i < t.size; i++) {
-        if(t.values[i] == EMPTY_ELEM) continue;
-        insert(new_t, t.values[i]);
+    std::fill(newValues+0, newValues+newCapacity, EMPTY_ELEM);
+    std::fill(newNext+0, newNext+newCapacity, NULL_TVALUE);
+    std::copy(values+0, values+capacity, auxValues+0);
+
+    delete[] values;
+    delete[] next;
+
+    int oldCount = 0;
+    assert(count < capacity);
+    values = newValues;
+    next = newNext;
+    count = 0;
+    capacity = newCapacity;
+
+    // Rehash
+    for(int i = 0; i < capacity / 2; i++)
+    {
+        assert(auxValues[i] != EMPTY_ELEM);
+        if(auxValues[i] == EMPTY_ELEM) continue;
+        oldCount = count;
+        add(auxValues[i].first, auxValues[i].second);
+        assert(count == oldCount + 1);
     }
 
-    uninit(t);
-
-    t.size = new_t.size;
-    t.hashF = new_t.hashF;
-    t.firstFree = new_t.firstFree;
-    t.values = new_t.values;
-    t.next = new_t.next;
+    assert(oldCount == count);
+    delete[] auxValues;
 }
 
-void Map::insert(Map::NotAHashTableClass &t, TElem k) {
-    int i = t.hashF(k);
-
-    if(t.values[i] == EMPTY_ELEM) {
-        t.values[i] = k;
-        t.next[i] = NULL_TVALUE;
+void Map::changeFirstFree()
+{
+    int pos = 0;
+    while(pos < capacity && values[pos] != EMPTY_ELEM)
+    {
+        pos++;
     }
-    else {
-        if (t.firstFree == t.size) {
-            resize(t);
-        }
-        int current = i;
-        while(t.next[current] != NULL_TVALUE) {
-            current = t.next[current];
-        }
-        t.values[t.firstFree] = k;
-        t.next[t.firstFree] = NULL_TVALUE;
-        t.next[current] = t.firstFree;
-        changeFirstFree(t);
-    }
+    firstFree = pos;
 }
 
-TValue Map::remove(Map::NotAHashTableClass &t, TKey k) {
-    int i = t.hashF({k, -1});
+TValue Map::add(TKey c, TValue v)
+{
+    int oldCount = count;
+    auto p = std::make_pair(c, v);
+    int i = hash(c);
+
+    // Handle first hash position special case
+    if (values[i] == EMPTY_ELEM)
+    {
+        values[i] = p;
+        count++;
+        assert(count == oldCount + 1);
+        assert(count < capacity);
+        changeFirstFree();
+        return NULL_TVALUE;
+    }
+    if (values[i].first == c)
+    {
+        TElem old = values[i];
+        values[i] = p;
+        assert(oldCount == count);
+        assert(count < capacity);
+        changeFirstFree();
+        return old.second;
+    }
+    int current = i;
+    while (values[current].first != c && next[current] != NULL_TVALUE)
+    {
+        current = next[current];
+    }
+    if (values[current].first == c)
+    {
+        TElem old = values[current];
+        values[current] = p;
+        assert(count == oldCount);
+        assert(count < capacity);
+        changeFirstFree();
+        return old.second;
+    }
+    if (firstFree == capacity) resize();
+    count++;
+    values[firstFree] = p;
+    next[firstFree] = NULL_TVALUE;
+    next[current] = firstFree;
+    assert(count == oldCount + 1);
+    changeFirstFree();
+    assert(count == oldCount + 1);
+    assert(count < capacity);
+    return NULL_TVALUE;
+}
+
+TValue Map::remove(TKey c)
+{
+    int i = hash(c);
     int j = NULL_TVALUE;
     int idx = 0;
 
     assert(i >= 0);
 
-    while(idx < t.size && j == NULL_TVALUE) {
-        if(t.next[idx] == i) {
-            j = idx;
-        }
-        else {
-            idx++;
-        }
+    while(idx < capacity && j == NULL_TVALUE)
+    {
+        if(next[idx] == i) j = idx;
+        else idx++;
     }
 
-    while(i != NULL_TVALUE && t.values[i].first != k) {
+    while(i != NULL_TVALUE && values[i].first != c)
+    {
         j = i;
-        i = t.next[i];
+        i = next[i];
     }
 
     if (i == NULL_TVALUE) return NULL_TVALUE;
-    else {
+    else
+    {
+        int old = values[i].second;
         bool over = false;
-        do {
-            int p = t.next[i];
+        do
+        {
+            int p = next[i];
             int pp = i;
-            while(p != NULL_TVALUE && t.hashF(t.values[p]) != i) {
+            while(p != NULL_TVALUE && hash(values[p].first) != i)
+            {
                 pp = p;
-                p = t.next[p];
+                p = next[p];
             }
             if(p == NULL_TVALUE) over = true;
-            else {
-                t.values[i] = t.values[p];
+            else
+            {
+                values[i] = values[p];
                 j = pp;
                 i = p;
             }
         } while(!over);
-        if (j != NULL_TVALUE) {
-            t.next[j] = t.next[i];
+        if (j != NULL_TVALUE)
+        {
+            next[j] = next[i];
         }
-        int old = t.values[i].second;
-        t.values[i] = EMPTY_ELEM;
-        t.next[i] = NULL_TVALUE;
-        if(t.firstFree > i) {
-            t.firstFree = i;
-        }
+        values[i] = EMPTY_ELEM;
+        next[i] = NULL_TVALUE;
+        if(firstFree > i) firstFree = i;
 
+        count -= 1;
         return old;
     }
 }
 
-TValue Map::search(const Map::NotAHashTableClass &t, TKey k) const {
-    int i = t.hashF({k, -1});
+TValue Map::search(TKey c) const
+{
+    int i = hash(c);
 
-    while(i != NULL_TVALUE && t.values[i].first != k) {
-        i = t.next[i];
+    while(i != NULL_TVALUE && values[i].first != c)
+    {
+        i = next[i];
     }
 
     if(i == NULL_TVALUE) return NULL_TVALUE;
 
-    return t.values[i].first;
+    return values[i].second;
 }
 
-void Map::uninit(Map::NotAHashTableClass &t) {
-    delete[] t.values;
-    delete[] t.next;
-}
-
-Map::Map() {
-    count = 0;
-    init(table, 20);
-}
-
-TValue Map::add(TKey c, TValue v) {
-    TValue old = remove(table, c);
-    insert(table, {c, v});
-
-    // Count actually increased
-    if(old == NULL_TVALUE) count += 1;
-
-    return old;
-}
-
-TValue Map::search(TKey c) const {
-    int idx = search(table, c);
-    if(idx == NULL_TVALUE) return NULL_TVALUE;
-    else return table.values[idx].second;
-}
-
-TValue Map::remove(TKey c) {
-    TValue result = remove(table, c);
-    if(result != NULL_TVALUE) count-=1;
-
-    return result;
-}
-
-int Map::size() const {
+int Map::size() const
+{
     return count;
 }
 
-bool Map::isEmpty() const {
+bool Map::isEmpty() const
+{
     return count == 0;
 }
 
-MapIterator Map::iterator() const {
+MapIterator Map::iterator() const
+{
     return MapIterator(*this);
 }
 
 Map::~Map() {
-    uninit(table);
+    delete[] next;
+    delete[] values;
 }
 
-void Map::changeFirstFree(Map::NotAHashTableClass &t) {
-    t.firstFree++;
-    while(t.firstFree < t.size && t.values[t.firstFree] != EMPTY_ELEM) {
-        t.firstFree++;
-    }
+int Map::hash(TKey k) const
+{
+    return abs(k) % (capacity);
 }
