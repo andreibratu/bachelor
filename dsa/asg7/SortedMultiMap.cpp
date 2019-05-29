@@ -10,7 +10,8 @@ SortedMultiMap::SortedMultiMap(Relation r) {
     capacity = 100;
     compare = r;
     count = 0;
-    tree = new TElem [capacity];
+    firstFree = 0;
+    tree = new Node [capacity];
     std::fill(tree+0, tree+capacity, EMPTY_ELEM);
 }
 
@@ -18,36 +19,47 @@ SortedMultiMap::SortedMultiMap(Relation r) {
 // O(n)
 void SortedMultiMap::recursiveDelete(int idx)
 {
+    const Node& nodeToDelete = tree[idx];
     // Node to be removed is a leaf
-    if(
-            (RIGHT_CHILD(idx) >= capacity || tree[RIGHT_CHILD(idx)] == EMPTY_ELEM) &&
-            (LEFT_CHILD(idx) >= capacity || tree[LEFT_CHILD(idx)] == EMPTY_ELEM))
+    if(tree[idx].leftChild == NULL_VAL && tree[idx].rightChild == NULL_VAL)
     {
+        // Tree only contains the root node
+        if(nodeToDelete.parent == NULL_VAL)
+        {
+            tree[idx] = EMPTY_ELEM;
+            return;
+        }
+
+        // Generic leaf
+        Node& parent = tree[nodeToDelete.parent];
+        if(parent.leftChild == idx) parent.leftChild = NULL_VAL;
+        else parent.rightChild = NULL_VAL;
+
         tree[idx] = EMPTY_ELEM;
         return;
     }
 
+    // Index of node to substitute `idx`
     int rIdx;
+
+    // Go on left branch
     // Bring the largest node smaller than the node to be promoted
-    if (LEFT_CHILD(idx) < capacity && tree[LEFT_CHILD(idx)] != EMPTY_ELEM)
+    if (tree[idx].leftChild != NULL_VAL)
     {
-        rIdx = LEFT_CHILD(idx);
-        assert(tree[rIdx] != EMPTY_ELEM);
-        while (RIGHT_CHILD(rIdx) < capacity && tree[RIGHT_CHILD(rIdx)] != EMPTY_ELEM)
+        rIdx = tree[idx].leftChild;
+        while (tree[rIdx].rightChild != NULL_VAL)
         {
-            rIdx = RIGHT_CHILD(rIdx);
+            rIdx = tree[rIdx].rightChild;
         }
     }
+    // No left branch, go on right
     // No left branch, bring the smallest grater than the one to be promoted
     else
     {
-        assert(RIGHT_CHILD(idx) < capacity);
-        assert(tree[RIGHT_CHILD(idx)] != EMPTY_ELEM);
-        rIdx = RIGHT_CHILD(idx);
-        assert(tree[rIdx] != EMPTY_ELEM);
-        while(LEFT_CHILD(rIdx) < capacity && tree[LEFT_CHILD(rIdx)] != EMPTY_ELEM)
+        rIdx = tree[idx].rightChild;
+        while(tree[rIdx].leftChild != NULL_VAL)
         {
-            rIdx = LEFT_CHILD(rIdx);
+            rIdx = tree[rIdx].leftChild;
         }
     }
     tree[idx] = tree[rIdx];
@@ -58,7 +70,7 @@ void SortedMultiMap::recursiveDelete(int idx)
 void SortedMultiMap::resize()
 {
     int newCap = capacity * 4;
-    auto* newTree = new TElem [newCap];
+    auto* newTree = new Node [newCap];
     std::fill(newTree+0, newTree+newCap, EMPTY_ELEM);
     std::copy(tree+0, tree+capacity, newTree+0);
     delete[] tree;
@@ -67,54 +79,97 @@ void SortedMultiMap::resize()
 }
 
 // O(D)
+/**
+ * Locate first appearance of key
+ * @param c Searched key
+ * @return NULL_VAL if not found or the index of the key
+ */
 int SortedMultiMap::locateKey(TKey c) const
 {
-    int idx = 1;
-    while(idx < capacity && tree[idx] != EMPTY_ELEM && tree[idx].first != c)
+    // The tree is empty
+    if(count == 0) return NULL_VAL;
+
+    // Use relation to look
+    int idx = 0;
+    while(idx != NULL_VAL && tree[idx].value.first != c)
     {
-        if(compare(c, tree[idx].first)) idx = LEFT_CHILD(idx);
-        else idx = RIGHT_CHILD(idx);
+        if(compare(c, tree[idx].value.first)) idx = tree[idx].leftChild;
+        else idx = tree[idx].rightChild;
     }
 
-    if (idx >= capacity) return NULL_VAL;
+    // Key not found
+    if (idx == NULL_VAL) return NULL_VAL;
 
     return idx;
 }
 
 // O(D)
+/**
+ * Insert key-value pair in the multimap
+ * @param c The key
+ * @param v The value
+ */
 void SortedMultiMap::add(TKey c, TValue v)
 {
     auto p = std::make_pair(c, v);
-    int idx = 1;
-    while(tree[idx] != EMPTY_ELEM)
-    {
-        if(compare(c, tree[idx].first)) idx = LEFT_CHILD(idx);
-        else idx = RIGHT_CHILD(idx);
+    if(firstFree == capacity) resize();
 
-        if(idx >= capacity) resize();
+    tree[firstFree] = {p, NULL_VAL, NULL_VAL, NULL_VAL};
+
+    // Tree contained no nodes
+    if(firstFree == 0)
+    {
+        count += 1;
+        updateFirstFree();
+        return;
     }
-    tree[idx] = p;
+
+    // At least one node already in the tree
+    int idx = 0;
+    int previous = -1;
+    while(idx != NULL_VAL)
+    {
+        previous = idx;
+        if(compare(c, tree[idx].value.first)) idx = tree[idx].leftChild;
+        else idx = tree[idx].rightChild;
+    }
+    if(compare(c, tree[previous].value.first))
+    {
+        tree[previous].leftChild = firstFree;
+        tree[firstFree].parent = previous;
+    }
+    else
+    {
+        tree[previous].rightChild = firstFree;
+        tree[firstFree].parent = previous;
+    }
+    updateFirstFree();
     count += 1;
 }
 
 // O(D)
+/**
+ * Return all values associated with given key
+ * @param c The key
+ * @return
+ */
 vector<TValue> SortedMultiMap::search(TKey c) const
 {
     std::vector<TValue> values{};
-    // find the first key equal with c
     int idx = locateKey(c);
 
-    // Tree does not contain key c
-    if(idx == NULL_VAL || tree[idx] == EMPTY_ELEM) return values;
+    // Key not found
+    if(idx == NULL_VAL) return values;
 
     /*
      At least one value associated with `c`
      Due to the comparison function, values associated to c will
      always be on left branch
     */
-    while(idx < capacity && tree[idx] != EMPTY_ELEM && tree[idx].first == c) {
-        values.push_back(tree[idx].second);
-        idx = LEFT_CHILD(idx);
+    while(idx != NULL_VAL && tree[idx].value.first == c)
+    {
+        values.push_back(tree[idx].value.second);
+        idx = tree[idx].leftChild;
     }
 
     return values;
@@ -126,28 +181,16 @@ bool SortedMultiMap::remove(TKey c, TValue v)
     int idx = locateKey(c);
 
     // Key does not exist
-    if(idx == NULL_VAL || tree[idx] == EMPTY_ELEM) return false;
+    if(idx == NULL_VAL) return false;
 
     // Find the exact pair
-    auto p = std::make_pair(c, v);
-    while(tree[idx].first == c && tree[idx] != p)
+    while(idx != NULL_VAL && tree[idx].value.first == c && tree[idx].value.second != v)
     {
-        idx = LEFT_CHILD(idx);
+        idx = tree[idx].leftChild;
     }
 
     // Pair does not exist
-    if(tree[idx] != p) return false;
-
-    /* Here comes the fun part
-     * We will promote each of the right children by one level
-     * in order to replace the node to be removed
-     * Since any right child compares greater to the former
-     * occupant, the left branch will not suffer modifications
-     * If the last node to be promoted happens to have a left branch,
-     * we will replace the promoted node with the largest node smaller
-     * than jim
-     * Are you not entertained??
-    */
+    if(idx == NULL_VAL) return false;
 
     recursiveDelete(idx);
     count -= 1;
@@ -176,4 +219,8 @@ SMMIterator SortedMultiMap::iterator() const
 SortedMultiMap::~SortedMultiMap()
 {
     delete[] tree;
+}
+
+void SortedMultiMap::updateFirstFree() {
+    while(tree[firstFree] != EMPTY_ELEM) firstFree++;
 }

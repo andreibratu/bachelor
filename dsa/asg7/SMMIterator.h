@@ -28,8 +28,6 @@ private:
 
     void traverse(int cIdx);
 
-    inline bool posExists(int idx) const;
-
     int idx;
 
     std::vector<int> traversal;

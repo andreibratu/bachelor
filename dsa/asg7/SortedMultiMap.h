@@ -11,13 +11,9 @@
 #include "SMMIterator.h"
 
 #define NULL_VAL INT_MIN
-#define EMPTY_ELEM (std::make_pair(NULL_VAL, NULL_VAL))
 typedef int TKey;
 typedef int TValue;
 typedef std::pair<TKey, TValue> TElem;
-
-#define LEFT_CHILD(x) (2 * (x))
-#define RIGHT_CHILD(x) (2 * (x) + 1)
 
 using namespace std;
 
@@ -30,17 +26,42 @@ class SortedMultiMap {
 friend class SMMIterator;
 
 private:
-    TElem* tree;
+    struct Node {
+        TElem value;
+        int leftChild;
+        int rightChild;
+        int parent;
+
+        bool operator == (const Node& other) const
+        {
+            return value == other.value &&
+                   leftChild == other.leftChild &&
+                   rightChild == other.rightChild;
+        }
+
+        bool operator != (const Node& other) const
+        {
+            return !(*this==other);
+        }
+    };
+
+    Node* tree;
     int capacity;
     int count;
+    int firstFree;
     Relation compare;
+
     // Resize the tree
     void resize();
+    // Update first free
+    void updateFirstFree();
     // Find first node with key equal with c
     int locateKey(TKey c) const;
     // Delete node
     void recursiveDelete(int idx);
 public:
+    Node EMPTY_ELEM = Node{{NULL_VAL, NULL_VAL}, NULL_VAL, NULL_VAL, NULL_VAL};
+
     // constructor
     SortedMultiMap(Relation r);
 
