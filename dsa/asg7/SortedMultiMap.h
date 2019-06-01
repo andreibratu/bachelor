@@ -26,7 +26,8 @@ class SortedMultiMap {
 friend class SMMIterator;
 
 private:
-    struct Node {
+    struct Node
+    {
         TElem value;
         int leftChild;
         int rightChild;
@@ -45,22 +46,79 @@ private:
         }
     };
 
+    struct Stack
+    {
+        int* values;
+        int size;
+        int current;
+
+        Stack()
+        {
+            size = 42;
+            values = new int [size];
+            current = -1;
+        }
+
+        Stack(int s)
+        {
+            size = s;
+            values = new int [size];
+            current = -1;
+        }
+
+        void push(int x) {values[++current] = x;}
+
+        int pop() {return values[current--];}
+
+        bool empty() {return current == -1;}
+
+        void resize(int newSize)
+        {
+            delete[] values;
+            values = new int [newSize];
+            size = newSize;
+            current = -1;
+        }
+
+        Stack(const Stack& other)
+        {
+            delete[] values;
+            size = other.size;
+            current = other.current;
+            values = new int [size];
+            for(int i = 0; i < size; i++) values[i] = other.values[i];
+        }
+
+
+        Stack& operator = (const Stack& other)
+        {
+            delete[] values;
+            size = other.size;
+            current = other.current;
+            values = new int [size];
+            for(int i = 0; i < size; i++) values[i] = other.values[i];
+        }
+
+        ~Stack() {delete[] values;}
+    };
+
     Node* tree;
+    Stack freeSpace;
     int capacity;
     int count;
-    int firstFree;
     Relation compare;
 
     // Resize the tree
     void resize();
-    // Update first free
-    void updateFirstFree();
     // Find first node with key equal with c
     int locateKey(TKey c) const;
     // Delete node
     void recursiveDelete(int idx);
 public:
     Node EMPTY_ELEM = Node{{NULL_VAL, NULL_VAL}, NULL_VAL, NULL_VAL, NULL_VAL};
+
+    // Remove all values associated to given key
+    std::vector<TValue> removeKey(TKey key);
 
     // constructor
     SortedMultiMap(Relation r);

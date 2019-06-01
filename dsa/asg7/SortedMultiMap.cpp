@@ -6,11 +6,13 @@
 #include "SortedMultiMap.h"
 
 // Theta(1)
-SortedMultiMap::SortedMultiMap(Relation r) {
+SortedMultiMap::SortedMultiMap(Relation r)
+{
     capacity = 100;
+    freeSpace = Stack(capacity);
+    for(int i = 0; i < capacity; i++) freeSpace.push(i);
     compare = r;
     count = 0;
-    firstFree = 0;
     tree = new Node [capacity];
     std::fill(tree+0, tree+capacity, EMPTY_ELEM);
 }
@@ -27,6 +29,7 @@ void SortedMultiMap::recursiveDelete(int idx)
         if(nodeToDelete.parent == NULL_VAL)
         {
             tree[idx] = EMPTY_ELEM;
+            freeSpace.push(idx);
             return;
         }
 
@@ -36,6 +39,7 @@ void SortedMultiMap::recursiveDelete(int idx)
         else parent.rightChild = NULL_VAL;
 
         tree[idx] = EMPTY_ELEM;
+        freeSpace.push(idx);
         return;
     }
 
@@ -62,13 +66,14 @@ void SortedMultiMap::recursiveDelete(int idx)
             rIdx = tree[rIdx].leftChild;
         }
     }
-    tree[idx] = tree[rIdx];
+    tree[idx].value = tree[rIdx].value;
     recursiveDelete(rIdx);
 }
 
 // Theta(n)
 void SortedMultiMap::resize()
 {
+    int oldCap = capacity;
     int newCap = capacity * 4;
     auto* newTree = new Node [newCap];
     std::fill(newTree+0, newTree+newCap, EMPTY_ELEM);
@@ -76,6 +81,8 @@ void SortedMultiMap::resize()
     delete[] tree;
     capacity = newCap;
     tree = newTree;
+    freeSpace.resize(newCap);
+    for(int i = oldCap; i < newCap; i++) freeSpace.push(i);
 }
 
 // O(D)
@@ -112,7 +119,9 @@ int SortedMultiMap::locateKey(TKey c) const
 void SortedMultiMap::add(TKey c, TValue v)
 {
     auto p = std::make_pair(c, v);
-    if(firstFree == capacity) resize();
+    if(freeSpace.empty()) resize();
+
+    int firstFree = freeSpace.pop();
 
     tree[firstFree] = {p, NULL_VAL, NULL_VAL, NULL_VAL};
 
@@ -120,7 +129,6 @@ void SortedMultiMap::add(TKey c, TValue v)
     if(firstFree == 0)
     {
         count += 1;
-        updateFirstFree();
         return;
     }
 
@@ -143,7 +151,6 @@ void SortedMultiMap::add(TKey c, TValue v)
         tree[previous].rightChild = firstFree;
         tree[firstFree].parent = previous;
     }
-    updateFirstFree();
     count += 1;
 }
 
@@ -190,7 +197,7 @@ bool SortedMultiMap::remove(TKey c, TValue v)
     }
 
     // Pair does not exist
-    if(idx == NULL_VAL) return false;
+    if(idx == NULL_VAL || tree[idx].value.first != c) return false;
 
     recursiveDelete(idx);
     count -= 1;
@@ -221,6 +228,25 @@ SortedMultiMap::~SortedMultiMap()
     delete[] tree;
 }
 
-void SortedMultiMap::updateFirstFree() {
-    while(tree[firstFree] != EMPTY_ELEM) firstFree++;
+std::vector<TValue> SortedMultiMap::removeKey(TKey key) {
+    int idx = locateKey(key);
+    std::vector<int> values{};
+
+    // No such key
+    if(idx == NULL_VAL) return values;
+
+    while(idx != NULL_VAL)
+    {
+        values.push_back(tree[idx].value.second);
+        remove(tree[idx].value.first, tree[idx].value.second);
+
+        // If node promoted by removal does not have key `key`, look up
+        // the next node that could given key
+        if(tree[idx].value.first != key)
+        {
+            idx = tree[idx].leftChild;
+        }
+    }
+
+    return values;
 }
