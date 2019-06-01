@@ -11,13 +11,9 @@
 #include "SMMIterator.h"
 
 #define NULL_VAL INT_MIN
-#define EMPTY_ELEM (std::make_pair(NULL_VAL, NULL_VAL))
 typedef int TKey;
 typedef int TValue;
 typedef std::pair<TKey, TValue> TElem;
-
-#define LEFT_CHILD(x) (2 * (x))
-#define RIGHT_CHILD(x) (2 * (x) + 1)
 
 using namespace std;
 
@@ -30,10 +26,88 @@ class SortedMultiMap {
 friend class SMMIterator;
 
 private:
-    TElem* tree;
+    struct Node
+    {
+        TElem value;
+        int leftChild;
+        int rightChild;
+        int parent;
+
+        bool operator == (const Node& other) const
+        {
+            return value == other.value &&
+                   leftChild == other.leftChild &&
+                   rightChild == other.rightChild;
+        }
+
+        bool operator != (const Node& other) const
+        {
+            return !(*this==other);
+        }
+    };
+
+    struct Stack
+    {
+        int* values;
+        int size;
+        int current;
+
+        Stack()
+        {
+            size = 42;
+            values = new int [size];
+            current = -1;
+        }
+
+        Stack(int s)
+        {
+            size = s;
+            values = new int [size];
+            current = -1;
+        }
+
+        void push(int x) {values[++current] = x;}
+
+        int pop() {return values[current--];}
+
+        bool empty() {return current == -1;}
+
+        void resize(int newSize)
+        {
+            delete[] values;
+            values = new int [newSize];
+            size = newSize;
+            current = -1;
+        }
+
+        Stack(const Stack& other)
+        {
+            delete[] values;
+            size = other.size;
+            current = other.current;
+            values = new int [size];
+            for(int i = 0; i < size; i++) values[i] = other.values[i];
+        }
+
+
+        Stack& operator = (const Stack& other)
+        {
+            delete[] values;
+            size = other.size;
+            current = other.current;
+            values = new int [size];
+            for(int i = 0; i < size; i++) values[i] = other.values[i];
+        }
+
+        ~Stack() {delete[] values;}
+    };
+
+    Node* tree;
+    Stack freeSpace;
     int capacity;
     int count;
     Relation compare;
+
     // Resize the tree
     void resize();
     // Find first node with key equal with c
@@ -41,6 +115,11 @@ private:
     // Delete node
     void recursiveDelete(int idx);
 public:
+    Node EMPTY_ELEM = Node{{NULL_VAL, NULL_VAL}, NULL_VAL, NULL_VAL, NULL_VAL};
+
+    // Remove all values associated to given key
+    std::vector<TValue> removeKey(TKey key);
+
     // constructor
     SortedMultiMap(Relation r);
 

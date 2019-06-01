@@ -4,39 +4,32 @@
 
 #include "SMMIterator.h"
 
-// Theta(1)
-// Equivalent to a NULL node check on a dynamic memory implementation
-inline bool SMMIterator::posExists(int pos) const
-{
-    return pos < container.capacity;
-}
 
 // Theta(n)
 void SMMIterator::traverse(int cIdx)
 {
-    if(
-        (!posExists(LEFT_CHILD(cIdx)) || container.tree[LEFT_CHILD(cIdx)] == EMPTY_ELEM) &&
-        (!posExists(RIGHT_CHILD(cIdx)) || container.tree[RIGHT_CHILD(cIdx)] == EMPTY_ELEM)
-    )
+    int left = this->container.tree[cIdx].leftChild;
+    int right = this->container.tree[cIdx].rightChild;
+    if(left == NULL_VAL && right == NULL_VAL)
     {
         traversal.push_back(cIdx);
         return;
     }
-    if(posExists(LEFT_CHILD(cIdx)) && container.tree[LEFT_CHILD(cIdx)] != EMPTY_ELEM)
+    if(left != NULL_VAL)
     {
-        traverse(LEFT_CHILD(cIdx));
+        traverse(left);
     }
     traversal.push_back(cIdx);
-    if(posExists(RIGHT_CHILD(cIdx)) && container.tree[RIGHT_CHILD(cIdx)] != EMPTY_ELEM)
+    if(right != NULL_VAL)
     {
-        traverse(RIGHT_CHILD(cIdx));
+        traverse(right);
     }
 }
 
 // Theta(n)
 SMMIterator::SMMIterator(const SortedMultiMap &c): container{c}
 {
-    if(container.size() >= 1) traverse(1);
+    if(container.size() >= 1) traverse(0);
     idx = 0;
 }
 
@@ -63,6 +56,6 @@ bool SMMIterator::valid() const
 std::pair<int, int> SMMIterator::getCurrent() const
 {
     if(!valid()) throw std::exception();
-    return container.tree[traversal[idx]];
+    return container.tree[traversal[idx]].value;
 }
 

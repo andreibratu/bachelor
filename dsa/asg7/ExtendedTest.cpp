@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <algorithm>
 #include <vector>
+#include <iostream>
 #include "SMMIterator.h"
 #include "SortedMultiMap.h"
 #include "ExtendedTest.h"
@@ -157,8 +158,29 @@ void testIterator() {
 }
 
 void testAllExtended() {
-	testCreate();
-	testSearch();
-	testRemove();
-	testIterator();
+//	testCreate();
+//	testSearch();
+//	testRemove();
+//	testIterator();
+
+	SortedMultiMap smm(asc);
+	for(int i = 0; i < 5; i++)
+    {
+	    smm.add(5, i);
+    }
+	smm.add(8, 4);
+	smm.add(1, 4);
+
+	auto values = smm.removeKey(5);
+	assert(values.size() == 5);
+	assert(smm.size() == 2);
+
+	SortedMultiMap smm2(asc);
+	smm2.add(5, 6);
+	smm2.add(3, 1);
+	smm2.add(4, 2);
+	smm2.add(4, 5);
+	smm2.add(9, 4);
+	smm2.remove(5, 6);
+	assert(smm2.search(4).size() == 2);
 }

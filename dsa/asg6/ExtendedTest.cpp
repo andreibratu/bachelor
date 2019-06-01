@@ -7,7 +7,10 @@
 
 using namespace std;
 
-
+bool isOdd(int key)
+{
+    return key % 2 == 1;
+}
 
 void testCreate() {
     Map m;
@@ -120,7 +123,16 @@ void testRemove() {
 
     m.remove(-100);
     assert(m.size() == 0);
-
+//    Map map{};
+//    for(int i = 0; i < 100; i++) map.add(i, i);
+//    map.filter(removeOdd);
+//    auto it = map.iterator();
+//    // Only even keys should remain
+//    while(it.valid())
+//    {
+//        assert(it.getCurrent().first % 2 == 0);
+//        it.next();
+//    }
     for (int i = -100; i < 100; i++) {
         assert(m.add(i, 0) == NULL_TVALUE);
         assert(m.add(i, 1) == 0);
@@ -210,8 +222,6 @@ void testIterator() {
 
 }
 
-
-
 void testQuantity() {
     Map m;
 
@@ -248,12 +258,25 @@ void testQuantity() {
     assert(m.size() == 0);
 }
 
+
 void testAllExtended() {
     testCreate();
     testAdd();
     testRemove();
     testIterator();
     testQuantity();
+
+    // Test custom functionality
+    Map map{};
+    for(int i = 0; i < 100; i++) map.add(i, i);
+    map.filter(isOdd);
+    auto it = map.iterator();
+    // Only even keys should remain
+    while(it.valid())
+    {
+        assert(it.getCurrent().first % 2 == 0);
+        it.next();
+    }
 }
 
 

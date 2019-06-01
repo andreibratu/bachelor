@@ -6,22 +6,9 @@
 
 #define EMPTY_ELEM (std::make_pair(INT_MIN, INT_MIN))
 
-//void Map::debug()
-//{
-//    std::cout << "-----\n";
-//    std::cout << "Capacity: " << capacity << '\n';
-//    std::cout << "First free: " << firstFree << '\n';
-//    std::cout << "Count: " << count << '\n';
-//    for(int i = 0; i < capacity; i++) std::cout << values[i].first << ' ' << values[i].second << " | ";
-//    std::cout << '\n';
-//    for(int i = 0; i < capacity; i++) std::cout << next[i] << ' ';
-//    std::cout << '\n';
-//    std::cout << "-----\n";
-//}
-
 Map::Map()
 {
-    capacity = 50000;
+    capacity = 100;
     values = new TElem [capacity];
     next = new int [capacity];
     std::fill(values+0, values+capacity, EMPTY_ELEM);
@@ -45,7 +32,6 @@ void Map::resize()
     delete[] next;
 
     int oldCount = 0;
-    assert(count < capacity);
     values = newValues;
     next = newNext;
     count = 0;
@@ -61,7 +47,6 @@ void Map::resize()
         assert(count == oldCount + 1);
     }
 
-    assert(oldCount == count);
     delete[] auxValues;
 }
 
@@ -87,7 +72,6 @@ TValue Map::add(TKey c, TValue v)
         values[i] = p;
         count++;
         assert(count == oldCount + 1);
-        assert(count < capacity);
         changeFirstFree();
         return NULL_TVALUE;
     }
@@ -119,10 +103,7 @@ TValue Map::add(TKey c, TValue v)
     values[firstFree] = p;
     next[firstFree] = NULL_TVALUE;
     next[current] = firstFree;
-    assert(count == oldCount + 1);
     changeFirstFree();
-    assert(count == oldCount + 1);
-    assert(count < capacity);
     return NULL_TVALUE;
 }
 
@@ -195,11 +176,13 @@ TValue Map::search(TKey c) const
     return values[i].second;
 }
 
+// Theta(1)
 int Map::size() const
 {
     return count;
 }
 
+// Theta(1)
 bool Map::isEmpty() const
 {
     return count == 0;
@@ -210,12 +193,29 @@ MapIterator Map::iterator() const
     return MapIterator(*this);
 }
 
+// Theta(n)
 Map::~Map() {
     delete[] next;
     delete[] values;
 }
 
+// Theta(1)
 int Map::hash(TKey k) const
 {
     return abs(k) % (capacity);
+}
+
+// Theta(n)
+void Map::filter(Condition cond) {
+    for(int i = 0; i < capacity;)
+    {
+        if(values[i] != EMPTY_ELEM && cond(values[i].first))
+        {
+            remove(values[i].first);
+        }
+        else
+        {
+            i++;
+        }
+    }
 }
