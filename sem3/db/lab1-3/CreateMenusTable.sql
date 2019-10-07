@@ -1,0 +1,6 @@
+CREATE TABLE Menus(
+	MenuId INT PRIMARY KEY,
+	RestaurantID INT FOREIGN KEY REFERENCES Restaurants(RestaurantId),
+	MenuContent VARCHAR(200) NOT NULL,
+	Price FLOAT NOT NULL,
+);
