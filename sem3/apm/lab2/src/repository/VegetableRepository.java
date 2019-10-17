@@ -2,7 +2,7 @@ package repository;
 
 import model.Vegetable;
 
-public class VegetableRepository {
+public class VegetableRepository implements IVegetableRepository{
     private Vegetable[] vegetables;
     private int idx;
 
