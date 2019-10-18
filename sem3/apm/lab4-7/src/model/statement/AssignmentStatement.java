@@ -2,6 +2,7 @@ package model.statement;
 
 import model.expression.Expression;
 import model.program.ProgramState;
+import model.type.IllegalTypeException;
 import model.type.Type;
 import model.value.Value;
 
@@ -26,21 +27,18 @@ public class AssignmentStatement implements Statement
     }
 
     @Override
-    public ProgramState execute(ProgramState state) throws Exception
+    public ProgramState execute(ProgramState state) throws IllegalTypeException, UndeclaredVariableException
     {
         Stack<Statement> stack = state.getExecutionStack();
         HashMap<String, Value> symbolTable = state.getSymbolTable();
-        Value value = expression.evaluate(symbolTable);
+        Value expressionValue = expression.evaluate(symbolTable);
         if (symbolTable.containsKey(id))
         {
-            Type typeId = (symbolTable.get(id)).getType();
-            if (value.getType().equals(typeId)) symbolTable.put(id, value);
-            else throw new Exception(
-                "Declared type of variable " +
-                id +
-                " and type of assigned expression do not match");
+            Type variableType = (symbolTable.get(id)).getType();
+            if (expressionValue.getType().equals(variableType)) symbolTable.put(id, expressionValue);
+            else throw new IllegalTypeException(id, variableType, expressionValue.getType());
         }
-        else throw new Exception("Variable " + id + " was not used before");
+        else throw new UndeclaredVariableException(id);
         return state;
     }
 }

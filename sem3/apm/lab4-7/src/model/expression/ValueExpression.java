@@ -3,6 +3,7 @@ package model.expression;
 import model.value.Value;
 
 import java.util.Dictionary;
+import java.util.HashMap;
 
 public class ValueExpression implements Expression {
     private Value value;
@@ -16,7 +17,7 @@ public class ValueExpression implements Expression {
     }
 
     @Override
-    public Value evaluate(Dictionary<String, Value> table) {
-        return this.value.getValue();
+    public Value evaluate(HashMap<String, Value> table) {
+        return this.value;
     }
 }

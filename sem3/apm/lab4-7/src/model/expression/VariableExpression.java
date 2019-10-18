@@ -1,8 +1,7 @@
 package model.expression;
 
 import model.value.Value;
-
-import java.util.Dictionary;
+import java.util.HashMap;
 
 public class VariableExpression implements Expression {
     private String id;
@@ -12,7 +11,7 @@ public class VariableExpression implements Expression {
     }
 
     @Override
-    public Value evaluate(Dictionary<String, Value> table) {
+    public Value evaluate(HashMap<String, Value> table) {
         return table.get(this.id);
     }
 }
