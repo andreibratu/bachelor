@@ -1,11 +1,10 @@
 package controller;
 
-import model.program.ProgramState;
-import model.statement.Statement;
-import model.statement.StatementExecutionException;
+import adt.IStack;
+import domain.state.ProgramState;
+import domain.statement.IStatement;
+import domain.statement.StatementExecutionException;
 import repository.IRepository;
-
-import java.util.Stack;
 
 public class Controller implements IController {
     private IRepository repository;
@@ -16,10 +15,27 @@ public class Controller implements IController {
     }
 
     @Override
-    public ProgramState step(ProgramState state) throws Exception {
-        Stack<Statement> stack = state.getExecutionStack();
+    public ProgramState oneStep(ProgramState state) throws Exception {
+        IStack<IStatement> stack = state.getExecutionStack();
         if (stack.isEmpty()) throw new StatementExecutionException();
-        Statement currentStatement = stack.pop();
+        IStatement currentStatement = stack.pop();
         return currentStatement.execute(state);
+    }
+
+    public void allSteps()
+    {
+        ProgramState currentProgram = this.repository.getCurrentProgram();
+        try {
+            while(true)
+            {
+                System.out.println(currentProgram.toString());
+                oneStep(currentProgram);
+            }
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+            System.exit(0);
+        }
     }
 }

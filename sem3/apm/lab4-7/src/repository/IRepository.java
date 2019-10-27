@@ -1,7 +1,9 @@
 package repository;
 
-import model.program.ProgramState;
+import domain.state.ProgramState;
 
 public interface IRepository {
-    ProgramState getCurrentProgram() throws RepositoryEmptyException;
+    ProgramState getCurrentProgram();
+
+    public void addProgram(ProgramState state);
 }

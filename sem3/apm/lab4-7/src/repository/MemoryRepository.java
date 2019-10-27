@@ -1,27 +1,28 @@
 package repository;
 
-import model.program.ProgramState;
+import domain.state.ProgramState;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class MemoryRepository implements IRepository
 {
-    private List<ProgramState> states;
+    private Queue<ProgramState> states;
 
     public MemoryRepository()
     {
-        this.states = new ArrayList<>();
+        this.states = new LinkedList<>();
     }
 
     @Override
-    public ProgramState getCurrentProgram() throws RepositoryEmptyException
+    public ProgramState getCurrentProgram()
     {
-        try {
-            return this.states.get(this.states.size() - 1);
-        }
-        catch(IndexOutOfBoundsException e) {
-            throw new RepositoryEmptyException();
-        }
+        return this.states.poll();
+    }
+
+    @Override
+    public void addProgram(ProgramState state)
+    {
+        this.states.add(state);
     }
 }

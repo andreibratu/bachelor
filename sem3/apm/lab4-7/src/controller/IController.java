@@ -1,8 +1,7 @@
 package controller;
 
-import model.program.ProgramState;
-import model.statement.StatementExecutionException;
+import domain.state.ProgramState;
 
 public interface IController {
-     ProgramState step(ProgramState state) throws Exception;
+     ProgramState oneStep(ProgramState state) throws Exception;
 }
