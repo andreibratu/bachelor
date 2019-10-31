@@ -13,12 +13,17 @@ public class ProgramState {
     private IStatement originalProgram;
 
     public ProgramState(IStack<IStatement> executionStack, IDictionary<String, Value> symbolTable,
-                        IList<Value> out, IStatement originalProgram) {
+                        IList<Value> out, IStatement program) {
         this.executionStack = executionStack;
         this.symbolTable = symbolTable;
         this.out = out;
-        this.originalProgram = originalProgram;
+        this.originalProgram = program.deepCopy();
         this.executionStack.push(this.originalProgram);
+    }
+
+    @Override
+    public String toString() {
+        return this.symbolTable.toString();
     }
 
     public IStack<IStatement> getExecutionStack() {

@@ -25,4 +25,9 @@ public class CompoundStatement implements IStatement
         stack.push(first);
         return state;
     }
+
+    @Override
+    public IStatement deepCopy() {
+        return new CompoundStatement(first, second);
+    }
 }

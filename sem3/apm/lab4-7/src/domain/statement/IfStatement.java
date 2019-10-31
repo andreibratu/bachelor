@@ -25,7 +25,7 @@ public class IfStatement implements IStatement {
     }
 
     @Override
-    public ProgramState execute(ProgramState state) throws IllegalTypeException {
+    public ProgramState execute(ProgramState state) throws Exception {
         IStack<IStatement> exeStack = state.getExecutionStack();
         IDictionary<String, Value> symTable = state.getSymbolTable();
         Value result = this.expression.evaluate(symTable);
@@ -34,5 +34,10 @@ public class IfStatement implements IStatement {
         else
             exeStack.push(elseStatement);
         return state;
+    }
+
+    @Override
+    public IStatement deepCopy() {
+        return new IfStatement(expression.deepCopy(), thenStatement.deepCopy(), elseStatement.deepCopy());
     }
 }

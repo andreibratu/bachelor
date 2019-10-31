@@ -15,8 +15,15 @@ public class LogicalExpression implements Expression {
     private Expression second;
     private LogicalOperator operator;
 
+    public LogicalExpression(Expression first, Expression second, LogicalOperator operator)
+    {
+        this.first = first;
+        this.second = second;
+        this.operator = operator;
+    }
+
     @Override
-    public Value evaluate(IDictionary<String, Value> table) throws IllegalTypeException
+    public Value evaluate(IDictionary<String, Value> table) throws Exception
     {
         Value v1 = first.evaluate(table);
         Value v2 = second.evaluate(table);
@@ -75,5 +82,10 @@ public class LogicalExpression implements Expression {
                 break;
         }
         return new BoolValue(result);
+    }
+
+    @Override
+    public Expression deepCopy() {
+        return new LogicalExpression(first.deepCopy(), second.deepCopy(), operator);
     }
 }

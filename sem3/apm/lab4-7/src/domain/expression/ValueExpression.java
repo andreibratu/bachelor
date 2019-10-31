@@ -18,4 +18,9 @@ public class ValueExpression implements Expression {
     public Value evaluate(IDictionary<String, Value> table) {
         return this.value;
     }
+
+    @Override
+    public Expression deepCopy() {
+        return new ValueExpression(value.deepCopy());
+    }
 }

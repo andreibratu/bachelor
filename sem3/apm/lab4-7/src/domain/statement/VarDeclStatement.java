@@ -21,4 +21,9 @@ public class VarDeclStatement implements IStatement {
         symbolTable.add(name, value);
         return state;
     }
+
+    @Override
+    public IStatement deepCopy() {
+        return new VarDeclStatement(name, value.deepCopy());
+    }
 }

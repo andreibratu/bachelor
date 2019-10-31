@@ -11,7 +11,7 @@ public class PrintStatement implements IStatement
 {
     private Expression expression;
 
-    PrintStatement(Expression expression)
+    public PrintStatement(Expression expression)
     {
         this.expression = expression;
     }
@@ -21,10 +21,15 @@ public class PrintStatement implements IStatement
     }
 
     @Override
-    public ProgramState execute(ProgramState state) throws IllegalTypeException {
+    public ProgramState execute(ProgramState state) throws Exception {
         IList<Value> list = state.getOut();
         IDictionary<String, Value> symTable = state.getSymbolTable();
         list.add(this.expression.evaluate(symTable));
         return state;
+    }
+
+    @Override
+    public IStatement deepCopy() {
+        return new PrintStatement(expression.deepCopy());
     }
 }

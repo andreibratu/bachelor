@@ -19,7 +19,7 @@ public class ArithmeticExpression implements Expression {
     }
 
     @Override
-    public Value evaluate(IDictionary<String, Value> table) throws IllegalTypeException, ArithmeticException {
+    public Value evaluate(IDictionary<String, Value> table) throws Exception {
         Value v1 = first.evaluate(table);
         Value v2 = second.evaluate(table);
 
@@ -46,5 +46,10 @@ public class ArithmeticExpression implements Expression {
                 break;
         }
         return new IntegerValue(result);
+    }
+
+    @Override
+    public Expression deepCopy() {
+        return new ArithmeticExpression(first.deepCopy(), second.deepCopy(), operator);
     }
 }

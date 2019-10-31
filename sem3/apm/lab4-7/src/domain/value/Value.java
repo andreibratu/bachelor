@@ -6,4 +6,6 @@ public interface Value<T> {
     Type getType();
 
     T getValue();
+
+    Value deepCopy();
 }

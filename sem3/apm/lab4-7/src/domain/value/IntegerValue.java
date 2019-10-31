@@ -26,4 +26,9 @@ public class IntegerValue implements Value<Integer>
     public Type getType() {
         return new IntegerType();
     }
+
+    @Override
+    public Value deepCopy() {
+        return new IntegerValue(value);
+    }
 }

@@ -32,10 +32,10 @@ public class MyStack<T1> implements IStack<T1> {
 
     @Override
     public String toString() {
-       String printStack = "";
+       StringBuilder printStack = new StringBuilder();
        for (T1 elem : this.stack)
-           printStack = printStack + elem.toString() + "\n";
-       return printStack;
+           printStack.append(elem.toString()).append("\n");
+       return printStack.toString();
     }
 
     public Stack<T1> getStack() {

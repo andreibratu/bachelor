@@ -19,7 +19,7 @@ public class MyList<T1> implements IList<T1>, Iterable<T1> {
     public void delete(T1 elem) throws EmptyListException {
         if(this.list.isEmpty())
             throw new EmptyListException("The list is empty!");
-            this.list.remove(elem);
+        this.list.remove(elem);
     }
 
     @Override

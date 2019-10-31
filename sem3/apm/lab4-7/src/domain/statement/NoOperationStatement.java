@@ -7,4 +7,9 @@ public class NoOperationStatement implements IStatement {
     public ProgramState execute(ProgramState state) {
         return null;
     }
+
+    @Override
+    public IStatement deepCopy() {
+        return new NoOperationStatement();
+    }
 }

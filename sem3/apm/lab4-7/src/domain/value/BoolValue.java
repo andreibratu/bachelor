@@ -24,4 +24,9 @@ public class BoolValue implements Value<Boolean> {
     public Type getType() {
         return new BoolType();
     }
+
+    @Override
+    public Value deepCopy() {
+        return new BoolValue(value);
+    }
 }

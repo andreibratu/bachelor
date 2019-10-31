@@ -11,7 +11,12 @@ public class VariableExpression implements Expression {
     }
 
     @Override
-    public Value evaluate(IDictionary<String, Value> table) {
+    public Value evaluate(IDictionary<String, Value> table) throws Exception {
         return table.lookUp(this.id);
+    }
+
+    @Override
+    public Expression deepCopy() {
+        return new VariableExpression(id);
     }
 }

@@ -25,8 +25,7 @@ public class AssignmentStatement implements IStatement
     }
 
     @Override
-    public ProgramState execute(ProgramState state) throws IllegalTypeException, UndeclaredVariableException
-    {
+    public ProgramState execute(ProgramState state) throws Exception {
         IStack<IStatement> stack = state.getExecutionStack();
         IDictionary<String, Value> symbolTable = state.getSymbolTable();
         Value expressionValue = expression.evaluate(symbolTable);
@@ -36,5 +35,10 @@ public class AssignmentStatement implements IStatement
             else throw new IllegalTypeException(id, variableType, expressionValue.getType());
         } else throw new UndeclaredVariableException(id);
         return state;
+    }
+
+    @Override
+    public IStatement deepCopy() {
+        return new AssignmentStatement(this.id, this.expression);
     }
 }

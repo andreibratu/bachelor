@@ -1,9 +1,9 @@
 package domain.statement;
 
-public class UndeclaredVariableException extends Exception {
+class UndeclaredVariableException extends Exception {
 
-    public UndeclaredVariableException(String id)
+    UndeclaredVariableException(String id)
     {
-        super("Variable " + id + " was not declared before");
+        super("Variable " + id + " was not declared before!");
     }
 }
