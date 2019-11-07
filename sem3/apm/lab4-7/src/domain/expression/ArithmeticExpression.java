@@ -1,25 +1,35 @@
 package domain.expression;
 
-import adt.IDictionary;
+import adt.dictionary.IDictionary;
 import domain.operator.ArithmeticOperator;
-import domain.type.IllegalTypeException;
+import exception.type.IllegalTypeException;
 import domain.type.IntegerType;
 import domain.value.IntegerValue;
 import domain.value.Value;
+import exception.variable.UndeclaredVariableException;
 
 public class ArithmeticExpression implements Expression {
     private Expression first;
     private Expression second;
     private ArithmeticOperator operator;
 
-    public ArithmeticExpression(Expression first, Expression second, ArithmeticOperator operator) {
+    public ArithmeticExpression(Expression first, Expression second, ArithmeticOperator operator)
+    {
         this.first = first;
         this.second = second;
         this.operator = operator;
     }
 
     @Override
-    public Value evaluate(IDictionary<String, Value> table) throws Exception {
+    public String toString()
+    {
+        return this.first.toString() + " " + operator.toString() + " " + second.toString();
+    }
+
+    @Override
+    public Value evaluate(IDictionary<String, Value> table)
+        throws IllegalTypeException, ArithmeticException, UndeclaredVariableException
+    {
         Value v1 = first.evaluate(table);
         Value v2 = second.evaluate(table);
 

@@ -21,8 +21,5 @@ public class MemoryRepository implements IRepository
     }
 
     @Override
-    public void addProgram(ProgramState state)
-    {
-        this.states.add(state);
-    }
+    public void addProgram(ProgramState state) { this.states.add(state); }
 }

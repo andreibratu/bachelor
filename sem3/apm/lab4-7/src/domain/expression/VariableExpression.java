@@ -1,22 +1,33 @@
 package domain.expression;
 
-import adt.IDictionary;
+import adt.dictionary.IDictionary;
+import adt.dictionary.InvalidKeyException;
 import domain.value.Value;
+import exception.variable.UndeclaredVariableException;
 
-public class VariableExpression implements Expression {
-    private String id;
+public class VariableExpression implements Expression
+{
+    private String variableName;
 
-    public VariableExpression(String id) {
-        this.id = id;
+    public VariableExpression(String variableName) {
+        this.variableName = variableName;
     }
 
     @Override
-    public Value evaluate(IDictionary<String, Value> table) throws Exception {
-        return table.lookUp(this.id);
+    public String toString() { return this.variableName; }
+
+    @Override
+    public Value evaluate(IDictionary<String, Value> table) throws UndeclaredVariableException
+    {
+        try {
+            return table.lookUp(this.variableName);
+        } catch (InvalidKeyException e) {
+            throw new UndeclaredVariableException(this.variableName);
+        }
     }
 
     @Override
     public Expression deepCopy() {
-        return new VariableExpression(id);
+        return new VariableExpression(variableName);
     }
 }

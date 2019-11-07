@@ -1,11 +1,12 @@
 package domain.statement;
 
-import adt.IDictionary;
-import adt.IList;
+import adt.dictionary.IDictionary;
+import adt.list.IList;
 import domain.expression.Expression;
 import domain.state.ProgramState;
-import domain.type.IllegalTypeException;
+import exception.type.IllegalTypeException;
 import domain.value.Value;
+import exception.variable.UndeclaredVariableException;
 
 public class PrintStatement implements IStatement
 {
@@ -21,7 +22,8 @@ public class PrintStatement implements IStatement
     }
 
     @Override
-    public ProgramState execute(ProgramState state) throws Exception {
+    public ProgramState execute(ProgramState state) throws IllegalTypeException, UndeclaredVariableException
+    {
         IList<Value> list = state.getOut();
         IDictionary<String, Value> symTable = state.getSymbolTable();
         list.add(this.expression.evaluate(symTable));

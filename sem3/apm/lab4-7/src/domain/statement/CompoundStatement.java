@@ -1,6 +1,6 @@
 package domain.statement;
 
-import adt.IStack;
+import adt.stack.IStack;
 import domain.state.ProgramState;
 
 public class CompoundStatement implements IStatement
@@ -15,11 +15,12 @@ public class CompoundStatement implements IStatement
     }
 
     public String toString() {
-        return "(" + first.toString() + ";" + second.toString() + ")";
+        return "( " + first.toString() + " ; " + second.toString() + " )";
     }
 
     @Override
-    public ProgramState execute(ProgramState state) {
+    public ProgramState execute(ProgramState state)
+    {
         IStack<IStatement> stack = state.getExecutionStack();
         stack.push(second);
         stack.push(first);

@@ -1,8 +1,8 @@
 package domain.state;
 
-import adt.IDictionary;
-import adt.IList;
-import adt.IStack;
+import adt.dictionary.IDictionary;
+import adt.list.IList;
+import adt.stack.IStack;
 import domain.statement.IStatement;
 import domain.value.Value;
 
@@ -22,8 +22,11 @@ public class ProgramState {
     }
 
     @Override
-    public String toString() {
-        return this.symbolTable.toString();
+    public String toString()
+    {
+        String currentStatement = this.executionStack.peek().toString();
+        String symTableStatus = this.symbolTable.toString();
+        return currentStatement + "\n" + symTableStatus + "-----";
     }
 
     public IStack<IStatement> getExecutionStack() {

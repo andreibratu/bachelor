@@ -1,6 +1,6 @@
 package domain.expression;
 
-import adt.IDictionary;
+import adt.dictionary.IDictionary;
 import domain.value.Value;
 
 public class ValueExpression implements Expression {
@@ -13,6 +13,9 @@ public class ValueExpression implements Expression {
     public Value getValue() {
         return value;
     }
+
+    @Override
+    public String toString() { return this.value.toString(); }
 
     @Override
     public Value evaluate(IDictionary<String, Value> table) {

@@ -1,16 +1,18 @@
 package domain.expression;
 
-import adt.IDictionary;
+import adt.dictionary.IDictionary;
 import domain.operator.LogicalOperator;
 import domain.type.BoolType;
-import domain.type.IllegalTypeException;
+import exception.type.IllegalTypeException;
 import domain.type.IntegerType;
 import domain.type.Type;
 import domain.value.BoolValue;
 import domain.value.IntegerValue;
 import domain.value.Value;
+import exception.variable.UndeclaredVariableException;
 
-public class LogicalExpression implements Expression {
+public class LogicalExpression implements Expression
+{
     private Expression first;
     private Expression second;
     private LogicalOperator operator;
@@ -23,11 +25,11 @@ public class LogicalExpression implements Expression {
     }
 
     @Override
-    public Value evaluate(IDictionary<String, Value> table) throws Exception
+    public Value evaluate(IDictionary<String, Value> table) throws IllegalTypeException, UndeclaredVariableException
     {
         Value v1 = first.evaluate(table);
-        Value v2 = second.evaluate(table);
         Type type1 = v1.getType();
+        Value v2 = second.evaluate(table);
         Type type2 = v2.getType();
         boolean result = false;
         switch (this.operator)

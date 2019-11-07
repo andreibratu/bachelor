@@ -1,8 +1,8 @@
 package view;
 
-import adt.Dictionary;
-import adt.MyList;
-import adt.MyStack;
+import adt.dictionary.Dictionary;
+import adt.list.MyList;
+import adt.stack.MyStack;
 import controller.Controller;
 import controller.IController;
 import domain.expression.ArithmeticExpression;
@@ -18,15 +18,15 @@ import repository.MemoryRepository;
 public class Main {
 
     public static void main(String[] args) {
-        IStatement simpleStatement = new CompoundStatement(
-            new VarDeclStatement("a", new IntegerValue(6)),
-            new PrintStatement(new VariableExpression("a"))
-        );
+//        IStatement simpleStatement = new CompoundStatement(
+//            new VariableDeclarationStatement("a", new IntegerValue(6)),
+//            new PrintStatement(new VariableExpression("a"))
+//        );
 
         IStatement ex1 = new CompoundStatement(
-            new VarDeclStatement("a", new IntegerValue(0)),
+            new VariableDeclarationStatement("a", new IntegerValue(0)),
             new CompoundStatement(
-                new VarDeclStatement("b", new IntegerValue(0)),
+                new VariableDeclarationStatement("b", new IntegerValue(0)),
                 new CompoundStatement(
                     new AssignmentStatement(
                         "a",
@@ -56,7 +56,7 @@ public class Main {
         );
         IRepository repository = new MemoryRepository();
         repository.addProgram(program);
-        IController controller = new Controller(repository);
+        IController controller = new Controller(repository, true);
         try {
             controller.allSteps();
         } catch (Exception e) {

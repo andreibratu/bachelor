@@ -9,7 +9,5 @@ public class NoOperationStatement implements IStatement {
     }
 
     @Override
-    public IStatement deepCopy() {
-        return new NoOperationStatement();
-    }
+    public IStatement deepCopy() { return new NoOperationStatement(); }
 }
