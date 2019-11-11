@@ -1,4 +1,5 @@
 /* Select restaurants that are either fast_food or close after 20 */
+/* a */
 
 SELECT RestaurantName, RestaurantType, ClosingHour
 FROM Restaurants

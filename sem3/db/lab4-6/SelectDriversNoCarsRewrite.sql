@@ -8,4 +8,9 @@ WHERE IsDriver = 1
 EXCEPT
 SELECT IdentityDocument, FirstName, LastName
 FROM Users
-WHERE IdentityDocument = ANY (SELECT UserId FROM Vehicles);
+WHERE (
+	SELECT COUNT(Vehicles.UserId)
+	FROM Users
+	FULL JOIN Vehicles ON Users.IdentityDocument = Vehicles.UserId
+	WHERE Users.IdentityDocument = IdentityDocument
+) = 0;

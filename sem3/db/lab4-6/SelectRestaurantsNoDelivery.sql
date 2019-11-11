@@ -1,5 +1,7 @@
 /* Find all restaurants that have no delivery request registered */
 
+/* d */
+
 SELECT RestaurantName
 FROM Deliveries
 JOIN MenuDeliveryBridge ON Deliveries.DeliveryId = MenuDeliveryBridge.DeliveryId

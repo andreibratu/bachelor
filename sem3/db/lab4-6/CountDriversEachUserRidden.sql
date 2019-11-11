@@ -1,5 +1,7 @@
 /* Count with how many unique drivers each user has ridden */
 
+/* d, h */
+
 SELECT Users.IdentityDocument, FirstName, LastName, COUNT(DISTINCT(Vehicles.UserId)) AS Drivers
 FROM Users
 JOIN UserRideBridge ON Users.IdentityDocument = UserRideBridge.UserId

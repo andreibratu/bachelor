@@ -1,8 +1,7 @@
 /* Select all drivers older than 25 */
-SELECT FirstName, LastName, BirthDate, IsDriver
-FROM Users
-WHERE IsDriver = 1
-INTERSECT
-SELECT FirstName, LastName, BirthDate, IsDriver
-FROM Users
+
+/* g */
+
+SELECT FirstName, LastName
+FROM (SELECT * FROM Users WHERE IsDriver = 1) AS DriverUsers
 WHERE DATEDIFF(MONTH, BirthDate, GETDATE()) / 12 > 25;

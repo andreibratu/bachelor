@@ -1,4 +1,5 @@
 /* Count how many unused promotions each user has */
+/* d, h */
 
 SELECT FirstName, LastName, COUNT(*) AS UnusedPromotions
 FROM Users INNER JOIN Promotions ON Users.IdentityDocument = Promotions.UserIdentityDocument
