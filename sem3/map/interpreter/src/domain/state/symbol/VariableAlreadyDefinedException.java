@@ -1,4 +1,4 @@
-package exception.variable;
+package domain.state.symtable;
 
 public class VariableAlreadyDefinedException extends Exception
 {
