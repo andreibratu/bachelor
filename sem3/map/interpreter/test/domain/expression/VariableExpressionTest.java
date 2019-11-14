@@ -1,10 +1,12 @@
 package domain.expression;
 
-import adt.dictionary.Dictionary;
-import adt.dictionary.IDictionary;
-import domain.value.IValue;
+import domain.state.heap.DictionaryHeap;
+import domain.state.heap.IHeap;
+import domain.state.symbol.DictionarySymbolTable;
+import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.UndeclaredVariableException;
+import domain.state.symbol.VariableAlreadyDefinedException;
 import domain.value.IntegerValue;
-import exception.variable.UndeclaredVariableException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,13 +16,19 @@ import static junit.framework.TestCase.fail;
 public class VariableExpressionTest {
 
     private VariableExpression varExpression;
-    private IDictionary<String, IValue> mockSymbolTable;
+    private ISymbolTable mockSymbolTable;
+    private IHeap mockHeap;
 
     @Before
     public void setUp() {
         this.varExpression = new VariableExpression("a");
-        this.mockSymbolTable = new Dictionary<>();
-        mockSymbolTable.put("a", new IntegerValue(7));
+        this.mockSymbolTable = new DictionarySymbolTable();
+        this.mockHeap = new DictionaryHeap();
+        try {
+            mockSymbolTable.createVariable("a", new IntegerValue(7));
+        } catch (VariableAlreadyDefinedException e) {
+            fail("Variable a should be instantiated the first time");
+        }
     }
 
     @Test
@@ -31,19 +39,21 @@ public class VariableExpressionTest {
     @Test
     public void testEvaluate() {
         try {
-            assertEquals(varExpression.evaluate(mockSymbolTable), new IntegerValue(7));
+            assertEquals(varExpression.evaluate(mockSymbolTable, mockHeap), new IntegerValue(7));
         } catch (UndeclaredVariableException e) {
             fail("Variable does exist in the symbol table");
         }
     }
 
     @Test(expected = UndeclaredVariableException.class)
-    public void testEvaluateUndeclaredVariable() throws UndeclaredVariableException {
+    public void testEvaluateUndeclaredVariable() throws UndeclaredVariableException
+    {
         VariableExpression invalid = new VariableExpression("b");
-        invalid.evaluate(mockSymbolTable);
+        invalid.evaluate(mockSymbolTable, mockHeap);
     }
 
     @Test
+    @SuppressWarnings("unused")
     public void testClone() {
         try {
             VariableExpression clone = (VariableExpression) this.varExpression.clone();

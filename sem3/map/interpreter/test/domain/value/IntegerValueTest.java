@@ -1,9 +1,7 @@
 package domain.value;
 
 import domain.type.IntegerType;
-import domain.value.BoolValue;
-import domain.value.IntegerValue;
-import exception.type.IllegalComparisonException;
+import domain.type.IllegalComparisonException;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;

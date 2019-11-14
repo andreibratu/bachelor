@@ -1,25 +1,18 @@
 package domain.statement.heap;
 
 
-import adt.dictionary.IDictionary;
-import adt.dictionary.InvalidKeyException;
 import domain.expression.IExpression;
-import domain.state.Heap;
 import domain.state.ProgramState;
+import domain.state.heap.IHeap;
+import domain.state.heap.InvalidMemoryAddressException;
+import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.UndeclaredVariableException;
 import domain.statement.IStatement;
 import domain.type.IType;
 import domain.type.ReferenceType;
 import domain.value.IValue;
 import domain.value.ReferenceValue;
-import exception.io.DescriptorExistsException;
-import exception.io.DescriptorNotExistsException;
-import exception.io.FileDoesNotExistException;
-import exception.type.IllegalTypeException;
-import exception.variable.UndeclaredVariableException;
-import exception.variable.VariableAlreadyDefinedException;
-
-import java.io.IOException;
-import java.sql.Ref;
+import domain.type.IllegalTypeException;
 
 public class HeapAllocationStatement implements IStatement {
 
@@ -32,15 +25,42 @@ public class HeapAllocationStatement implements IStatement {
     }
 
     @Override
-    public ProgramState execute(ProgramState state) throws IllegalTypeException, UndeclaredVariableException
+    public ProgramState execute(ProgramState state)
+            throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException
     {
-        IDictionary<String, IValue> symbolTable = state.getSymbolTable();
-        Heap heap = state.getHeap();
+        ISymbolTable symbolTable = state.getSymbolTable();
+        IHeap heap = state.getHeap();
+
+        IValue varValue = symbolTable.queryVariable(this.variableName);
+        if(!(varValue instanceof ReferenceValue))
+            throw new IllegalTypeException(this.toString(), new ReferenceType(null), varValue.getType());
+
+        IValue result = expression.evaluate(symbolTable, heap);
+        if (!(result.getType() instanceof ReferenceType))
+            throw new IllegalTypeException(this.toString(), new ReferenceType(null), result.getType());
+
+        IType varValueInnerType = ((ReferenceValue) varValue).getLocationType();
+        IType resultInnerType = ((ReferenceValue) result).getLocationType();
+        if (!varValueInnerType.equals(resultInnerType))
+            throw new IllegalTypeException(this.toString(), varValueInnerType, resultInnerType);
+
+        varValue = heap.allocate(result);
+        symbolTable.updateVariable(variableName, varValue);
         return state;
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        return null;
+    public String toString()
+    {
+        return "new(" + variableName + ", " + expression + ")";
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException
+    {
+        HeapAllocationStatement clone = (HeapAllocationStatement) super.clone();
+        clone.variableName = variableName;
+        clone.expression = (IExpression) this.expression.clone();
+        return clone;
     }
 }

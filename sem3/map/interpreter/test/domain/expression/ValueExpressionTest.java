@@ -1,7 +1,9 @@
 package domain.expression;
 
-import adt.dictionary.Dictionary;
-import adt.dictionary.IDictionary;
+import domain.state.heap.DictionaryHeap;
+import domain.state.heap.IHeap;
+import domain.state.symbol.DictionarySymbolTable;
+import domain.state.symbol.ISymbolTable;
 import domain.value.IValue;
 import domain.value.IntegerValue;
 import org.junit.Before;
@@ -12,13 +14,15 @@ import static junit.framework.TestCase.*;
 public class ValueExpressionTest {
 
     private ValueExpression integerValueExpression;
-    private IDictionary<String, IValue> mockSymbolTable;
+    private ISymbolTable mockSymbolTable;
+    private IHeap mockHeap;
 
     @Before
     public void setUp()
     {
         this.integerValueExpression = new ValueExpression(new IntegerValue(5));
-        this.mockSymbolTable = new Dictionary<>();
+        this.mockSymbolTable = new DictionarySymbolTable();
+        this.mockHeap = new DictionaryHeap();
     }
 
     @Test
@@ -36,7 +40,7 @@ public class ValueExpressionTest {
     @Test
     public void testEvaluate()
     {
-        IValue result = this.integerValueExpression.evaluate(this.mockSymbolTable);
+        IValue result = this.integerValueExpression.evaluate(this.mockSymbolTable, this.mockHeap);
         assertEquals(result, this.integerValueExpression.getValue());
     }
 
@@ -58,7 +62,7 @@ public class ValueExpressionTest {
     {
         IExpression expression = new ValueExpression(new IntegerValue(6));
         try {
-            assertEquals(expression.evaluate(this.mockSymbolTable), new IntegerValue(6));
+            assertEquals(expression.evaluate(this.mockSymbolTable, this.mockHeap), new IntegerValue(6));
         } catch (Exception e) {
             fail("Expression should not throw");
         }

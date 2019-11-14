@@ -1,13 +1,15 @@
 package domain.expression;
 
-import adt.dictionary.IDictionary;
-import exception.type.IllegalTypeException;
+import domain.state.heap.IHeap;
+import domain.state.heap.InvalidMemoryAddressException;
+import domain.state.symbol.ISymbolTable;
+import domain.type.IllegalTypeException;
 import domain.value.IValue;
-import exception.variable.UndeclaredVariableException;
+import domain.state.symbol.UndeclaredVariableException;
 
 public interface IExpression extends Cloneable
 {
-    IValue evaluate(IDictionary<String, IValue> table) throws IllegalTypeException, UndeclaredVariableException;
+    IValue evaluate(ISymbolTable table, IHeap heap) throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException;
 
     Object clone() throws CloneNotSupportedException;
 }

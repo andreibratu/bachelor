@@ -6,7 +6,7 @@ import org.junit.Test;
 import static junit.framework.TestCase.*;
 import static org.junit.Assert.assertNotEquals;
 
-public class TypeTest {
+public class BasicTypesTest {
     private BoolType boolType;
     private IntegerType integerType;
     private StringType stringType;

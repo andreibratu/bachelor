@@ -4,34 +4,34 @@ import domain.value.IValue;
 import domain.value.ReferenceValue;
 
 public class ReferenceType implements IType {
-    private IType inner;
+    private IType innerType;
 
-    public ReferenceType(IType inner) {
-        this.inner = inner;
+    public ReferenceType(IType innerType) {
+        this.innerType = innerType;
     }
 
-    public IType getInner() {
-        return this.inner;
+    public IType getInnerType() {
+        return this.innerType;
     }
 
     public boolean equals(Object another) {
         if (another instanceof ReferenceType)
-            return inner.equals(((ReferenceType) another).getInner());
+            return innerType.equals(((ReferenceType) another).getInnerType());
         return false;
     }
 
     @Override
     public String toString() {
-        if (inner == null) return "&";
-        return inner.toString()+"&";
+        if (innerType == null) return "&";
+        return innerType.toString()+"&";
     }
 
-    public IValue defaultValue() { return new ReferenceValue(0, inner);}
+    public IValue defaultValue() { return new ReferenceValue(0, innerType);}
 
     @Override
     public Object clone() throws CloneNotSupportedException {
         ReferenceType clone = (ReferenceType) super.clone();
-        clone.inner = (IType) this.inner.clone();
+        clone.innerType = (IType) this.innerType.clone();
         return clone;
     }
 }

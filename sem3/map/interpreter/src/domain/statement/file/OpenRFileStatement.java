@@ -1,19 +1,21 @@
 package domain.statement.file;
 
-import adt.dictionary.IDictionary;
 import domain.expression.IExpression;
 import domain.state.ProgramState;
+import domain.state.file.DescriptorExistsException;
+import domain.state.file.FileDoesNotExistException;
+import domain.state.file.IFileTable;
+import domain.state.heap.IHeap;
+import domain.state.heap.InvalidMemoryAddressException;
+import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.UndeclaredVariableException;
 import domain.statement.IStatement;
 import domain.type.StringType;
 import domain.value.IValue;
 import domain.value.StringValue;
-import exception.io.DescriptorExistsException;
-import exception.io.FileDoesNotExistException;
-import exception.type.IllegalTypeException;
-import exception.variable.UndeclaredVariableException;
-import java.io.BufferedReader;
+import domain.type.IllegalTypeException;
+
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 
 public class OpenRFileStatement implements IStatement
 {
@@ -26,26 +28,17 @@ public class OpenRFileStatement implements IStatement
 
     @Override
     public ProgramState execute(ProgramState state)
-        throws IllegalTypeException, UndeclaredVariableException,
-            DescriptorExistsException, FileDoesNotExistException
-    {
-        IDictionary<String, IValue> symbolTable = state.getSymbolTable();
-        IDictionary<StringValue, BufferedReader> fileTable = state.getFileTable();
+            throws IllegalTypeException, UndeclaredVariableException,
+            DescriptorExistsException, FileDoesNotExistException, InvalidMemoryAddressException, FileNotFoundException {
+        ISymbolTable symbolTable = state.getSymbolTable();
+        IFileTable fileTable = state.getFileTable();
+        IHeap heap = state.getHeap();
 
-        IValue result = filepath.evaluate(symbolTable);
+        IValue result = filepath.evaluate(symbolTable, heap);
         if(!(result instanceof StringValue))
             throw new IllegalTypeException(this.toString(), new StringType(), result.getType());
-        if(fileTable.isDefined((StringValue) result))
-            throw new DescriptorExistsException(((StringValue) result).getValue());
-        try
-        {
-            FileReader reader = new FileReader(((StringValue) result).getValue());
-            BufferedReader buffered = new BufferedReader(reader);
-            fileTable.put((StringValue) result.getValue(), buffered);
-            return state;
-        } catch (FileNotFoundException e) {
-            throw new FileDoesNotExistException(((StringValue) result).getValue());
-        }
+        fileTable.createDescriptor((StringValue) result);
+        return state;
     }
 
     @Override

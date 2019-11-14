@@ -2,7 +2,7 @@ package domain.value;
 
 import domain.type.IType;
 import domain.type.StringType;
-import exception.type.IllegalComparisonException;
+import domain.type.IllegalComparisonException;
 
 public class StringValue implements IValue<String>
 {

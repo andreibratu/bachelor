@@ -1,20 +1,38 @@
-package domain.state;
+package domain.state.heap;
 
-import adt.dictionary.Dictionary;
-import adt.dictionary.IDictionary;
 import domain.value.IValue;
+import domain.value.ReferenceValue;
 
-public class Heap {
-    private IDictionary<Integer, IValue> heap;
+import java.util.HashMap;
+import java.util.Map;
+
+public class DictionaryHeap implements IHeap {
+    private Map<Integer, IValue> heap;
     private int heapFreeAddress;
 
-    public Heap() {
+    public DictionaryHeap() {
         this.heapFreeAddress = 1;
-        this.heap = new Dictionary<>();
+        this.heap = new HashMap<>();
     }
 
-    public int allocate(IValue value) {
+    public ReferenceValue allocate(IValue value)
+    {
         this.heap.put(this.heapFreeAddress, value);
-        return this.heapFreeAddress++;
+        return new ReferenceValue(this.heapFreeAddress++, value.getType());
+    }
+
+    @Override
+    public IValue dereference(ReferenceValue reference) throws InvalidMemoryAddressException
+    {
+        if(!this.heap.containsKey(reference.getValue()))
+            throw new InvalidMemoryAddressException(reference.toString(), reference.getValue());
+        return this.heap.get(reference.getValue());
+    }
+
+    @Override
+    public void write(ReferenceValue reference, IValue value) throws InvalidMemoryAddressException {
+        if(!this.heap.containsKey(reference.getValue()))
+            throw new InvalidMemoryAddressException(reference.toString(), reference.getValue());
+        this.heap.put(reference.getValue(), value);
     }
 }

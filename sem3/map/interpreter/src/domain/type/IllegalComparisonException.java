@@ -1,4 +1,4 @@
-package exception.type;
+package domain.type;
 
 import domain.value.IValue;
 

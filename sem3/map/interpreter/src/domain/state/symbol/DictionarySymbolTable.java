@@ -1,4 +1,4 @@
-package domain.state.symtable;
+package domain.state.symbol;
 
 import domain.value.IValue;
 
@@ -23,7 +23,7 @@ public class DictionarySymbolTable implements ISymbolTable
     @Override
     public void updateVariable(String variable, IValue value) throws UndeclaredVariableException
     {
-        if(!dictionary.containsKey(variable)) throw new UndeclaredVariableException(variable);
+        if (!dictionary.containsKey(variable)) throw new UndeclaredVariableException(variable);
         dictionary.put(variable, value);
     }
 

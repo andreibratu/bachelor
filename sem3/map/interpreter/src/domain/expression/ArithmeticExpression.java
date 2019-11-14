@@ -1,12 +1,14 @@
 package domain.expression;
 
-import adt.dictionary.IDictionary;
 import domain.operator.ArithmeticOperator;
-import exception.type.IllegalTypeException;
+import domain.state.heap.IHeap;
+import domain.state.heap.InvalidMemoryAddressException;
+import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.UndeclaredVariableException;
 import domain.type.IntegerType;
-import domain.value.IntegerValue;
 import domain.value.IValue;
-import exception.variable.UndeclaredVariableException;
+import domain.value.IntegerValue;
+import domain.type.IllegalTypeException;
 
 public class ArithmeticExpression implements IExpression {
     private IExpression first;
@@ -27,11 +29,12 @@ public class ArithmeticExpression implements IExpression {
     }
 
     @Override
-    public IValue evaluate(IDictionary<String, IValue> table)
-        throws IllegalTypeException, ArithmeticException, UndeclaredVariableException
+    public IValue evaluate(ISymbolTable table, IHeap heap)
+            throws IllegalTypeException, ArithmeticException,
+            UndeclaredVariableException, InvalidMemoryAddressException
     {
-        IValue v1 = first.evaluate(table);
-        IValue v2 = second.evaluate(table);
+        IValue v1 = first.evaluate(table, heap);
+        IValue v2 = second.evaluate(table, heap);
 
         if (!v1.getType().equals(new IntegerType()))
             throw new IllegalTypeException(this.toString(), new IntegerType(), v1.getType());

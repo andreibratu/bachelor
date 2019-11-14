@@ -1,19 +1,20 @@
 package domain.statement.file;
 
-import adt.dictionary.IDictionary;
-import adt.dictionary.InvalidKeyException;
 import domain.expression.IExpression;
 import domain.state.ProgramState;
+import domain.state.file.DescriptorNotExistsException;
+import domain.state.file.IFileTable;
+import domain.state.heap.IHeap;
+import domain.state.heap.InvalidMemoryAddressException;
+import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.UndeclaredVariableException;
 import domain.statement.IStatement;
-import domain.type.IType;
 import domain.type.IntegerType;
 import domain.type.StringType;
 import domain.value.IValue;
 import domain.value.IntegerValue;
 import domain.value.StringValue;
-import exception.io.DescriptorNotExistsException;
-import exception.type.IllegalTypeException;
-import exception.variable.UndeclaredVariableException;
+import domain.type.IllegalTypeException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,32 +26,26 @@ public class ReadFileStatement implements IStatement
 
     @Override
     public ProgramState execute(ProgramState state)
-            throws IllegalTypeException, UndeclaredVariableException, DescriptorNotExistsException, IOException
+            throws IllegalTypeException, UndeclaredVariableException, DescriptorNotExistsException,
+            IOException, InvalidMemoryAddressException
     {
-        IDictionary<String, IValue> symbolTable = state.getSymbolTable();
-        IDictionary<StringValue, BufferedReader> fileTable = state.getFileTable();
+        ISymbolTable symbolTable = state.getSymbolTable();
+        IHeap heap = state.getHeap();
+        IFileTable fileTable = state.getFileTable();
 
-        IType variableType = null;
-        try {
-            variableType = symbolTable.lookUp(variableName).getType();
-        } catch (InvalidKeyException e) {
-            throw new UndeclaredVariableException(variableName);
-        }
-        if(!(variableType instanceof IntegerType))
-            throw new IllegalTypeException(this.toString(), new IntegerType(), variableType);
-        IValue filepath = filepathExpression.evaluate(symbolTable);
-        if(!(filepath.getType() instanceof StringType))
+        IValue variable = symbolTable.queryVariable(variableName);
+        if(!(variable instanceof IntegerValue))
+            throw new IllegalTypeException(this.toString(), new IntegerType(), variable.getType());
+
+        IValue filepath = filepathExpression.evaluate(symbolTable, heap);
+        if(!(filepath instanceof StringValue))
             throw new IllegalTypeException(this.toString(), new StringType(), filepath.getType());
-        BufferedReader reader;
-        try {
-            reader = fileTable.lookUp((StringValue) filepath);
-        } catch (InvalidKeyException e) {
-            throw new DescriptorNotExistsException(((StringValue) filepath).getValue());
-        }
+
+        BufferedReader reader = fileTable.getDescriptor((StringValue) filepath);
         String line = reader.readLine();
         IntegerValue newValue = (line.length() != 0) ?
                 new IntegerValue(Integer.parseInt(line)) : new IntegerType().defaultValue();
-        symbolTable.put(variableName, newValue);
+        symbolTable.updateVariable(variableName, newValue);
         return state;
     }
 

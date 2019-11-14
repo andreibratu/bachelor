@@ -1,13 +1,14 @@
 package domain.statement.variable;
 
-import adt.dictionary.IDictionary;
 import domain.state.ProgramState;
+import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.VariableAlreadyDefinedException;
 import domain.statement.IStatement;
 import domain.type.IType;
 import domain.value.IValue;
-import exception.variable.VariableAlreadyDefinedException;
 
-public class VariableDeclarationStatement implements IStatement {
+public class VariableDeclarationStatement implements IStatement
+{
     private String name;
     private IValue value;
 
@@ -23,9 +24,8 @@ public class VariableDeclarationStatement implements IStatement {
     @Override
     public ProgramState execute(ProgramState state) throws VariableAlreadyDefinedException
     {
-        IDictionary<String, IValue> symbolTable = state.getSymbolTable();
-        if (symbolTable.isDefined(this.name)) throw new VariableAlreadyDefinedException(name);
-        symbolTable.put(name, value);
+        ISymbolTable symbolTable = state.getSymbolTable();
+        symbolTable.createVariable(name, value);
         return state;
     }
 

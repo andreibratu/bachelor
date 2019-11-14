@@ -1,31 +1,32 @@
 package domain.state;
 
-import adt.dictionary.Dictionary;
-import adt.dictionary.IDictionary;
-import adt.list.IList;
-import adt.list.List;
-import adt.stack.IStack;
-import adt.stack.Stack;
+import domain.state.file.DictionaryFileTable;
+import domain.state.file.IFileTable;
+import domain.state.heap.DictionaryHeap;
+import domain.state.heap.IHeap;
+import domain.state.symbol.DictionarySymbolTable;
+import domain.state.symbol.ISymbolTable;
 import domain.statement.IStatement;
 import domain.value.IValue;
-import domain.value.StringValue;
 
-import java.io.BufferedReader;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
 
 public class ProgramState {
-    private IStack<IStatement> executionStack;
-    private IDictionary<String, IValue> symbolTable;
-    private IList<IValue> out;
-    private IDictionary<StringValue, BufferedReader> fileTable;
-    Heap heap;
+    private Stack<IStatement> executionStack;
+    private ISymbolTable symbolTable;
+    private List<IValue> out;
+    private IFileTable fileTable;
+    private IHeap heap;
 
     public ProgramState(IStatement program)
     {
         this.executionStack = new Stack<>();
-        this.symbolTable = new Dictionary<>();
-        this.out = new List<>();
-        this.fileTable = new Dictionary<>();
-        this.heap = new Heap();
+        this.symbolTable = new DictionarySymbolTable();
+        this.out = new LinkedList<>();
+        this.fileTable = new DictionaryFileTable();
+        this.heap = new DictionaryHeap();
         this.executionStack.push(program);
     }
 
@@ -37,19 +38,19 @@ public class ProgramState {
         return currentStatement + "\n" + symTableStatus + "-----";
     }
 
-    public IStack<IStatement> getExecutionStack() {
+    public Stack<IStatement> getExecutionStack() {
         return this.executionStack;
     }
 
-    public IDictionary<String, IValue> getSymbolTable() {
+    public ISymbolTable getSymbolTable() {
         return this.symbolTable;
     }
 
-    public IDictionary<StringValue, BufferedReader> getFileTable() { return this.fileTable; }
+    public IFileTable getFileTable() { return this.fileTable; }
 
-    public Heap getHeap() { return this.heap; }
+    public IHeap getHeap() { return this.heap; }
 
-    public IList<IValue> getOut() {
+    public List<IValue> getOut() {
         return this.out;
     }
 
@@ -58,9 +59,9 @@ public class ProgramState {
     public ProgramState clone() throws CloneNotSupportedException
     {
         ProgramState clone = (ProgramState) super.clone();
-        clone.executionStack = (IStack<IStatement>) this.executionStack.clone();
-        clone.symbolTable = (IDictionary<String, IValue>) this.symbolTable.clone();
-        clone.out = (IList<IValue>) this.symbolTable.clone();
+        clone.executionStack = (Stack<IStatement>) this.executionStack.clone();
+        clone.symbolTable = (DictionarySymbolTable) this.symbolTable.clone();
+        clone.out = (List<IValue>) this.symbolTable.clone();
         return clone;
     }
 

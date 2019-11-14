@@ -1,4 +1,4 @@
-package exception.io;
+package domain.state.file;
 
 public class DescriptorExistsException extends Exception
 {

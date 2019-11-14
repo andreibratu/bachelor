@@ -1,6 +1,7 @@
 package domain.expression;
 
-import adt.dictionary.IDictionary;
+import domain.state.heap.IHeap;
+import domain.state.symbol.ISymbolTable;
 import domain.value.IValue;
 
 public class ValueExpression implements IExpression {
@@ -20,7 +21,7 @@ public class ValueExpression implements IExpression {
     public String toString() { return this.value.toString(); }
 
     @Override
-    public IValue evaluate(IDictionary<String, IValue> table) {
+    public IValue evaluate(ISymbolTable table, IHeap heap) {
         return this.value;
     }
 

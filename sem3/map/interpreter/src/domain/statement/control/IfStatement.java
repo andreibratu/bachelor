@@ -1,13 +1,16 @@
 package domain.statement.control;
 
-import adt.dictionary.IDictionary;
-import adt.stack.IStack;
 import domain.expression.IExpression;
 import domain.state.ProgramState;
+import domain.state.heap.IHeap;
+import domain.state.heap.InvalidMemoryAddressException;
+import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.UndeclaredVariableException;
 import domain.statement.IStatement;
-import exception.type.IllegalTypeException;
 import domain.value.IValue;
-import exception.variable.UndeclaredVariableException;
+import domain.type.IllegalTypeException;
+
+import java.util.Stack;
 
 public class IfStatement implements IStatement
 {
@@ -30,11 +33,13 @@ public class IfStatement implements IStatement
     }
 
     @Override
-    public ProgramState execute(ProgramState state) throws IllegalTypeException, UndeclaredVariableException
+    public ProgramState execute(ProgramState state)
+            throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException
     {
-        IStack<IStatement> exeStack = state.getExecutionStack();
-        IDictionary<String, IValue> symTable = state.getSymbolTable();
-        IValue result = this.expression.evaluate(symTable);
+        Stack<IStatement> exeStack = state.getExecutionStack();
+        ISymbolTable symTable = state.getSymbolTable();
+        IHeap heap = state.getHeap();
+        IValue result = this.expression.evaluate(symTable, heap);
         if(!result.getValue().equals(0))
             exeStack.push(thenStatement);
         else

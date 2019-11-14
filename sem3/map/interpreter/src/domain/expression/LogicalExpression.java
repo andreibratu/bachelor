@@ -1,15 +1,17 @@
 package domain.expression;
 
-import adt.dictionary.IDictionary;
 import domain.operator.LogicalOperator;
+import domain.state.heap.IHeap;
+import domain.state.heap.InvalidMemoryAddressException;
+import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.UndeclaredVariableException;
 import domain.type.BoolType;
-import exception.type.IllegalTypeException;
-import domain.type.IntegerType;
 import domain.type.IType;
+import domain.type.IntegerType;
 import domain.value.BoolValue;
-import domain.value.IntegerValue;
 import domain.value.IValue;
-import exception.variable.UndeclaredVariableException;
+import domain.value.IntegerValue;
+import domain.type.IllegalTypeException;
 
 public class LogicalExpression implements IExpression
 {
@@ -25,11 +27,12 @@ public class LogicalExpression implements IExpression
     }
 
     @Override
-    public IValue evaluate(IDictionary<String, IValue> table) throws IllegalTypeException, UndeclaredVariableException
+    public IValue evaluate(ISymbolTable table, IHeap heap)
+            throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException
     {
-        IValue v1 = first.evaluate(table);
+        IValue v1 = first.evaluate(table, heap);
         IType type1 = v1.getType();
-        IValue v2 = second.evaluate(table);
+        IValue v2 = second.evaluate(table, heap);
         IType type2 = v2.getType();
         boolean result = false;
         switch (this.operator)
@@ -43,16 +46,16 @@ public class LogicalExpression implements IExpression
             case GTE:
             case ST:
             case STE:
-                if (!type1.equals(new IntegerType()))
+                if (!(type1 instanceof IntegerType))
                     throw new IllegalTypeException(this.toString(), new IntegerType(), type1);
-                if (!type2.equals(new IntegerType()))
+                if (!(type2 instanceof IntegerType))
                     throw new IllegalTypeException(this.toString(), new IntegerType(), type2);
                 break;
             case AND:
             case OR:
-                if (!type1.equals(new BoolType()))
+                if (!(type1 instanceof BoolType))
                     throw new IllegalTypeException(this.toString(), new BoolType(), type1);
-                if (!type2.equals(new BoolType()))
+                if (!(type2 instanceof BoolType))
                     throw new IllegalTypeException(this.toString(), new BoolType(), type2);
                 break;
         }

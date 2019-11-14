@@ -1,18 +1,19 @@
 package domain.statement.file;
 
-import adt.dictionary.IDictionary;
-import adt.dictionary.InvalidKeyException;
 import domain.expression.IExpression;
 import domain.state.ProgramState;
+import domain.state.file.DescriptorNotExistsException;
+import domain.state.file.IFileTable;
+import domain.state.heap.IHeap;
+import domain.state.heap.InvalidMemoryAddressException;
+import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.UndeclaredVariableException;
 import domain.statement.IStatement;
 import domain.type.StringType;
 import domain.value.IValue;
 import domain.value.StringValue;
-import exception.io.DescriptorNotExistsException;
-import exception.type.IllegalTypeException;
-import exception.variable.UndeclaredVariableException;
+import domain.type.IllegalTypeException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 
 public class CloseRFileStatement implements IStatement
@@ -26,22 +27,17 @@ public class CloseRFileStatement implements IStatement
 
     @Override
     public ProgramState execute(ProgramState state)
-            throws IllegalTypeException, UndeclaredVariableException, DescriptorNotExistsException, IOException
+            throws IllegalTypeException, UndeclaredVariableException, DescriptorNotExistsException,
+            InvalidMemoryAddressException, IOException
     {
-        IDictionary<String, IValue> symbolTable = state.getSymbolTable();
-        IDictionary<StringValue, BufferedReader> fileTable = state.getFileTable();
+        ISymbolTable symbolTable = state.getSymbolTable();
+        IFileTable fileTable = state.getFileTable();
+        IHeap heap = state.getHeap();
 
-        IValue filepath = filePathExpression.evaluate(symbolTable);
+        IValue filepath = filePathExpression.evaluate(symbolTable, heap);
         if(!(filepath.getType() instanceof StringType))
             throw new IllegalTypeException(this.toString(), new StringType(), filepath.getType());
-        try
-        {
-            fileTable.lookUp((StringValue) filepath).close();
-            fileTable.remove((StringValue) filepath);
-        } catch (InvalidKeyException e)
-        {
-            throw new DescriptorNotExistsException(((StringValue) filepath).getValue());
-        }
+        fileTable.closeDescriptor((StringValue) filepath);
         return state;
     }
 

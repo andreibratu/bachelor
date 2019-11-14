@@ -1,4 +1,4 @@
-package domain.state.symtable;
+package domain.state.symbol;
 
 public class VariableAlreadyDefinedException extends Exception
 {

@@ -1,14 +1,15 @@
 package domain.statement.variable;
 
-import adt.dictionary.IDictionary;
-import adt.dictionary.InvalidKeyException;
 import domain.expression.IExpression;
 import domain.state.ProgramState;
+import domain.state.heap.IHeap;
+import domain.state.heap.InvalidMemoryAddressException;
+import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.UndeclaredVariableException;
 import domain.statement.IStatement;
-import exception.type.IllegalTypeException;
 import domain.type.IType;
 import domain.value.IValue;
-import exception.variable.UndeclaredVariableException;
+import domain.type.IllegalTypeException;
 
 public class VariableAssignmentStatement implements IStatement
 {
@@ -27,19 +28,19 @@ public class VariableAssignmentStatement implements IStatement
     }
 
     @Override
-    public ProgramState execute(ProgramState state) throws IllegalTypeException, UndeclaredVariableException
+    public ProgramState execute(ProgramState state)
+            throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException
     {
-        IDictionary<String, IValue> symbolTable = state.getSymbolTable();
-        IValue expressionValue = expression.evaluate(symbolTable);
-        try
-        {
-            IType type = symbolTable.lookUp(id).getType();
-            if (expressionValue.getType().equals(type)) symbolTable.put(id, expressionValue);
-            else throw new IllegalTypeException(id, type, expressionValue.getType());
-            return state;
-        } catch (InvalidKeyException e) {
-            throw new UndeclaredVariableException(id);
-        }
+        ISymbolTable symbolTable = state.getSymbolTable();
+        IHeap heap = state.getHeap();
+
+        IValue expressionValue = expression.evaluate(symbolTable, heap);
+        IType variableType = symbolTable.queryVariable(id).getType();
+
+        if (expressionValue.getType().equals(variableType)) symbolTable.updateVariable(id, expressionValue);
+        else throw new IllegalTypeException(id, variableType, expressionValue.getType());
+
+        return state;
     }
 
     @Override

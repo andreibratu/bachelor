@@ -1,9 +1,9 @@
 package domain.expression;
 
-import adt.dictionary.IDictionary;
-import adt.dictionary.InvalidKeyException;
+import domain.state.heap.IHeap;
+import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.UndeclaredVariableException;
 import domain.value.IValue;
-import exception.variable.UndeclaredVariableException;
 
 public class VariableExpression implements IExpression
 {
@@ -17,17 +17,14 @@ public class VariableExpression implements IExpression
     public String toString() { return this.variableName; }
 
     @Override
-    public IValue evaluate(IDictionary<String, IValue> table) throws UndeclaredVariableException
+    public IValue evaluate(ISymbolTable table, IHeap heap) throws UndeclaredVariableException
     {
-        try {
-            return table.lookUp(this.variableName);
-        } catch (InvalidKeyException e) {
-            throw new UndeclaredVariableException(this.variableName);
-        }
+        return table.queryVariable(this.variableName);
     }
 
     @Override
-    public IExpression clone() throws CloneNotSupportedException {
+    public IExpression clone() throws CloneNotSupportedException
+    {
         VariableExpression clone = (VariableExpression) super.clone();
         clone.variableName = this.variableName;
         return clone;

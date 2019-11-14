@@ -2,7 +2,7 @@ package domain.value;
 
 import domain.type.IntegerType;
 import domain.type.IType;
-import exception.type.IllegalComparisonException;
+import domain.type.IllegalComparisonException;
 
 public class IntegerValue implements IValue<Integer>, Comparable
 {

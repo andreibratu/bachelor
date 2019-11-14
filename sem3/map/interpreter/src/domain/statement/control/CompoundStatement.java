@@ -1,8 +1,9 @@
 package domain.statement.control;
 
-import adt.stack.IStack;
 import domain.state.ProgramState;
 import domain.statement.IStatement;
+
+import java.util.Stack;
 
 public class CompoundStatement implements IStatement
 {
@@ -22,7 +23,7 @@ public class CompoundStatement implements IStatement
     @Override
     public ProgramState execute(ProgramState state)
     {
-        IStack<IStatement> stack = state.getExecutionStack();
+        Stack<IStatement> stack = state.getExecutionStack();
         stack.push(second);
         stack.push(first);
         return state;

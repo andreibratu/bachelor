@@ -1,7 +1,6 @@
 package view.text.command;
 
 import controller.IController;
-import exception.type.IllegalComparisonException;
 
 public class RunExampleCommand extends Command
 {

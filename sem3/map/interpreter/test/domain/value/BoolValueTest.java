@@ -1,7 +1,7 @@
 package domain.value;
 
 import domain.type.BoolType;
-import exception.type.IllegalComparisonException;
+import domain.type.IllegalComparisonException;
 import org.junit.Before;
 import org.junit.Test;
 
