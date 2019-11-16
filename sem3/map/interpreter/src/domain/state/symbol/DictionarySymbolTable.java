@@ -1,8 +1,10 @@
 package domain.state.symbol;
 
+import domain.state.heap.DictionaryHeap;
 import domain.value.IValue;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class DictionarySymbolTable implements ISymbolTable
 {
@@ -35,11 +37,25 @@ public class DictionarySymbolTable implements ISymbolTable
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for(Map.Entry entry : dictionary.entrySet())
+        {
+            builder.append(entry.getKey().toString()).append(" -> ").append(entry.getValue().toString()).append("\n");
+        }
+        return builder.toString();
+    }
+
+    @Override
     public Object clone() throws CloneNotSupportedException
     {
         DictionarySymbolTable clone = (DictionarySymbolTable) super.clone();
-        clone.dictionary = (HashMap<String, IValue>) dictionary.clone();
+        for(Map.Entry entry : dictionary.entrySet())
+        {
+            String key = (String) entry.getKey();
+            IValue value = (IValue) ((IValue) entry.getValue()).clone();
+            clone.dictionary.put(key, value);
+        }
         return clone;
     }
 }

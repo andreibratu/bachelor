@@ -14,12 +14,14 @@ import domain.value.IValue;
 import domain.value.ReferenceValue;
 import domain.type.IllegalTypeException;
 
-public class HeapAllocationStatement implements IStatement {
+public class HeapAllocationStatement implements IStatement
+{
 
     private String variableName;
     private IExpression expression;
 
-    public HeapAllocationStatement(String variableName, IExpression expression) {
+    public HeapAllocationStatement(String variableName, IExpression expression)
+    {
         this.variableName = variableName;
         this.expression = expression;
     }

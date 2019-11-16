@@ -36,13 +36,17 @@ public class HeapTest
     public void testWrite()
     {
         ReferenceValue ref = new ReferenceValue(5, new IntegerType());
-        try {
+        try
+        {
             mockHeap.write(ref, new IntegerValue(5));
-        } catch (InvalidMemoryAddressException e) {
+        }
+        catch (InvalidMemoryAddressException e)
+        {
             ref = mockHeap.allocate(new IntegerValue(6));
             assertEquals((int)ref.getValue(), 1);
             try {
                 mockHeap.write(ref, new IntegerValue(10));
+                return;
             } catch (InvalidMemoryAddressException ex) {
                 fail("Write should have been fine");
             }

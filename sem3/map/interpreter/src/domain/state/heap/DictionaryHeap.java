@@ -35,4 +35,26 @@ public class DictionaryHeap implements IHeap {
             throw new InvalidMemoryAddressException(reference.toString(), reference.getValue());
         this.heap.put(reference.getValue(), value);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for(Map.Entry entry : heap.entrySet())
+        {
+            builder.append(entry.getKey().toString()).append(" -> ").append(entry.getValue().toString()).append("\n");
+        }
+        return builder.toString();
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        DictionaryHeap clone = (DictionaryHeap) super.clone();
+        for(Map.Entry entry : heap.entrySet())
+        {
+            Integer key = (Integer) entry.getKey();
+            IValue value = (IValue) ((IValue) entry.getValue()).clone();
+            clone.heap.put(key, value);
+        }
+        return clone;
+    }
 }
