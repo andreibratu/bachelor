@@ -1,0 +1,4 @@
+CREATE PROCEDURE DropPKConstraint (@TableName VARCHAR(100))
+AS
+	EXECUTE sp_executesql N'ALTER TABLE @TableName DROP PRIMARY KEY;'
+GO
