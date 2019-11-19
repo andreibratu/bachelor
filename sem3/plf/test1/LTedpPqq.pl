@@ -1,5 +1,5 @@
-%  Define a predicate to determine the longest sequences of consecutive even numbers (if exist more maximal
-sequences one of them). 
+%  Define a predicate to determine the longest sequences of consecutive even
+% numbers (if exist more maximal sequences one of them). 
 
 % % flow(i, i) Check if 2nd list is a prefix of first
 % flow(i, o) Generate prefixes of 1st list
