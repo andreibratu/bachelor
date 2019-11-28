@@ -20,7 +20,7 @@ public class CloseRFileStatement implements IStatement
 {
     private IExpression filePathExpression;
 
-    CloseRFileStatement(IExpression filePathExpression)
+    public CloseRFileStatement(IExpression filePathExpression)
     {
         this.filePathExpression = filePathExpression;
     }

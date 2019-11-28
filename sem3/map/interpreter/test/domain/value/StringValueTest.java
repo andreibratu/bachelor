@@ -29,7 +29,7 @@ public class StringValueTest
 
     @Test
     public void testToString() {
-        assertEquals(this.foo.toString(), "foo");
+        assertEquals(this.foo.toString(), "\"foo\"");
     }
 
     @Test

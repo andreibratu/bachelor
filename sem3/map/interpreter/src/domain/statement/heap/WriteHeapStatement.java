@@ -19,7 +19,8 @@ public class WriteHeapStatement implements IStatement
     private String variable;
     private IExpression expression;
 
-    public WriteHeapStatement(String variable, IExpression expression) {
+    public WriteHeapStatement(String variable, IExpression expression)
+    {
         this.variable = variable;
         this.expression = expression;
     }
@@ -28,8 +29,8 @@ public class WriteHeapStatement implements IStatement
     public ProgramState execute(ProgramState state)
             throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException
     {
-        ISymbolTable table = new DictionarySymbolTable();
-        IHeap heap = new DictionaryHeap();
+        ISymbolTable table = state.getSymbolTable();
+        IHeap heap = state.getHeap();
 
         IValue varValue = table.queryVariable(variable);
 
@@ -48,7 +49,14 @@ public class WriteHeapStatement implements IStatement
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public String toString()
+    {
+        return "*" + variable + " = " + expression.toString();
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException
+    {
         WriteHeapStatement clone = (WriteHeapStatement) super.clone();
         clone.variable = variable;
         clone.expression = (IExpression) this.expression.clone();

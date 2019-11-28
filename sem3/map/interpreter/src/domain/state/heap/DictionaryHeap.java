@@ -6,7 +6,8 @@ import domain.value.ReferenceValue;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DictionaryHeap implements IHeap {
+public class DictionaryHeap implements IHeap
+{
     private Map<Integer, IValue> heap;
     private int heapFreeAddress;
 
@@ -30,14 +31,41 @@ public class DictionaryHeap implements IHeap {
     }
 
     @Override
-    public void write(ReferenceValue reference, IValue value) throws InvalidMemoryAddressException {
+    public void write(ReferenceValue reference, IValue value) throws InvalidMemoryAddressException
+    {
         if(!this.heap.containsKey(reference.getValue()))
             throw new InvalidMemoryAddressException(reference.toString(), reference.getValue());
         this.heap.put(reference.getValue(), value);
     }
 
+    public HashMap<Integer, IValue> getContent()
+    {
+        HashMap<Integer, IValue> clone = new HashMap<>();
+        for(Map.Entry entry : heap.entrySet())
+        {
+            Integer key = (Integer) entry.getKey();
+            IValue value = null;
+            try
+            {
+                value = (IValue) ((IValue) entry.getValue()).clone();
+            } catch (CloneNotSupportedException e)
+            {
+                e.printStackTrace();
+            }
+            clone.put(key, value);
+        }
+        return clone;
+    }
+
+    public void setContent(HashMap<Integer, IValue> hashMap)
+    {
+
+        this.heap = hashMap;
+    }
+
     @Override
-    public String toString() {
+    public String toString()
+    {
         StringBuilder builder = new StringBuilder();
         for(Map.Entry entry : heap.entrySet())
         {
@@ -47,7 +75,8 @@ public class DictionaryHeap implements IHeap {
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    protected Object clone() throws CloneNotSupportedException
+    {
         DictionaryHeap clone = (DictionaryHeap) super.clone();
         for(Map.Entry entry : heap.entrySet())
         {

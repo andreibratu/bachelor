@@ -24,6 +24,12 @@ public class ReadFileStatement implements IStatement
     private IExpression filepathExpression;
     private String variableName;
 
+    public ReadFileStatement(IExpression filepathExpression, String variableName)
+    {
+        this.filepathExpression = filepathExpression;
+        this.variableName = variableName;
+    }
+
     @Override
     public ProgramState execute(ProgramState state)
             throws IllegalTypeException, UndeclaredVariableException, DescriptorNotExistsException,
@@ -60,6 +66,6 @@ public class ReadFileStatement implements IStatement
 
     @Override
     public String toString() {
-        return "readValue("  + this.variableName.toString() + ", " + this.filepathExpression.toString() + ")";
+        return "read("  + this.variableName.toString() + ", " + this.filepathExpression.toString() + ")";
     }
 }

@@ -28,12 +28,11 @@ public class Repository implements IRepository
     public void logProgramExecution()
     {
         try {
-            // Delete file content before logging
-            new FileWriter(this.logFilepath).close();
             // Log current program state
             FileWriter writer = new FileWriter(this.logFilepath, true);
             writer.write(this.program.toString());
             writer.write("\n\n\n");
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

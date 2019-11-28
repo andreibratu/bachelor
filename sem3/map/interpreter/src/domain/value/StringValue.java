@@ -37,7 +37,7 @@ public class StringValue implements IValue<String>
 
     @Override
     public String toString() {
-        return this.value;
+        return "\"" + this.value + "\"";
     }
 
     @Override

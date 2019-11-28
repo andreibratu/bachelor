@@ -52,12 +52,11 @@ public class Controller implements IController
             DescriptorExistsException, IllegalTypeException, InvalidMemoryAddressException
     {
         ProgramState currentProgram = this.repository.getProgram();
-        this.repository.logProgramExecution();
         while(!currentProgram.getExecutionStack().isEmpty())
         {
             if (debugFlag) System.out.println(currentProgram.getProgramStatus());
             oneStep(currentProgram);
-            this.repository.logProgramExecution();
         }
+        this.repository.logProgramExecution();
     }
 }

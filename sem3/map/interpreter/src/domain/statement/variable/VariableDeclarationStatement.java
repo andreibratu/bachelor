@@ -18,6 +18,12 @@ public class VariableDeclarationStatement implements IStatement
         this.value = type.defaultValue();
     }
 
+    public VariableDeclarationStatement(String name, IValue value)
+    {
+        this.name = name;
+        this.value = value;
+    }
+
     @Override
     public String toString() { return value.getType().toString() + " " + name; }
 

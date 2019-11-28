@@ -47,6 +47,12 @@ public class ReferenceValue implements IValue<Integer> {
     }
 
     @Override
+    public String toString()
+    {
+        return "[" + this.address + "(" + this.getLocationType() + ")]";
+    }
+
+    @Override
     public Object clone() throws CloneNotSupportedException {
         ReferenceValue clone = (ReferenceValue) super.clone();
         clone.address = address;

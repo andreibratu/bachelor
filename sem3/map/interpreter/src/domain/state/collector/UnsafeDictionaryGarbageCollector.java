@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class UnsafeGarbageCollector implements IGarbageCollector
+public class UnsafeDictionaryGarbageCollector implements IGarbageCollector
 {
     private DictionarySymbolTable symbolTable;
     private DictionaryHeap heap;
 
-    public UnsafeGarbageCollector(DictionarySymbolTable symbolTable, DictionaryHeap heap)
+    public UnsafeDictionaryGarbageCollector(DictionarySymbolTable symbolTable, DictionaryHeap heap)
     {
         this.symbolTable = symbolTable;
         this.heap = heap;

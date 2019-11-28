@@ -29,6 +29,12 @@ public class ReadHeapExpression implements IExpression
     }
 
     @Override
+    public String toString()
+    {
+        return "*(" + expression.toString() + ")";
+    }
+
+    @Override
     public Object clone() throws CloneNotSupportedException
     {
         ReadHeapExpression clone = (ReadHeapExpression) super.clone();

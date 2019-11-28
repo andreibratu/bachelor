@@ -29,7 +29,8 @@ public class OpenRFileStatement implements IStatement
     @Override
     public ProgramState execute(ProgramState state)
             throws IllegalTypeException, UndeclaredVariableException,
-            DescriptorExistsException, FileDoesNotExistException, InvalidMemoryAddressException, FileNotFoundException {
+            DescriptorExistsException, InvalidMemoryAddressException, FileNotFoundException
+    {
         ISymbolTable symbolTable = state.getSymbolTable();
         IFileTable fileTable = state.getFileTable();
         IHeap heap = state.getHeap();

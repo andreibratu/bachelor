@@ -16,7 +16,6 @@ import domain.type.IllegalTypeException;
 
 public class HeapAllocationStatement implements IStatement
 {
-
     private String variableName;
     private IExpression expression;
 
@@ -38,15 +37,13 @@ public class HeapAllocationStatement implements IStatement
             throw new IllegalTypeException(this.toString(), new ReferenceType(null), varValue.getType());
 
         IValue result = expression.evaluate(symbolTable, heap);
-        if (!(result.getType() instanceof ReferenceType))
-            throw new IllegalTypeException(this.toString(), new ReferenceType(null), result.getType());
-
         IType varValueInnerType = ((ReferenceValue) varValue).getLocationType();
-        IType resultInnerType = ((ReferenceValue) result).getLocationType();
-        if (!varValueInnerType.equals(resultInnerType))
-            throw new IllegalTypeException(this.toString(), varValueInnerType, resultInnerType);
+        IType resultType = result.getType();
+        if (!varValueInnerType.equals(resultType))
+            throw new IllegalTypeException(this.toString(), varValueInnerType, resultType);
 
-        varValue = heap.allocate(result);
+        varValue = heap.allocate(((ReferenceValue) varValue).getLocationType().defaultValue());
+        heap.write((ReferenceValue) varValue, result);
         symbolTable.updateVariable(variableName, varValue);
         return state;
     }
@@ -54,7 +51,7 @@ public class HeapAllocationStatement implements IStatement
     @Override
     public String toString()
     {
-        return "new(" + variableName + ", " + expression + ")";
+        return "new( " + variableName + ", " + expression + " )";
     }
 
     @Override
