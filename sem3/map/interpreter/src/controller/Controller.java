@@ -56,6 +56,7 @@ public class Controller implements IController
         {
             if (debugFlag) System.out.println(currentProgram.getProgramStatus());
             oneStep(currentProgram);
+            currentProgram.getGarbageCollector().free();
         }
         this.repository.logProgramExecution();
     }

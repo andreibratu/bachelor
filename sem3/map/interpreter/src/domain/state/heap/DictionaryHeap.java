@@ -59,7 +59,6 @@ public class DictionaryHeap implements IHeap
 
     public void setContent(HashMap<Integer, IValue> hashMap)
     {
-
         this.heap = hashMap;
     }
 

@@ -1,5 +1,7 @@
 package domain.state;
 
+import domain.state.collector.IGarbageCollector;
+import domain.state.collector.SafeDictionaryGarbageCollector;
 import domain.state.file.DictionaryFileTable;
 import domain.state.file.IFileTable;
 import domain.state.heap.DictionaryHeap;
@@ -19,6 +21,7 @@ public class ProgramState {
     private List<IValue> out;
     private IFileTable fileTable;
     private IHeap heap;
+    private IGarbageCollector garbageCollector;
 
     public ProgramState(IStatement program)
     {
@@ -27,6 +30,10 @@ public class ProgramState {
         this.out = new LinkedList<>();
         this.fileTable = new DictionaryFileTable();
         this.heap = new DictionaryHeap();
+        this.garbageCollector = new SafeDictionaryGarbageCollector(
+                (DictionarySymbolTable) symbolTable,
+                (DictionaryHeap) heap
+        );
         this.executionStack.push(program);
     }
 
@@ -82,5 +89,10 @@ public class ProgramState {
             output.append("\n").append(DELIMITER).append("\n");
         }
         return output.toString();
+    }
+
+    public IGarbageCollector getGarbageCollector()
+    {
+        return garbageCollector;
     }
 }
