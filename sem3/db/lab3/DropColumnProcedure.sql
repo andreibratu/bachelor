@@ -1,4 +1,8 @@
-CREATE PROCEDURE RemoveColumn (@TableName VARCHAR(60), @ColumnName VARCHAR(60))
+CREATE PROCEDURE DropColumnProcedure
 AS
-	EXECUTE sp_executesql N'ALTER TABLE @TableName DROP COLUMN @ColumnName;';
+	ALTER TABLE Foobar DROP COLUMN Foo;
+
+	IF @@ERROR = 0
+		INSERT INTO Versioning VALUES('AddColumnProcedure');
+		UPDATE CurrentVersion SET CVersion = CVersion + 1;
 GO

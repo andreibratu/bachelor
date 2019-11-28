@@ -1,4 +1,8 @@
-CREATE PROCEDURE DropColumnDefault (@TableName VARCHAR(60), @ColumnName VARCHAR(60))
+CREATE PROCEDURE DropColumnDefaultProcedure
 AS
-	EXECUTE sp_executesql N'ALTER TABLE @TableName ALTER COLUMN @ColumnName DROP DEFAULT;';
+  DROP DEFAULT IF EXISTS Bar;
+
+  IF @@ERROR = 0
+    INSERT INTO Versioning VALUES ('AddColumnDefaultProcedure');
+    UPDATE CurrentVersion SET CVersion = CVersion + 1;
 GO

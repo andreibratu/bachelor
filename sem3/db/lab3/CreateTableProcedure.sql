@@ -1,13 +1,14 @@
-CREATE PROCEDURE CreateTable (@TableName VARCHAR(200), @PKType VARCHAR(100))
+CREATE PROCEDURE CreateTableProcedure
 AS
-	DECLARE @TablePKColumnName VARCHAR(100);
-	DECLARE @PKConstraintName VARCHAR(100);
-	SET @TablePKColumnName = @TableName + 'ID';
-	SET @PKConstraintName = @TableName + '_PKConstraint';
+	DECLARE @CV INT;
+	SET @CV = (SELECT CVersion FROM CurrentVersion);
+	CREATE TABLE Foobar (
+		Id INT NOT NULL UNIQUE,
+		Bar VARCHAR(100) NOT NULL
+	);
 
-	EXECUTE sp_executesql 
-	N'CREATE TABLE @TableName ( 
-		@TablePKColumnName @PKType NOT NULL,
-		CONSTRAINT @PKConstraintName PRIMARY KEY ( @PKType )
-	);';
+	IF @@ERROR = 0
+
+		INSERT INTO Versioning VALUES (@CV, 'DropTableProcedure');
+		UPDATE CurrentVersion SET CVersion = CVersion + 1;
 GO

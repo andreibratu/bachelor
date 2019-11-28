@@ -1,4 +1,8 @@
-CREATE PROCEDURE DropPKConstraint (@TableName VARCHAR(100))
+CREATE PROCEDURE DropPrimaryKeyConstraint
 AS
-	EXECUTE sp_executesql N'ALTER TABLE @TableName DROP PRIMARY KEY;'
+	ALTER TABLE Foobar DROP CONSTRAINT PK_Foobar;
+
+	IF @@ERROR = 0
+		INSERT INTO Versioning VALUES ('AddPrimaryKeyConstraint')
+		UPDATE CurrentVersion SET CVersion = CVersion + 1;
 GO

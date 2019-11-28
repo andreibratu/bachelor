@@ -1,7 +1,8 @@
-/*  @Columns is expected to be a tuple of form (col1,col2,...) */
-CREATE PROCEDURE AddCandidateKey (@TableName VARCHAR(100), @Columns VARCHAR(100))
+CREATE PROCEDURE AddCandidateKeyProcedure
 AS
-	DECLARE @ConstraintName VARCHAR(200);
-	SET @ConstraintName = 'CK_' + @TableName;
-	EXEC sp_executesql N'ALTER TABLE @TableName ADD CONSTRAINT UNIQUE @Columns;';
+	ALTER TABLE Foobar ADD CONSTRAINT CKFoobar_Constr UNIQUE (Bar);
+
+	IF @@ERROR = 0
+		INSERT INTO Versioning VALUES ('DropCandidateKeyProcedure');
+		UPDATE CurrentVersion SET CVersion = CVersion + 1;
 GO

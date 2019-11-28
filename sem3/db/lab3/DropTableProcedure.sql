@@ -1,4 +1,8 @@
-CREATE PROCEDURE DropTable (@TableName VARCHAR(100))
+CREATE PROCEDURE DropTableProcedure
 AS
-	EXECUTE ps_executesql N'DROP TABLE @TableName;';
+	DROP TABLE Foobar;
+
+	IF @@ERROR = 0
+		INSERT INTO Versioning VALUES ('CreateTableProcedure');
+		UPDATE CurrentVersion SET CVersion = CVersion + 1;
 GO
