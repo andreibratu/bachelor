@@ -88,7 +88,7 @@ public class Main {
                     new CompoundStatement(
                         new HeapAllocationStatement("a", new VariableExpression("v")),
                         new CompoundStatement(
-                            new WriteHeapStatement("v", new ValueExpression(new IntegerValue(50))),
+                            new HeapAllocationStatement("v", new ValueExpression(new IntegerValue(50))),
                             new PrintStatement(new ReadHeapExpression(
                                 new ReadHeapExpression(new VariableExpression("a"))))
                         )
@@ -110,7 +110,7 @@ public class Main {
         IController ctrl1 = new Controller(repo1, false);
         IController ctrl2 = new Controller(repo2, false);
         IController ctrl3 = new Controller(repo3, false);
-        IController ctrl4 = new Controller(repo4, false);
+        IController ctrl4 = new Controller(repo4, true);
 
         TextMenu menu = new TextMenu();
         menu.addCommand(new ExitCommand("0", "exit"));

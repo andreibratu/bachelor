@@ -66,6 +66,7 @@ public class DictionaryHeap implements IHeap
     public String toString()
     {
         StringBuilder builder = new StringBuilder();
+        builder.append("HEAP\n");
         for(Map.Entry entry : heap.entrySet())
         {
             builder.append(entry.getKey().toString()).append(" -> ").append(entry.getValue().toString()).append("\n");

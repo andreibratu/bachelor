@@ -54,7 +54,7 @@ public class Controller implements IController
         ProgramState currentProgram = this.repository.getProgram();
         while(!currentProgram.getExecutionStack().isEmpty())
         {
-            if (debugFlag) System.out.println(currentProgram.getProgramStatus());
+            if (debugFlag) System.out.println(currentProgram);
             oneStep(currentProgram);
             currentProgram.getGarbageCollector().free();
         }

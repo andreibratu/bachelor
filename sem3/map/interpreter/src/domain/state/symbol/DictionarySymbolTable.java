@@ -37,8 +37,10 @@ public class DictionarySymbolTable implements ISymbolTable
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         StringBuilder builder = new StringBuilder();
+        builder.append("SYMBOLS\n");
         for(Map.Entry entry : dictionary.entrySet())
         {
             builder.append(entry.getKey().toString()).append(" -> ").append(entry.getValue().toString()).append("\n");

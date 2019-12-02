@@ -37,14 +37,6 @@ public class ProgramState {
         this.executionStack.push(program);
     }
 
-    public String getProgramStatus()
-    {
-        /* Return a string representation of program's current status */
-        String currentStatement = this.executionStack.peek().toString();
-        String symTableStatus = this.symbolTable.toString();
-        return currentStatement + "\n" + symTableStatus + "-----";
-    }
-
     public Stack<IStatement> getExecutionStack() {
         return this.executionStack;
     }
@@ -80,13 +72,11 @@ public class ProgramState {
         StringBuilder output = new StringBuilder();
         Object[] programProperties =
                 {this.executionStack, this.symbolTable, this.heap, this.out, this.fileTable};
-        String[] names =
-                {"EXECUTION STACK", "SYMBOL TABLE", "HEAP", "OUTPUT", "FILE TABLE"};
-        for(int i = 0; i < programProperties.length; i++)
+        for (Object programProperty : programProperties)
         {
-            output.append(names[i]).append("\n").append(DELIMITER).append("\n");
-            output.append(programProperties[i].toString());
-            output.append("\n").append(DELIMITER).append("\n");
+            output.append(DELIMITER).append("\n");
+            output.append(programProperty.toString());
+            output.append("\n");
         }
         return output.toString();
     }
