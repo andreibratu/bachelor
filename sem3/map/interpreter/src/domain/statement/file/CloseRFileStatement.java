@@ -38,7 +38,7 @@ public class CloseRFileStatement implements IStatement
         if(!(filepath.getType() instanceof StringType))
             throw new IllegalTypeException(this.toString(), new StringType(), filepath.getType());
         fileTable.closeDescriptor((StringValue) filepath);
-        return state;
+        return null;
     }
 
     @Override

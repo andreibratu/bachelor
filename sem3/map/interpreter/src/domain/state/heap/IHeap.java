@@ -1,11 +1,14 @@
 package domain.state.heap;
 
+import domain.type.IType;
 import domain.value.IValue;
 import domain.value.ReferenceValue;
 
 public interface IHeap
 {
-    ReferenceValue allocate(IValue value);
+    int allocate(IValue value);
+
+    int allocate(IType type);
 
     IValue dereference(ReferenceValue reference) throws InvalidMemoryAddressException;
 

@@ -1,6 +1,5 @@
 package domain.state.symbol;
 
-import domain.state.heap.DictionaryHeap;
 import domain.value.IValue;
 
 import java.util.HashMap;
@@ -13,6 +12,22 @@ public class DictionarySymbolTable implements ISymbolTable
     public DictionarySymbolTable()
     {
         this.dictionary = new HashMap<>();
+    }
+
+    public DictionarySymbolTable(DictionarySymbolTable table)
+    {
+        this.dictionary = new HashMap<>();
+        for(Map.Entry entry : table.dictionary.entrySet())
+        {
+            String key = (String) entry.getKey();
+            IValue value = null;
+            try {
+                value = (IValue) ((IValue) entry.getValue()).clone();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+            dictionary.put(key, value);
+        }
     }
 
     @Override
@@ -63,24 +78,6 @@ public class DictionarySymbolTable implements ISymbolTable
                 e.printStackTrace();
             }
             clone.put(key, value);
-        }
-        return clone;
-    }
-
-    public void setContent(HashMap<String, IValue> hashMap)
-    {
-        this.dictionary = hashMap;
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException
-    {
-        DictionarySymbolTable clone = (DictionarySymbolTable) super.clone();
-        for(Map.Entry entry : dictionary.entrySet())
-        {
-            String key = (String) entry.getKey();
-            IValue value = (IValue) ((IValue) entry.getValue()).clone();
-            clone.dictionary.put(key, value);
         }
         return clone;
     }

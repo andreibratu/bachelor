@@ -68,16 +68,16 @@ public class Main {
         IStatement ex3 = new CompoundStatement(
             new VariableDeclarationStatement("foo", new StringType()),
             new CompoundStatement(
-                    new VariableAssignmentStatement("foo", new ValueExpression(new StringValue("test.txt"))),
+                new VariableAssignmentStatement("foo", new ValueExpression(new StringValue("test.txt"))),
+                new CompoundStatement(
+                    new OpenRFileStatement(new VariableExpression("foo")),
                     new CompoundStatement(
-                            new OpenRFileStatement(new VariableExpression("foo")),
+                        new VariableDeclarationStatement("a", new IntegerType()),
+                        new CompoundStatement(
+                            new ReadFileStatement(new VariableExpression("foo"), "a"),
                             new CompoundStatement(
-                                    new VariableDeclarationStatement("a", new IntegerType()),
-                                    new CompoundStatement(
-                                            new ReadFileStatement(new VariableExpression("foo"), "a"),
-                                            new CompoundStatement(
-                                                    new PrintStatement(new VariableExpression("a")),
-                                                    new CloseRFileStatement(new VariableExpression("foo"))))))));
+                                new PrintStatement(new VariableExpression("a")),
+                                new CloseRFileStatement(new VariableExpression("foo"))))))));
 
         IStatement ex4 = new CompoundStatement(
             new VariableDeclarationStatement("v", new ReferenceValue(new IntegerType())),

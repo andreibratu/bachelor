@@ -2,11 +2,13 @@ package repository;
 
 import domain.state.ProgramState;
 
+import java.util.List;
+
 public interface IRepository
 {
-    ProgramState getProgram();
+    List<ProgramState> getProgramList();
 
-    void setProgram(ProgramState state);
+    void setProgramList(List<ProgramState> programStateList);
 
-    void logProgramExecution();
+    void logProgramExecution(ProgramState state);
 }

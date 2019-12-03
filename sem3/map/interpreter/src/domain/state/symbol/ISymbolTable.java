@@ -9,6 +9,4 @@ public interface ISymbolTable
     void updateVariable(String variable, IValue value) throws UndeclaredVariableException;
 
     IValue queryVariable(String variable) throws UndeclaredVariableException;
-
-    Object clone() throws CloneNotSupportedException;
 }

@@ -19,7 +19,7 @@ public class WhileStatement implements IStatement
     private IExpression condition;
     private IStatement innerStatement;
 
-    public WhileStatement(IExpression condition, IStatement innerStatement)
+    WhileStatement(IExpression condition, IStatement innerStatement)
     {
         this.condition = condition;
         this.innerStatement = innerStatement;
@@ -47,8 +47,7 @@ public class WhileStatement implements IStatement
             executionStack.push(this);
             executionStack.push(innerStatement);
         }
-
-        return state;
+        return null;
     }
 
     @Override

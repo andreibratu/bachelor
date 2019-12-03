@@ -32,7 +32,7 @@ public class VariableDeclarationStatement implements IStatement
     {
         ISymbolTable symbolTable = state.getSymbolTable();
         symbolTable.createVariable(name, value);
-        return state;
+        return null;
     }
 
     @Override

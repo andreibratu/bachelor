@@ -9,7 +9,8 @@ import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 
 @SuppressWarnings("ALL")
-public class IntegerValueTest {
+public class IntegerValueTest
+{
 
     @Test
     public void testEquals()

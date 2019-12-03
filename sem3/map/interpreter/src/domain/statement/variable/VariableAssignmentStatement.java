@@ -40,7 +40,7 @@ public class VariableAssignmentStatement implements IStatement
         if (expressionValue.getType().equals(variableType)) symbolTable.updateVariable(id, expressionValue);
         else throw new IllegalTypeException(id, variableType, expressionValue.getType());
 
-        return state;
+        return null;
     }
 
     @Override

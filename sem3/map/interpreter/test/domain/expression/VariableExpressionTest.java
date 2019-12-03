@@ -26,8 +26,8 @@ public class VariableExpressionTest {
         this.mockHeap = new DictionaryHeap();
         try {
             mockSymbolTable.createVariable("a", new IntegerValue(7));
-        } catch (VariableAlreadyDefinedException e) {
-            fail("Variable a should be instantiated the first time");
+        } catch (Exception e) {
+            fail(e.getMessage());
         }
     }
 

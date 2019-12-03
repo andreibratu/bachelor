@@ -23,7 +23,8 @@ public class HeapTest
     @Test
     public void testAllocate()
     {
-        ReferenceValue ref = mockHeap.allocate(new IntegerValue(7));
+        ReferenceValue ref = new ReferenceValue(new IntegerType());
+        ref.setValue(mockHeap.allocate(new IntegerValue(7)));
         assertNotEquals(0, (int)ref.getValue());
         try {
             assertEquals(mockHeap.dereference(ref).getValue(), 7);
@@ -40,15 +41,17 @@ public class HeapTest
         {
             mockHeap.write(ref, new IntegerValue(5));
         }
-        catch (InvalidMemoryAddressException e)
+        catch (Exception e)
         {
-            ref = mockHeap.allocate(new IntegerValue(6));
+            ref.setValue(mockHeap.allocate(new IntegerValue(6)));
             assertEquals((int)ref.getValue(), 1);
-            try {
+            try
+            {
                 mockHeap.write(ref, new IntegerValue(10));
                 return;
-            } catch (InvalidMemoryAddressException ex) {
-                fail("Write should have been fine");
+            } catch (Exception e2)
+            {
+                fail(e2.getMessage());
             }
         }
         fail("Should not be able to write to unallocated address");

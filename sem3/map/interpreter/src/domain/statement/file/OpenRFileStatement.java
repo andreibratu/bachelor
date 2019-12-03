@@ -39,7 +39,7 @@ public class OpenRFileStatement implements IStatement
         if(!(result instanceof StringValue))
             throw new IllegalTypeException(this.toString(), new StringType(), result.getType());
         fileTable.createDescriptor((StringValue) result);
-        return state;
+        return null;
     }
 
     @Override

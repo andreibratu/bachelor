@@ -13,8 +13,12 @@ import domain.statement.variable.VariableDeclarationStatement;
 import domain.type.IntegerType;
 import domain.type.ReferenceType;
 import domain.value.IntegerValue;
+import domain.value.ReferenceValue;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import repository.IRepository;
 import repository.Repository;
 
@@ -23,8 +27,20 @@ import java.io.File;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.fail;
 
-public class HeapStatementsIntegrationTest
+public class HeapStatementIntegrationTest
 {
+    @AfterEach
+    public static void setUp()
+    {
+        ProgramState.setGlobalId(1);
+    }
+
+    @BeforeEach
+    public static void tearDown()
+    {
+        ProgramState.setGlobalId(1);
+    }
+
     /** Allocate an integer value on the heap and attempt to read it*/
     @Test
     public void testAllocationDereferenceMechanism()
@@ -106,6 +122,50 @@ public class HeapStatementsIntegrationTest
         {
             mockController.allSteps();
             assertEquals(mockState.getSymbolTable().queryVariable("foo").getValue(), 42);
+        } catch (Exception e)
+        {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testMultipleAllocationSameReference()
+    {
+        IStatement statement = new CompoundStatement(
+            new VariableDeclarationStatement("v", new ReferenceValue(new IntegerType())),
+            new CompoundStatement(
+                new HeapAllocationStatement("v", new ValueExpression(new IntegerValue(20))),
+                new CompoundStatement(
+                    new VariableDeclarationStatement(
+                            "a",
+                            new ReferenceValue(new ReferenceType(new IntegerType()))),
+                    new CompoundStatement(
+                        new HeapAllocationStatement("a", new VariableExpression("v")),
+                        new CompoundStatement(
+                            new HeapAllocationStatement("v", new ValueExpression(new IntegerValue(50))),
+                            new CompoundStatement(
+                                new VariableDeclarationStatement("foo", new IntegerType()),
+                                new VariableAssignmentStatement(
+                                    "foo",
+                                    new ReadHeapExpression(
+                                        new ReadHeapExpression(new VariableExpression("a"))
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        );
+
+        ProgramState mockState = new ProgramState(statement);
+        IRepository mockRepository = new Repository(mockState, "testlog.txt");
+        IController mockController = new Controller(mockRepository, false);
+
+        try
+        {
+            mockController.allSteps();
+            assertEquals(50, mockState.getSymbolTable().queryVariable("foo").getValue());
         } catch (Exception e)
         {
             fail(e.getMessage());

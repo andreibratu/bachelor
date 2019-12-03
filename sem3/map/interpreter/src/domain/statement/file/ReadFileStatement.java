@@ -52,7 +52,7 @@ public class ReadFileStatement implements IStatement
         IntegerValue newValue = (line.length() != 0) ?
                 new IntegerValue(Integer.parseInt(line)) : new IntegerType().defaultValue();
         symbolTable.updateVariable(variableName, newValue);
-        return state;
+        return null;
     }
 
     @Override

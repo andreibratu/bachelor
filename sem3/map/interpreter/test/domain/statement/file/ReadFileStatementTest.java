@@ -14,6 +14,8 @@ import domain.type.StringType;
 import domain.value.StringValue;
 import org.junit.After;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import repository.IRepository;
 import repository.Repository;
 
@@ -24,6 +26,18 @@ import static junit.framework.TestCase.fail;
 
 public class ReadFileStatementTest
 {
+    @BeforeEach
+    public void tearDown()
+    {
+        ProgramState.setGlobalId(1);
+    }
+
+    @AfterEach
+    public void setUp()
+    {
+        ProgramState.setGlobalId(1);
+    }
+
     @Test
     public void testReadingFile()
     {
@@ -45,7 +59,7 @@ public class ReadFileStatementTest
             );
         ProgramState mockState = new ProgramState(statement);
         IRepository mockRepository = new Repository(mockState, "testlog.txt");
-        IController mockController = new Controller(mockRepository, false);
+        IController mockController = new Controller(mockRepository, true);
         try
         {
             mockController.allSteps();

@@ -9,33 +9,62 @@ import domain.expression.VariableExpression;
 import domain.operator.ArithmeticOperator;
 import domain.operator.LogicalOperator;
 import domain.state.ProgramState;
-import domain.state.file.DescriptorExistsException;
-import domain.state.file.DescriptorNotExistsException;
-import domain.state.file.FileDoesNotExistException;
-import domain.state.heap.InvalidMemoryAddressException;
-import domain.state.symbol.UndeclaredVariableException;
-import domain.state.symbol.VariableAlreadyDefinedException;
 import domain.statement.IStatement;
 import domain.statement.print.PrintStatement;
 import domain.statement.variable.VariableAssignmentStatement;
 import domain.statement.variable.VariableDeclarationStatement;
-import domain.type.IllegalTypeException;
 import domain.value.IntegerValue;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import repository.IRepository;
 import repository.Repository;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
+import java.io.PrintStream;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WhileStatementTest
 {
-    @Test(expected = IllegalTypeException.class)
-    public void testWhileStatementInvalidCondition() throws IllegalTypeException
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+    private final PrintStream originalOut = System.out;
+    private final PrintStream originalErr = System.err;
+
+    @BeforeEach
+    public static void setUp()
+    {
+        ProgramState.setGlobalId(1);
+    }
+
+    @AfterEach
+    public static void tearDown()
+    {
+        ProgramState.setGlobalId(1);
+    }
+
+    @Before
+    public void setUpStreams()
+    {
+        System.setOut(new PrintStream(outContent));
+        System.setErr(new PrintStream(errContent));
+    }
+
+    @After
+    public void restoreStreams()
+    {
+        System.setOut(originalOut);
+        System.setErr(originalErr);
+    }
+
+    @Test
+    public void testWhileStatementInvalidCondition()
     {
         IStatement statement = new WhileStatement(
             new ValueExpression(new IntegerValue(6)),
@@ -49,12 +78,13 @@ public class WhileStatementTest
         try
         {
             mockController.allSteps();
-        } catch (VariableAlreadyDefinedException| DescriptorExistsException |
-                DescriptorNotExistsException | UndeclaredVariableException |
-                IOException | FileDoesNotExistException | InvalidMemoryAddressException e)
+            // Check if invalid IllegalTypeException is logged in System out
+            assertTrue(outContent.size() != 0);
+        } catch (InterruptedException e)
         {
             fail(e.getMessage());
         }
+
     }
 
     @Test

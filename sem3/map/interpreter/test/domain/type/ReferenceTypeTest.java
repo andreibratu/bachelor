@@ -1,26 +1,11 @@
 package domain.type;
 
-import domain.state.heap.DictionaryHeap;
-import domain.state.heap.IHeap;
-import domain.state.symbol.DictionarySymbolTable;
-import domain.state.symbol.ISymbolTable;
-import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.TestCase.*;
 
 public class ReferenceTypeTest
 {
-    private ISymbolTable mockSymbolTable;
-    private IHeap mockHeap;
-
-    @Before
-    public void setUp()
-    {
-        this.mockSymbolTable = new DictionarySymbolTable();
-        this.mockHeap = new DictionaryHeap();
-    }
-
     @Test
     public void testReferenceToReference()
     {

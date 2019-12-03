@@ -60,6 +60,6 @@ public class WriteHeapStatement implements IStatement
         WriteHeapStatement clone = (WriteHeapStatement) super.clone();
         clone.variable = variable;
         clone.expression = (IExpression) this.expression.clone();
-        return clone;
+        return null;
     }
 }

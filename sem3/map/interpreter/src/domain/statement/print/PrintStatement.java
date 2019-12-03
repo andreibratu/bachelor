@@ -34,7 +34,7 @@ public class PrintStatement implements IStatement
         IHeap heap = state.getHeap();
 
         list.add(this.expression.evaluate(table, heap));
-        return state;
+        return null;
     }
 
     @Override

@@ -15,7 +15,8 @@ public class BoolValueTest
     private BoolValue trueValue;
 
     @Before
-    public void setUp() {
+    public void setUp()
+    {
         falseValue = new BoolValue();
         trueValue = new BoolValue(true);
     }
@@ -33,7 +34,8 @@ public class BoolValueTest
     }
 
     @Test
-    public void testToString() {
+    public void testToString()
+    {
         assertEquals(trueValue.toString(), "true");
         assertEquals(falseValue.toString(), "false");
     }

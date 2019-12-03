@@ -44,7 +44,7 @@ public class IfStatement implements IStatement
             exeStack.push(thenStatement);
         else
             exeStack.push(elseStatement);
-        return state;
+        return null;
     }
 
     @Override

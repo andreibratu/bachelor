@@ -1,5 +1,6 @@
 package domain.state.heap;
 
+import domain.type.IType;
 import domain.value.IValue;
 import domain.value.ReferenceValue;
 
@@ -16,10 +17,16 @@ public class DictionaryHeap implements IHeap
         this.heap = new HashMap<>();
     }
 
-    public ReferenceValue allocate(IValue value)
+    public int allocate(IValue value)
     {
-        this.heap.put(this.heapFreeAddress, value);
-        return new ReferenceValue(this.heapFreeAddress++, value.getType());
+        this.heap.put(heapFreeAddress, value);
+        return heapFreeAddress++;
+    }
+
+    public int allocate(IType type)
+    {
+        this.heap.put(heapFreeAddress, type.defaultValue());
+        return heapFreeAddress++;
     }
 
     @Override

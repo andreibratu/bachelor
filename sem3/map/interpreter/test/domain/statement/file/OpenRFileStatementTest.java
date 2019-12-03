@@ -5,6 +5,7 @@ import domain.state.ProgramState;
 import domain.statement.IStatement;
 import domain.value.StringValue;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -15,9 +16,16 @@ import static org.junit.Assert.fail;
 
 public class OpenRFileStatementTest
 {
+    @AfterAll
+    public static void tearDown()
+    {
+        ProgramState.setGlobalId(1);
+    }
+
     @BeforeEach
     public void setUp()
     {
+        ProgramState.setGlobalId(1);
         File testFile = new File("test.txt");
         try
         {

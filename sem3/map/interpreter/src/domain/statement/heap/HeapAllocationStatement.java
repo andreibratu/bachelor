@@ -42,10 +42,8 @@ public class HeapAllocationStatement implements IStatement
         if (!varValueInnerType.equals(resultType))
             throw new IllegalTypeException(this.toString(), varValueInnerType, resultType);
 
-        varValue = heap.allocate(((ReferenceValue) varValue).getLocationType().defaultValue());
-        heap.write((ReferenceValue) varValue, result);
-        symbolTable.updateVariable(variableName, varValue);
-        return state;
+        ((ReferenceValue) varValue).setValue(heap.allocate(result));
+        return null;
     }
 
     @Override

@@ -1,16 +1,19 @@
 package domain.state;
 
-import domain.state.collector.IGarbageCollector;
-import domain.state.collector.SafeDictionaryGarbageCollector;
-import domain.state.file.DictionaryFileTable;
-import domain.state.file.IFileTable;
+import domain.state.file.*;
 import domain.state.heap.DictionaryHeap;
 import domain.state.heap.IHeap;
+import domain.state.heap.InvalidMemoryAddressException;
 import domain.state.symbol.DictionarySymbolTable;
 import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.UndeclaredVariableException;
+import domain.state.symbol.VariableAlreadyDefinedException;
 import domain.statement.IStatement;
+import domain.statement.print.PrintStatement;
+import domain.type.IllegalTypeException;
 import domain.value.IValue;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -21,47 +24,64 @@ public class ProgramState {
     private List<IValue> out;
     private IFileTable fileTable;
     private IHeap heap;
-    private IGarbageCollector garbageCollector;
+    private int id;
+    private static volatile int globalId = 1;
 
     public ProgramState(IStatement program)
     {
+        this.id = globalId;
+        incrementGlobalId();
         this.executionStack = new Stack<>();
         this.symbolTable = new DictionarySymbolTable();
         this.out = new LinkedList<>();
         this.fileTable = new DictionaryFileTable();
         this.heap = new DictionaryHeap();
-        this.garbageCollector = new SafeDictionaryGarbageCollector(
-                (DictionarySymbolTable) symbolTable,
-                (DictionaryHeap) heap
-        );
         this.executionStack.push(program);
     }
 
-    public Stack<IStatement> getExecutionStack() {
-        return this.executionStack;
+    public ProgramState(ProgramState programState)
+    {
+        this.id = globalId;
+        incrementGlobalId();
+        executionStack = new Stack<>();
+        symbolTable = new DictionarySymbolTable((DictionarySymbolTable) programState.symbolTable);
+        out = programState.out;
+        fileTable = programState.fileTable;
+        heap = programState.heap;
     }
 
-    public ISymbolTable getSymbolTable() {
-        return this.symbolTable;
-    }
+    public static synchronized int getGlobalIdId() { return globalId; }
+
+    public static synchronized void setGlobalId(int globalId) { ProgramState.globalId = globalId; }
+
+    private static synchronized void incrementGlobalId() { globalId = globalId + 1; }
+
+    public Stack<IStatement> getExecutionStack() { return this.executionStack; }
+
+    public ISymbolTable getSymbolTable() { return this.symbolTable; }
 
     public IFileTable getFileTable() { return this.fileTable; }
 
     public IHeap getHeap() { return this.heap; }
 
-    public List<IValue> getOut() {
-        return this.out;
-    }
+    public List<IValue> getOut() { return this.out; }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public ProgramState clone() throws CloneNotSupportedException
+    public boolean isFinished() { return this.executionStack.size() == 0; }
+
+    public ProgramState oneStep()
+            throws VariableAlreadyDefinedException, UndeclaredVariableException,
+            IllegalTypeException, DescriptorExistsException, FileDoesNotExistException,
+            DescriptorNotExistsException, IOException, InvalidMemoryAddressException
     {
-        ProgramState clone = (ProgramState) super.clone();
-        clone.executionStack = (Stack<IStatement>) this.executionStack.clone();
-        clone.symbolTable = (DictionarySymbolTable) this.symbolTable.clone();
-        clone.out = (List<IValue>) this.symbolTable.clone();
-        return clone;
+        IStatement currentStatement = executionStack.pop();
+        ProgramState result = currentStatement.execute(this);
+        if (currentStatement instanceof PrintStatement)
+        {
+            List<IValue> printLog = this.getOut();
+            IValue lastPrint = printLog.get(printLog.size() - 1);
+            System.out.println("PRINT: " + lastPrint.toString());
+        }
+        return result;
     }
 
     @Override
@@ -79,10 +99,5 @@ public class ProgramState {
             output.append("\n");
         }
         return output.toString();
-    }
-
-    public IGarbageCollector getGarbageCollector()
-    {
-        return garbageCollector;
     }
 }
