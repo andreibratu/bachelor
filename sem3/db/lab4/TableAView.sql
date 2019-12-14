@@ -1,0 +1,3 @@
+CREATE OR ALTER VIEW TableAView
+AS
+	SELECT foo FROM TableA
