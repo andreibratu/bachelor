@@ -7,9 +7,13 @@ import domain.state.heap.InvalidMemoryAddressException;
 import domain.state.symbol.ISymbolTable;
 import domain.state.symbol.UndeclaredVariableException;
 import domain.statement.IStatement;
-import domain.value.IValue;
+import domain.type.BoolType;
+import domain.type.IType;
 import domain.type.IllegalTypeException;
+import domain.value.IValue;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 public class IfStatement implements IStatement
@@ -33,13 +37,26 @@ public class IfStatement implements IStatement
     }
 
     @Override
+    public Map<String, IType> typeCheck(Map<String, IType> typeEnv) throws IllegalTypeException
+    {
+        IType typeExpression = expression.typeCheck(typeEnv);
+        IType boolType = new BoolType();
+        if(!typeExpression.equals(boolType)) throw new IllegalTypeException(this.toString(), boolType, typeExpression);
+        Map<String, IType> copyThen = new HashMap<>(typeEnv);
+        Map<String, IType> copyElse = new HashMap<>(typeEnv);
+        thenStatement.typeCheck(copyThen);
+        elseStatement.typeCheck(copyElse);
+        return typeEnv;
+    }
+
+    @Override
     public ProgramState execute(ProgramState state)
             throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException
     {
         Stack<IStatement> exeStack = state.getExecutionStack();
         ISymbolTable symTable = state.getSymbolTable();
         IHeap heap = state.getHeap();
-        IValue result = this.expression.evaluate(symTable, heap);
+        IValue<?> result = this.expression.evaluate(symTable, heap);
         if(!result.getValue().equals(0))
             exeStack.push(thenStatement);
         else

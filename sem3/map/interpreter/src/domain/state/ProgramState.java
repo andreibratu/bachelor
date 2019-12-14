@@ -14,21 +14,24 @@ import domain.type.IllegalTypeException;
 import domain.value.IValue;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
-public class ProgramState {
+public class ProgramState
+{
     private Stack<IStatement> executionStack;
     private ISymbolTable symbolTable;
-    private List<IValue> out;
+    private List<IValue<?>> out;
     private IFileTable fileTable;
     private IHeap heap;
-    private int id;
+    private final int id;
     private static volatile int globalId = 1;
 
-    public ProgramState(IStatement program)
+    public ProgramState(IStatement program) throws IllegalTypeException
     {
+        program.typeCheck(new HashMap<>());
         this.id = globalId;
         incrementGlobalId();
         this.executionStack = new Stack<>();
@@ -64,7 +67,7 @@ public class ProgramState {
 
     public IHeap getHeap() { return this.heap; }
 
-    public List<IValue> getOut() { return this.out; }
+    public List<IValue<?>> getOut() { return this.out; }
 
     public boolean isFinished() { return this.executionStack.size() == 0; }
 
@@ -77,8 +80,8 @@ public class ProgramState {
         ProgramState result = currentStatement.execute(this);
         if (currentStatement instanceof PrintStatement)
         {
-            List<IValue> printLog = this.getOut();
-            IValue lastPrint = printLog.get(printLog.size() - 1);
+            List<IValue<?>> printLog = this.getOut();
+            IValue<?> lastPrint = printLog.get(printLog.size() - 1);
             System.out.println("PRINT: " + lastPrint.toString());
         }
         return result;

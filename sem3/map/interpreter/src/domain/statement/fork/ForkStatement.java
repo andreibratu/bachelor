@@ -2,6 +2,11 @@ package domain.statement.fork;
 
 import domain.state.ProgramState;
 import domain.statement.IStatement;
+import domain.type.IType;
+import domain.type.IllegalTypeException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ForkStatement implements IStatement
 {
@@ -18,6 +23,14 @@ public class ForkStatement implements IStatement
         ProgramState fork = new ProgramState(state);
         fork.getExecutionStack().push(innerStatement);
         return fork;
+    }
+
+    @Override
+    public Map<String, IType> typeCheck(Map<String, IType> typeEnv) throws IllegalTypeException
+    {
+        Map<String, IType> copyInner = new HashMap<>(typeEnv);
+        innerStatement.typeCheck(copyInner);
+        return typeEnv;
     }
 
     @Override

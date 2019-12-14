@@ -8,10 +8,13 @@ import domain.state.symbol.ISymbolTable;
 import domain.state.symbol.UndeclaredVariableException;
 import domain.statement.IStatement;
 import domain.type.BoolType;
+import domain.type.IType;
 import domain.type.IllegalTypeException;
 import domain.value.BoolValue;
 import domain.value.IValue;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 public class WhileStatement implements IStatement
@@ -38,7 +41,7 @@ public class WhileStatement implements IStatement
         IHeap heap = state.getHeap();
         Stack<IStatement> executionStack = state.getExecutionStack();
 
-        IValue result = condition.evaluate(symbolTable, heap);
+        IValue<?> result = condition.evaluate(symbolTable, heap);
         if(!(result instanceof BoolValue))
             throw new IllegalTypeException(this.toString(), new BoolType(), result.getType());
 
@@ -48,6 +51,17 @@ public class WhileStatement implements IStatement
             executionStack.push(innerStatement);
         }
         return null;
+    }
+
+    @Override
+    public Map<String, IType> typeCheck(Map<String, IType> typeEnv) throws IllegalTypeException
+    {
+        IType typeExpression = condition.typeCheck(typeEnv);
+        IType boolType = new BoolType();
+        if(!typeExpression.equals(boolType)) throw new IllegalTypeException(this.toString(), boolType, typeExpression);
+        Map<String, IType> copyInner = new HashMap<>(typeEnv);
+        innerStatement.typeCheck(copyInner);
+        return typeEnv;
     }
 
     @Override

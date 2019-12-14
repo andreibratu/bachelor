@@ -6,16 +6,16 @@ import domain.expression.ValueExpression;
 import domain.expression.VariableExpression;
 import domain.operator.ArithmeticOperator;
 import domain.state.ProgramState;
-import domain.statement.*;
+import domain.statement.IStatement;
 import domain.statement.control.CompoundStatement;
 import domain.statement.file.CloseRFileStatement;
 import domain.statement.file.OpenRFileStatement;
 import domain.statement.file.ReadFileStatement;
 import domain.statement.heap.HeapAllocationStatement;
-import domain.statement.heap.WriteHeapStatement;
 import domain.statement.print.PrintStatement;
 import domain.statement.variable.VariableAssignmentStatement;
 import domain.statement.variable.VariableDeclarationStatement;
+import domain.type.IllegalTypeException;
 import domain.type.IntegerType;
 import domain.type.ReferenceType;
 import domain.type.StringType;
@@ -30,7 +30,8 @@ import view.text.command.RunExampleCommand;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IllegalTypeException
+    {
         IStatement ex1 = new CompoundStatement(
             new CompoundStatement(
                 new VariableDeclarationStatement("a", new IntegerType()),

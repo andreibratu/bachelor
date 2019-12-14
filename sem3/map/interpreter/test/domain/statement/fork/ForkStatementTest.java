@@ -13,6 +13,7 @@ import domain.statement.heap.WriteHeapStatement;
 import domain.statement.print.PrintStatement;
 import domain.statement.variable.VariableAssignmentStatement;
 import domain.statement.variable.VariableDeclarationStatement;
+import domain.type.IllegalTypeException;
 import domain.type.IntegerType;
 import domain.type.ReferenceType;
 import domain.value.IValue;
@@ -94,7 +95,12 @@ public class ForkStatementTest
 
         ProgramState.setGlobalId(1);
 
-        ProgramState programState = new ProgramState(statement);
+        ProgramState programState = null;
+        try {
+            programState = new ProgramState(statement);
+        } catch (IllegalTypeException e) {
+            fail(e.getMessage());
+        }
         IRepository repository = new Repository(programState, "testlog.txt");
         IController controller = new Controller(repository, true);
 
@@ -102,8 +108,8 @@ public class ForkStatementTest
         {
             controller.allSteps();
             assertEquals(3, ProgramState.getGlobalIdId());
-            List<IValue> output = programState.getOut();
-            List<IValue> expected = Arrays.asList(
+            List<IValue<?>> output = programState.getOut();
+            List<IValue<?>> expected = Arrays.asList(
                 new IntegerValue(10), new IntegerValue(30),
                 new IntegerValue(32), new IntegerValue(30)
             );

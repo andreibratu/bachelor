@@ -7,11 +7,13 @@ import domain.state.symbol.ISymbolTable;
 import domain.state.symbol.UndeclaredVariableException;
 import domain.type.BoolType;
 import domain.type.IType;
+import domain.type.IllegalTypeException;
 import domain.type.IntegerType;
 import domain.value.BoolValue;
 import domain.value.IValue;
 import domain.value.IntegerValue;
-import domain.type.IllegalTypeException;
+
+import java.util.Map;
 
 public class LogicalExpression implements IExpression
 {
@@ -27,12 +29,25 @@ public class LogicalExpression implements IExpression
     }
 
     @Override
-    public IValue evaluate(ISymbolTable table, IHeap heap)
+    public IType typeCheck(Map<String, IType> typeEnv) throws IllegalTypeException
+    {
+        IType type1 = first.typeCheck(typeEnv);
+        IType type2 = second.typeCheck(typeEnv);
+        IType intType = new IntegerType();
+        if (!(type1 instanceof IntegerType))
+            throw new IllegalTypeException(this.toString(), intType, type1);
+        if (!(type2 instanceof IntegerType))
+            throw new IllegalTypeException(this.toString(), intType, type2);
+        return new BoolType();
+    }
+
+    @Override
+    public IValue<Boolean> evaluate(ISymbolTable table, IHeap heap)
             throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException
     {
-        IValue v1 = first.evaluate(table, heap);
+        IValue<?> v1 = first.evaluate(table, heap);
         IType type1 = v1.getType();
-        IValue v2 = second.evaluate(table, heap);
+        IValue<?> v2 = second.evaluate(table, heap);
         IType type2 = v2.getType();
         boolean result = false;
         switch (this.operator)
@@ -97,5 +112,11 @@ public class LogicalExpression implements IExpression
         clone.second = (IExpression) this.second.clone();
         clone.operator = this.operator;
         return clone;
+    }
+
+    @Override
+    public String toString()
+    {
+        return first.toString() + " " + operator.toString() + " " + second.toString();
     }
 }

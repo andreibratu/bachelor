@@ -9,6 +9,7 @@ import domain.state.heap.InvalidMemoryAddressException;
 import domain.state.symbol.ISymbolTable;
 import domain.state.symbol.UndeclaredVariableException;
 import domain.statement.IStatement;
+import domain.type.IType;
 import domain.type.IntegerType;
 import domain.type.StringType;
 import domain.value.IValue;
@@ -18,16 +19,27 @@ import domain.type.IllegalTypeException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Map;
 
 public class ReadFileStatement implements IStatement
 {
-    private IExpression filepathExpression;
+    private IExpression filePathExpression;
     private String variableName;
 
-    public ReadFileStatement(IExpression filepathExpression, String variableName)
+    public ReadFileStatement(IExpression filePathExpression, String variableName)
     {
-        this.filepathExpression = filepathExpression;
+        this.filePathExpression = filePathExpression;
         this.variableName = variableName;
+    }
+
+    @Override
+    public Map<String, IType> typeCheck(Map<String, IType> typeEnv) throws IllegalTypeException
+    {
+        IType expressionType = filePathExpression.typeCheck(typeEnv);
+        IType stringType = new StringType();
+        if(!expressionType.equals(stringType))
+            throw new IllegalTypeException(this.toString(), stringType, expressionType);
+        return typeEnv;
     }
 
     @Override
@@ -39,11 +51,11 @@ public class ReadFileStatement implements IStatement
         IHeap heap = state.getHeap();
         IFileTable fileTable = state.getFileTable();
 
-        IValue variable = symbolTable.queryVariable(variableName);
+        IValue<?> variable = symbolTable.queryVariable(variableName);
         if(!(variable instanceof IntegerValue))
             throw new IllegalTypeException(this.toString(), new IntegerType(), variable.getType());
 
-        IValue filepath = filepathExpression.evaluate(symbolTable, heap);
+        IValue<?> filepath = filePathExpression.evaluate(symbolTable, heap);
         if(!(filepath instanceof StringValue))
             throw new IllegalTypeException(this.toString(), new StringType(), filepath.getType());
 
@@ -60,12 +72,12 @@ public class ReadFileStatement implements IStatement
     {
         ReadFileStatement clone = (ReadFileStatement) super.clone();
         clone.variableName = this.variableName;
-        clone.filepathExpression = (IExpression) this.filepathExpression.clone();
+        clone.filePathExpression = (IExpression) this.filePathExpression.clone();
         return clone;
     }
 
     @Override
     public String toString() {
-        return "read("  + this.variableName.toString() + ", " + this.filepathExpression.toString() + ")";
+        return "read("  + this.variableName + ", " + this.filePathExpression.toString() + ")";
     }
 }

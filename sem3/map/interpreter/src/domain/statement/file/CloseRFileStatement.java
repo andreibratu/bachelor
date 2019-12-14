@@ -9,12 +9,14 @@ import domain.state.heap.InvalidMemoryAddressException;
 import domain.state.symbol.ISymbolTable;
 import domain.state.symbol.UndeclaredVariableException;
 import domain.statement.IStatement;
+import domain.type.IType;
 import domain.type.StringType;
 import domain.value.IValue;
 import domain.value.StringValue;
 import domain.type.IllegalTypeException;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class CloseRFileStatement implements IStatement
 {
@@ -34,11 +36,21 @@ public class CloseRFileStatement implements IStatement
         IFileTable fileTable = state.getFileTable();
         IHeap heap = state.getHeap();
 
-        IValue filepath = filePathExpression.evaluate(symbolTable, heap);
+        IValue<?> filepath = filePathExpression.evaluate(symbolTable, heap);
         if(!(filepath.getType() instanceof StringType))
             throw new IllegalTypeException(this.toString(), new StringType(), filepath.getType());
         fileTable.closeDescriptor((StringValue) filepath);
         return null;
+    }
+
+    @Override
+    public Map<String, IType> typeCheck(Map<String, IType> typeEnv) throws IllegalTypeException
+    {
+        IType expressionType = filePathExpression.typeCheck(typeEnv);
+        IType stringType = new StringType();
+        if(!expressionType.equals(stringType))
+            throw new IllegalTypeException(this.toString(), stringType, expressionType);
+        return typeEnv;
     }
 
     @Override

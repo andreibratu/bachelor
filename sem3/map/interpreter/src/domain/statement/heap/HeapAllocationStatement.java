@@ -14,6 +14,8 @@ import domain.value.IValue;
 import domain.value.ReferenceValue;
 import domain.type.IllegalTypeException;
 
+import java.util.Map;
+
 public class HeapAllocationStatement implements IStatement
 {
     private String variableName;
@@ -26,17 +28,28 @@ public class HeapAllocationStatement implements IStatement
     }
 
     @Override
+    public Map<String, IType> typeCheck(Map<String, IType> typeEnv) throws IllegalTypeException
+    {
+        IType typeVar = typeEnv.get(variableName);
+        IType typeExpression = expression.typeCheck(typeEnv);
+        IType expectedType = new ReferenceType(typeExpression);
+        if(!typeVar.equals(expectedType))
+            throw new IllegalTypeException(this.toString(), typeVar, expectedType);
+        return typeEnv;
+    }
+
+    @Override
     public ProgramState execute(ProgramState state)
             throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException
     {
         ISymbolTable symbolTable = state.getSymbolTable();
         IHeap heap = state.getHeap();
 
-        IValue varValue = symbolTable.queryVariable(this.variableName);
+        IValue<?> varValue = symbolTable.queryVariable(this.variableName);
         if(!(varValue instanceof ReferenceValue))
             throw new IllegalTypeException(this.toString(), new ReferenceType(null), varValue.getType());
 
-        IValue result = expression.evaluate(symbolTable, heap);
+        IValue<?> result = expression.evaluate(symbolTable, heap);
         IType varValueInnerType = ((ReferenceValue) varValue).getLocationType();
         IType resultType = result.getType();
         if (!varValueInnerType.equals(resultType))

@@ -10,14 +10,13 @@ import domain.statement.IStatement;
 import domain.statement.control.CompoundStatement;
 import domain.statement.variable.VariableAssignmentStatement;
 import domain.statement.variable.VariableDeclarationStatement;
+import domain.type.IllegalTypeException;
 import domain.type.IntegerType;
 import domain.type.ReferenceType;
 import domain.value.IntegerValue;
 import domain.value.ReferenceValue;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import repository.IRepository;
 import repository.Repository;
@@ -62,7 +61,12 @@ public class HeapStatementIntegrationTest
             )
         );
 
-        ProgramState mockState = new ProgramState(statement);
+        ProgramState mockState = null;
+        try {
+            mockState = new ProgramState(statement);
+        } catch (IllegalTypeException e) {
+            fail(e.getMessage());
+        }
         IRepository mockRepository = new Repository(mockState, "testlog.txt");
         IController mockController = new Controller(mockRepository, false);
 
@@ -114,7 +118,12 @@ public class HeapStatementIntegrationTest
             )
         );
 
-        ProgramState mockState = new ProgramState(statement);
+        ProgramState mockState = null;
+        try {
+            mockState = new ProgramState(statement);
+        } catch (IllegalTypeException e) {
+            fail(e.getMessage());
+        }
         IRepository mockRepository = new Repository(mockState, "testlog.txt");
         IController mockController = new Controller(mockRepository, false);
 
@@ -158,7 +167,12 @@ public class HeapStatementIntegrationTest
             )
         );
 
-        ProgramState mockState = new ProgramState(statement);
+        ProgramState mockState = null;
+        try {
+            mockState = new ProgramState(statement);
+        } catch (IllegalTypeException e) {
+            fail(e.getMessage());
+        }
         IRepository mockRepository = new Repository(mockState, "testlog.txt");
         IController mockController = new Controller(mockRepository, false);
 

@@ -8,4 +8,6 @@ public class IllegalTypeException extends Exception
     {
         super(descriptor + ": expected type " + expected + ", got " + actual);
     }
+
+    public IllegalTypeException(String descriptor) { super(descriptor); }
 }

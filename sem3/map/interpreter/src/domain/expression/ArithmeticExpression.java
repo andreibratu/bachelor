@@ -5,10 +5,13 @@ import domain.state.heap.IHeap;
 import domain.state.heap.InvalidMemoryAddressException;
 import domain.state.symbol.ISymbolTable;
 import domain.state.symbol.UndeclaredVariableException;
+import domain.type.IType;
+import domain.type.IllegalTypeException;
 import domain.type.IntegerType;
 import domain.value.IValue;
 import domain.value.IntegerValue;
-import domain.type.IllegalTypeException;
+
+import java.util.Map;
 
 public class ArithmeticExpression implements IExpression {
     private IExpression first;
@@ -23,18 +26,31 @@ public class ArithmeticExpression implements IExpression {
     }
 
     @Override
+    public IType typeCheck(Map<String, IType> typeEnv) throws IllegalTypeException
+    {
+        IType type1 = first.typeCheck(typeEnv);
+        IType type2 = second.typeCheck(typeEnv);
+        IType intType = new IntegerType();
+        if (!type1.equals(new IntegerType()))
+            throw new IllegalTypeException(this.toString(), intType, type1);
+        if(!type2.equals(new IntegerType()))
+            throw new IllegalTypeException(this.toString(), intType, type2);
+        return intType;
+    }
+
+    @Override
     public String toString()
     {
         return this.first.toString() + " " + operator.toString() + " " + second.toString();
     }
 
     @Override
-    public IValue evaluate(ISymbolTable table, IHeap heap)
+    public IValue<Integer> evaluate(ISymbolTable table, IHeap heap)
             throws IllegalTypeException, ArithmeticException,
             UndeclaredVariableException, InvalidMemoryAddressException
     {
-        IValue v1 = first.evaluate(table, heap);
-        IValue v2 = second.evaluate(table, heap);
+        IValue<?> v1 = first.evaluate(table, heap);
+        IValue<?> v2 = second.evaluate(table, heap);
 
         if (!v1.getType().equals(new IntegerType()))
             throw new IllegalTypeException(this.toString(), new IntegerType(), v1.getType());

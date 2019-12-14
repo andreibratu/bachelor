@@ -7,10 +7,12 @@ import domain.state.heap.InvalidMemoryAddressException;
 import domain.state.symbol.ISymbolTable;
 import domain.state.symbol.UndeclaredVariableException;
 import domain.statement.IStatement;
-import domain.value.IValue;
+import domain.type.IType;
 import domain.type.IllegalTypeException;
+import domain.value.IValue;
 
 import java.util.List;
+import java.util.Map;
 
 public class PrintStatement implements IStatement
 {
@@ -29,12 +31,19 @@ public class PrintStatement implements IStatement
     public ProgramState execute(ProgramState state)
             throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException
     {
-        List<IValue> list = state.getOut();
+        List<IValue<?>> list = state.getOut();
         ISymbolTable table = state.getSymbolTable();
         IHeap heap = state.getHeap();
 
         list.add(this.expression.evaluate(table, heap));
         return null;
+    }
+
+    @Override
+    public Map<String, IType> typeCheck(Map<String, IType> typeEnv) throws IllegalTypeException
+    {
+        expression.typeCheck(typeEnv);
+        return typeEnv;
     }
 
     @Override

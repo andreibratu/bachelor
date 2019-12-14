@@ -2,9 +2,13 @@ package domain.expression;
 
 import domain.state.heap.IHeap;
 import domain.state.symbol.ISymbolTable;
+import domain.type.IType;
 import domain.value.IValue;
 
-public class ValueExpression implements IExpression {
+import java.util.Map;
+
+public class ValueExpression implements IExpression
+{
     private IValue value;
 
     public ValueExpression(IValue value) {
@@ -16,6 +20,9 @@ public class ValueExpression implements IExpression {
     }
 
     public void setValue(IValue value) { this.value = value;}
+
+    @Override
+    public IType typeCheck(Map<String, IType> typeEnv) { return value.getType(); }
 
     @Override
     public String toString() { return this.value.toString(); }

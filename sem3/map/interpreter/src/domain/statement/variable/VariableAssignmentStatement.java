@@ -8,8 +8,10 @@ import domain.state.symbol.ISymbolTable;
 import domain.state.symbol.UndeclaredVariableException;
 import domain.statement.IStatement;
 import domain.type.IType;
-import domain.value.IValue;
 import domain.type.IllegalTypeException;
+import domain.value.IValue;
+
+import java.util.Map;
 
 public class VariableAssignmentStatement implements IStatement
 {
@@ -28,13 +30,22 @@ public class VariableAssignmentStatement implements IStatement
     }
 
     @Override
+    public Map<String, IType> typeCheck(Map<String, IType> typeEnv) throws IllegalTypeException
+    {
+        IType typeVar = typeEnv.get(id);
+        IType typeExpression = expression.typeCheck(typeEnv);
+        if(!typeVar.equals(typeExpression)) throw new IllegalTypeException(this.toString(), typeVar, typeExpression);
+        return typeEnv;
+    }
+
+    @Override
     public ProgramState execute(ProgramState state)
             throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException
     {
         ISymbolTable symbolTable = state.getSymbolTable();
         IHeap heap = state.getHeap();
 
-        IValue expressionValue = expression.evaluate(symbolTable, heap);
+        IValue<?> expressionValue = expression.evaluate(symbolTable, heap);
         IType variableType = symbolTable.queryVariable(id).getType();
 
         if (expressionValue.getType().equals(variableType)) symbolTable.updateVariable(id, expressionValue);

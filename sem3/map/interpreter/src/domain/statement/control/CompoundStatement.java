@@ -2,7 +2,10 @@ package domain.statement.control;
 
 import domain.state.ProgramState;
 import domain.statement.IStatement;
+import domain.type.IType;
+import domain.type.IllegalTypeException;
 
+import java.util.Map;
 import java.util.Stack;
 
 public class CompoundStatement implements IStatement
@@ -18,6 +21,12 @@ public class CompoundStatement implements IStatement
 
     public String toString() {
         return "( " + first.toString() + " ; " + second.toString() + " )";
+    }
+
+    @Override
+    public Map<String, IType> typeCheck(Map<String, IType> typeEnv) throws IllegalTypeException
+    {
+        return second.typeCheck(first.typeCheck(typeEnv));
     }
 
     @Override

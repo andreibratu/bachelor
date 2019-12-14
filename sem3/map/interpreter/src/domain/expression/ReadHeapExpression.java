@@ -4,10 +4,13 @@ import domain.state.heap.IHeap;
 import domain.state.heap.InvalidMemoryAddressException;
 import domain.state.symbol.ISymbolTable;
 import domain.state.symbol.UndeclaredVariableException;
+import domain.type.IType;
+import domain.type.IllegalTypeException;
 import domain.type.ReferenceType;
 import domain.value.IValue;
 import domain.value.ReferenceValue;
-import domain.type.IllegalTypeException;
+
+import java.util.Map;
 
 public class ReadHeapExpression implements IExpression
 {
@@ -19,13 +22,22 @@ public class ReadHeapExpression implements IExpression
     }
 
     @Override
-    public IValue evaluate(ISymbolTable table, IHeap heap)
+    public IValue<?> evaluate(ISymbolTable table, IHeap heap)
             throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException
     {
-        IValue result = expression.evaluate(table, heap);
+        IValue<?> result = expression.evaluate(table, heap);
         if(!(result instanceof ReferenceValue))
             throw new IllegalTypeException(this.toString(), result.getType(), new ReferenceType(null));
         return heap.dereference(((ReferenceValue) result));
+    }
+
+    @Override
+    public IType typeCheck(Map<String, IType> typeEnv) throws IllegalTypeException
+    {
+        IType type = expression.typeCheck(typeEnv);
+        if(type instanceof ReferenceType)
+            return ((ReferenceType) type).getInnerType();
+        throw new IllegalTypeException(this.toString(), new ReferenceType(null), type);
     }
 
     @Override

@@ -3,6 +3,7 @@ package domain.statement.file;
 import domain.expression.ValueExpression;
 import domain.state.ProgramState;
 import domain.statement.IStatement;
+import domain.type.IllegalTypeException;
 import domain.value.StringValue;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
@@ -55,7 +56,12 @@ public class OpenRFileStatementTest
         IStatement statement = new OpenRFileStatement(
             new ValueExpression(new StringValue("test.txt"))
         );
-        ProgramState mockState = new ProgramState(statement);
+        ProgramState mockState = null;
+        try {
+            mockState = new ProgramState(statement);
+        } catch (IllegalTypeException e) {
+            fail(e.getMessage());
+        }
         try
         {
             statement.execute(mockState);

@@ -9,6 +9,7 @@ import domain.statement.IStatement;
 import domain.statement.control.CompoundStatement;
 import domain.statement.variable.VariableAssignmentStatement;
 import domain.statement.variable.VariableDeclarationStatement;
+import domain.type.IllegalTypeException;
 import domain.type.IntegerType;
 import domain.type.StringType;
 import domain.value.StringValue;
@@ -57,7 +58,12 @@ public class ReadFileStatementTest
                     )
                 )
             );
-        ProgramState mockState = new ProgramState(statement);
+        ProgramState mockState = null;
+        try {
+            mockState = new ProgramState(statement);
+        } catch (IllegalTypeException e) {
+            fail(e.getMessage());
+        }
         IRepository mockRepository = new Repository(mockState, "testlog.txt");
         IController mockController = new Controller(mockRepository, true);
         try

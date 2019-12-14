@@ -13,6 +13,7 @@ import domain.statement.IStatement;
 import domain.statement.print.PrintStatement;
 import domain.statement.variable.VariableAssignmentStatement;
 import domain.statement.variable.VariableDeclarationStatement;
+import domain.type.IllegalTypeException;
 import domain.value.IntegerValue;
 import org.junit.After;
 import org.junit.Before;
@@ -28,7 +29,6 @@ import java.io.PrintStream;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.fail;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WhileStatementTest
 {
@@ -63,28 +63,16 @@ public class WhileStatementTest
         System.setErr(originalErr);
     }
 
-    @Test
-    public void testWhileStatementInvalidCondition()
+    @Test(expected = IllegalTypeException.class)
+    public void testWhileStatementInvalidCondition() throws IllegalTypeException
     {
         IStatement statement = new WhileStatement(
             new ValueExpression(new IntegerValue(6)),
             new PrintStatement(new ValueExpression(new IntegerValue(8)))
         );
 
-        ProgramState mockState = new ProgramState(statement);
-        IRepository mockRepository = new Repository(mockState, "testlog.txt");
-        IController mockController = new Controller(mockRepository, false);
-
-        try
-        {
-            mockController.allSteps();
-            // Check if invalid IllegalTypeException is logged in System out
-            assertTrue(outContent.size() != 0);
-        } catch (InterruptedException e)
-        {
-            fail(e.getMessage());
-        }
-
+        new ProgramState(statement);
+        fail("IllegalType should have been thrown by invalid condition");
     }
 
     @Test
@@ -122,7 +110,12 @@ public class WhileStatementTest
             )
         );
 
-        ProgramState state = new ProgramState(statement);
+        ProgramState state = null;
+        try {
+            state = new ProgramState(statement);
+        } catch (IllegalTypeException e) {
+            fail(e.getMessage());
+        }
         IRepository mockRepository = new Repository(state, "testlog.txt");
         IController mockController = new Controller(mockRepository, false);
 
