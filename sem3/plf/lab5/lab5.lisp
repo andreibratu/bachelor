@@ -17,7 +17,7 @@
 ; b Write a function to check whether an atom E is a member
     of a list which is not necessarily linear
 
-; Find atom 'e' in a liner list
+; Find atom 'e' in a linear list
 (defun findelem (l e)
     (cond
         ((null l) nil)
