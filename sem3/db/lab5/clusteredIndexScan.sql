@@ -1,0 +1,1 @@
+SELECT * FROM Ta ORDER BY aid;

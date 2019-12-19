@@ -1,0 +1,1 @@
+SELECT a2 FROM Ta;

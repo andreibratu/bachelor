@@ -1,0 +1,1 @@
+SELECT * FROM Ta WHERE a2 = 5;
