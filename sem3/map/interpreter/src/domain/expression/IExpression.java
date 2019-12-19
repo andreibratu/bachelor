@@ -12,7 +12,7 @@ import java.util.Map;
 
 public interface IExpression extends Cloneable
 {
-    IValue evaluate(ISymbolTable table, IHeap heap) throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException;
+    IValue<?> evaluate(ISymbolTable table, IHeap heap) throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException;
 
     IType typeCheck(Map<String, IType> typeEnv) throws IllegalTypeException;
 

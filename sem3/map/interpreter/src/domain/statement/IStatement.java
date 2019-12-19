@@ -17,7 +17,8 @@ public interface IStatement extends Cloneable
 {
     ProgramState execute(ProgramState state)
             throws IllegalTypeException, UndeclaredVariableException,
-            VariableAlreadyDefinedException, DescriptorExistsException, FileDoesNotExistException, DescriptorNotExistsException, IOException, InvalidMemoryAddressException;
+            VariableAlreadyDefinedException, DescriptorExistsException, FileDoesNotExistException,
+            DescriptorNotExistsException, IOException, InvalidMemoryAddressException;
 
     Map<String, IType> typeCheck(Map<String, IType> typeEnv) throws IllegalTypeException;
 
