@@ -1,11 +1,10 @@
 package controller;
 
-import domain.state.ProgramState;
+public interface IController
+{
+     void removeCompletedPrograms();
 
-import java.util.List;
-
-public interface IController {
-     List<ProgramState> removeCompletedPrograms();
+     void oneStepAllPrograms() throws InterruptedException;
 
      void allSteps() throws InterruptedException;
 }

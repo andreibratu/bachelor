@@ -12,7 +12,7 @@ import static org.junit.Assert.assertNotEquals;
 
 public class HeapTest
 {
-    private IHeap mockHeap;
+    private DictionaryHeap mockHeap;
 
     @Before
     public void setUp()

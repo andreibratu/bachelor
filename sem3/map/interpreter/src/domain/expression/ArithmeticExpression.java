@@ -1,9 +1,9 @@
 package domain.expression;
 
 import domain.operator.ArithmeticOperator;
-import domain.state.heap.IHeap;
+import domain.state.heap.DictionaryHeap;
 import domain.state.heap.InvalidMemoryAddressException;
-import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.DictSymbolTable;
 import domain.state.symbol.UndeclaredVariableException;
 import domain.type.IType;
 import domain.type.IllegalTypeException;
@@ -45,7 +45,7 @@ public class ArithmeticExpression implements IExpression {
     }
 
     @Override
-    public IValue<Integer> evaluate(ISymbolTable table, IHeap heap)
+    public IValue<Integer> evaluate(DictSymbolTable table, DictionaryHeap heap)
             throws IllegalTypeException, ArithmeticException,
             UndeclaredVariableException, InvalidMemoryAddressException
     {

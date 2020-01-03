@@ -3,6 +3,7 @@ package domain.value;
 import domain.type.IType;
 import domain.type.StringType;
 import domain.type.IllegalComparisonException;
+import org.jetbrains.annotations.NotNull;
 
 public class StringValue implements IValue<String>
 {
@@ -48,7 +49,7 @@ public class StringValue implements IValue<String>
     }
 
     @Override
-    public int compareTo(Object o) {
+    public int compareTo(@NotNull Object o) {
         throw new IllegalComparisonException(this, this.getType().toString());
     }
 }

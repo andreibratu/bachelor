@@ -40,4 +40,7 @@ public class ForkStatement implements IStatement
         clone.innerStatement = (IStatement) innerStatement.clone();
         return clone;
     }
+
+    @Override
+    public String toString() { return "fork( " + innerStatement + " )"; }
 }

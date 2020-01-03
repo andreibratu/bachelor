@@ -26,7 +26,7 @@ public class ReferenceType implements IType {
         return innerType.toString()+"&";
     }
 
-    public IValue defaultValue() { return new ReferenceValue(0, innerType);}
+    public IValue<?> defaultValue() { return new ReferenceValue(0, innerType);}
 
     @Override
     public Object clone() throws CloneNotSupportedException {

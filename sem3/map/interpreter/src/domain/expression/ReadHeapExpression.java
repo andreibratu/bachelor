@@ -1,8 +1,8 @@
 package domain.expression;
 
-import domain.state.heap.IHeap;
+import domain.state.heap.DictionaryHeap;
 import domain.state.heap.InvalidMemoryAddressException;
-import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.DictSymbolTable;
 import domain.state.symbol.UndeclaredVariableException;
 import domain.type.IType;
 import domain.type.IllegalTypeException;
@@ -22,7 +22,7 @@ public class ReadHeapExpression implements IExpression
     }
 
     @Override
-    public IValue<?> evaluate(ISymbolTable table, IHeap heap)
+    public IValue<?> evaluate(DictSymbolTable table, DictionaryHeap heap)
             throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException
     {
         IValue<?> result = expression.evaluate(table, heap);

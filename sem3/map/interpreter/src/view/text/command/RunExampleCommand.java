@@ -4,7 +4,7 @@ import controller.IController;
 
 public class RunExampleCommand extends Command
 {
-    private IController controller;
+    private final IController controller;
 
     public RunExampleCommand(String key, String description, IController controller)
     {

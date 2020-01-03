@@ -1,9 +1,9 @@
 package domain.expression;
 
 import domain.operator.LogicalOperator;
-import domain.state.heap.IHeap;
+import domain.state.heap.DictionaryHeap;
 import domain.state.heap.InvalidMemoryAddressException;
-import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.DictSymbolTable;
 import domain.state.symbol.UndeclaredVariableException;
 import domain.type.BoolType;
 import domain.type.IType;
@@ -42,7 +42,7 @@ public class LogicalExpression implements IExpression
     }
 
     @Override
-    public IValue<Boolean> evaluate(ISymbolTable table, IHeap heap)
+    public IValue<Boolean> evaluate(DictSymbolTable table, DictionaryHeap heap)
             throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException
     {
         IValue<?> v1 = first.evaluate(table, heap);

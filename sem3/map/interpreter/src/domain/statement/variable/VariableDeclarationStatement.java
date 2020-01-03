@@ -1,7 +1,7 @@
 package domain.statement.variable;
 
 import domain.state.ProgramState;
-import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.DictSymbolTable;
 import domain.state.symbol.VariableAlreadyDefinedException;
 import domain.statement.IStatement;
 import domain.type.IType;
@@ -39,7 +39,7 @@ public class VariableDeclarationStatement implements IStatement
     @Override
     public ProgramState execute(ProgramState state) throws VariableAlreadyDefinedException
     {
-        ISymbolTable symbolTable = state.getSymbolTable();
+        DictSymbolTable symbolTable = state.getSymbolTable();
         symbolTable.createVariable(name, value);
         return null;
     }

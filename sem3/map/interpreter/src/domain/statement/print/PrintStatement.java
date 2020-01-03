@@ -2,9 +2,9 @@ package domain.statement.print;
 
 import domain.expression.IExpression;
 import domain.state.ProgramState;
-import domain.state.heap.IHeap;
+import domain.state.heap.DictionaryHeap;
 import domain.state.heap.InvalidMemoryAddressException;
-import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.DictSymbolTable;
 import domain.state.symbol.UndeclaredVariableException;
 import domain.statement.IStatement;
 import domain.type.IType;
@@ -32,8 +32,8 @@ public class PrintStatement implements IStatement
             throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException
     {
         List<IValue<?>> list = state.getOut();
-        ISymbolTable table = state.getSymbolTable();
-        IHeap heap = state.getHeap();
+        DictSymbolTable table = state.getSymbolTable();
+        DictionaryHeap heap = state.getHeap();
 
         list.add(this.expression.evaluate(table, heap));
         return null;

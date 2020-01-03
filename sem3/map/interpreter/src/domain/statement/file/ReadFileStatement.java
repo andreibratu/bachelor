@@ -3,10 +3,10 @@ package domain.statement.file;
 import domain.expression.IExpression;
 import domain.state.ProgramState;
 import domain.state.file.DescriptorNotExistsException;
-import domain.state.file.IFileTable;
-import domain.state.heap.IHeap;
+import domain.state.file.DictionaryFileTable;
+import domain.state.heap.DictionaryHeap;
 import domain.state.heap.InvalidMemoryAddressException;
-import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.DictSymbolTable;
 import domain.state.symbol.UndeclaredVariableException;
 import domain.statement.IStatement;
 import domain.type.IType;
@@ -47,9 +47,9 @@ public class ReadFileStatement implements IStatement
             throws IllegalTypeException, UndeclaredVariableException, DescriptorNotExistsException,
             IOException, InvalidMemoryAddressException
     {
-        ISymbolTable symbolTable = state.getSymbolTable();
-        IHeap heap = state.getHeap();
-        IFileTable fileTable = state.getFileTable();
+        DictSymbolTable symbolTable = state.getSymbolTable();
+        DictionaryHeap heap = state.getHeap();
+        DictionaryFileTable fileTable = state.getFileTable();
 
         IValue<?> variable = symbolTable.queryVariable(variableName);
         if(!(variable instanceof IntegerValue))

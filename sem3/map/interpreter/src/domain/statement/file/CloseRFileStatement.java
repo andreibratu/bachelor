@@ -3,10 +3,10 @@ package domain.statement.file;
 import domain.expression.IExpression;
 import domain.state.ProgramState;
 import domain.state.file.DescriptorNotExistsException;
-import domain.state.file.IFileTable;
-import domain.state.heap.IHeap;
+import domain.state.file.DictionaryFileTable;
+import domain.state.heap.DictionaryHeap;
 import domain.state.heap.InvalidMemoryAddressException;
-import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.DictSymbolTable;
 import domain.state.symbol.UndeclaredVariableException;
 import domain.statement.IStatement;
 import domain.type.IType;
@@ -32,9 +32,9 @@ public class CloseRFileStatement implements IStatement
             throws IllegalTypeException, UndeclaredVariableException, DescriptorNotExistsException,
             InvalidMemoryAddressException, IOException
     {
-        ISymbolTable symbolTable = state.getSymbolTable();
-        IFileTable fileTable = state.getFileTable();
-        IHeap heap = state.getHeap();
+        DictSymbolTable symbolTable = state.getSymbolTable();
+        DictionaryFileTable fileTable = state.getFileTable();
+        DictionaryHeap heap = state.getHeap();
 
         IValue<?> filepath = filePathExpression.evaluate(symbolTable, heap);
         if(!(filepath.getType() instanceof StringType))

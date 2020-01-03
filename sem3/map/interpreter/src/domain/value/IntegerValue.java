@@ -3,7 +3,9 @@ package domain.value;
 import domain.type.IntegerType;
 import domain.type.IType;
 import domain.type.IllegalComparisonException;
+import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("rawtypes")
 public class IntegerValue implements IValue<Integer>, Comparable
 {
     private int value;
@@ -43,14 +45,10 @@ public class IntegerValue implements IValue<Integer>, Comparable
     }
 
     @Override
-    public int compareTo(Object obj) {
+    public int compareTo(@NotNull Object obj) {
         if (!(obj instanceof IntegerValue))
             throw new IllegalComparisonException(this, obj);
         return this.value - ((IntegerValue) obj).value;
-    }
-
-    public boolean greaterThen(Object o) {
-        return this.compareTo(o) > 0;
     }
 
     public boolean greaterThenEqual(Object o) {

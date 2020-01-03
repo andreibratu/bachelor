@@ -7,54 +7,52 @@ import domain.value.ReferenceValue;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DictionaryHeap implements IHeap
+public class DictionaryHeap
 {
-    private Map<Integer, IValue> heap;
+    private Map<Integer, IValue<?>> dictionary;
     private int heapFreeAddress;
 
     public DictionaryHeap() {
         this.heapFreeAddress = 1;
-        this.heap = new HashMap<>();
+        this.dictionary = new HashMap<>();
     }
 
-    public int allocate(IValue value)
+    public int allocate(IValue<?> value)
     {
-        this.heap.put(heapFreeAddress, value);
+        this.dictionary.put(heapFreeAddress, value);
         return heapFreeAddress++;
     }
 
     public int allocate(IType type)
     {
-        this.heap.put(heapFreeAddress, type.defaultValue());
+        this.dictionary.put(heapFreeAddress, type.defaultValue());
         return heapFreeAddress++;
     }
 
-    @Override
-    public IValue dereference(ReferenceValue reference) throws InvalidMemoryAddressException
+    public IValue<?> dereference(ReferenceValue reference) throws InvalidMemoryAddressException
     {
-        if(!this.heap.containsKey(reference.getValue()))
+        if(!this.dictionary.containsKey(reference.getValue()))
             throw new InvalidMemoryAddressException(reference.toString(), reference.getValue());
-        return this.heap.get(reference.getValue());
+        return this.dictionary.get(reference.getValue());
     }
 
-    @Override
-    public void write(ReferenceValue reference, IValue value) throws InvalidMemoryAddressException
+    public void write(ReferenceValue reference, IValue<?> value) throws InvalidMemoryAddressException
     {
-        if(!this.heap.containsKey(reference.getValue()))
+        if(!this.dictionary.containsKey(reference.getValue()))
             throw new InvalidMemoryAddressException(reference.toString(), reference.getValue());
-        this.heap.put(reference.getValue(), value);
+        this.dictionary.put(reference.getValue(), value);
     }
 
-    public HashMap<Integer, IValue> getContent()
+    public HashMap<Integer, IValue<?>> getContent()
     {
-        HashMap<Integer, IValue> clone = new HashMap<>();
-        for(Map.Entry entry : heap.entrySet())
+        HashMap<Integer, IValue<?>> clone = new HashMap<>();
+        for(Map.Entry<Integer, IValue<?>> entry : dictionary.entrySet())
         {
-            Integer key = (Integer) entry.getKey();
-            IValue value = null;
+            Integer key = entry.getKey();
+            IValue<?> value = null;
             try
             {
-                value = (IValue) ((IValue) entry.getValue()).clone();
+                value = (IValue<?>) (entry.getValue()).clone();
             } catch (CloneNotSupportedException e)
             {
                 e.printStackTrace();
@@ -64,9 +62,9 @@ public class DictionaryHeap implements IHeap
         return clone;
     }
 
-    public void setContent(HashMap<Integer, IValue> hashMap)
+    public void setContent(HashMap<Integer, IValue<?>> hashMap)
     {
-        this.heap = hashMap;
+        this.dictionary = hashMap;
     }
 
     @Override
@@ -74,7 +72,7 @@ public class DictionaryHeap implements IHeap
     {
         StringBuilder builder = new StringBuilder();
         builder.append("HEAP\n");
-        for(Map.Entry entry : heap.entrySet())
+        for(Map.Entry<Integer, IValue<?>> entry : dictionary.entrySet())
         {
             builder.append(entry.getKey().toString()).append(" -> ").append(entry.getValue().toString()).append("\n");
         }
@@ -85,12 +83,14 @@ public class DictionaryHeap implements IHeap
     protected Object clone() throws CloneNotSupportedException
     {
         DictionaryHeap clone = (DictionaryHeap) super.clone();
-        for(Map.Entry entry : heap.entrySet())
+        for(Map.Entry<Integer, IValue<?>> entry : dictionary.entrySet())
         {
-            Integer key = (Integer) entry.getKey();
-            IValue value = (IValue) ((IValue) entry.getValue()).clone();
-            clone.heap.put(key, value);
+            Integer key = entry.getKey();
+            IValue<?> value = (IValue<?>) (entry.getValue()).clone();
+            clone.dictionary.put(key, value);
         }
         return clone;
     }
+
+    public Map<Integer, IValue<?>> getDictionary() { return dictionary; }
 }

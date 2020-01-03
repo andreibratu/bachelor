@@ -2,7 +2,8 @@ package view.text.command;
 
 public abstract class Command
 {
-    private String key, description;
+    private final String key;
+    private final String description;
 
     Command(String key, String description)
     {

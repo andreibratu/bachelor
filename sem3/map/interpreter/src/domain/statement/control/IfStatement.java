@@ -2,9 +2,9 @@ package domain.statement.control;
 
 import domain.expression.IExpression;
 import domain.state.ProgramState;
-import domain.state.heap.IHeap;
+import domain.state.heap.DictionaryHeap;
 import domain.state.heap.InvalidMemoryAddressException;
-import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.DictSymbolTable;
 import domain.state.symbol.UndeclaredVariableException;
 import domain.statement.IStatement;
 import domain.type.BoolType;
@@ -54,8 +54,8 @@ public class IfStatement implements IStatement
             throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException
     {
         Stack<IStatement> exeStack = state.getExecutionStack();
-        ISymbolTable symTable = state.getSymbolTable();
-        IHeap heap = state.getHeap();
+        DictSymbolTable symTable = state.getSymbolTable();
+        DictionaryHeap heap = state.getHeap();
         IValue<?> result = this.expression.evaluate(symTable, heap);
         if(!result.getValue().equals(0))
             exeStack.push(thenStatement);

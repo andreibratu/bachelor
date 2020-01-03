@@ -1,20 +1,21 @@
 package repository;
+
 import domain.state.ProgramState;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Repository implements IRepository
 {
-    private List<ProgramState> programStateList;
-    private String logFilepath;
+    private final ObservableList<ProgramState> programStateList;
+    private final String logFilepath;
 
     public Repository(ProgramState program, String logFilepath)
     {
-        this.programStateList = new ArrayList<>();
-        this.programStateList.add(program);
+        this.programStateList = FXCollections.observableArrayList(program);
         this.logFilepath = logFilepath;
     }
 
@@ -27,7 +28,7 @@ public class Repository implements IRepository
     @Override
     public void setProgramList(List<ProgramState> programStateList)
     {
-        this.programStateList = programStateList;
+        this.programStateList.setAll(programStateList);
     }
 
     @Override
@@ -35,7 +36,6 @@ public class Repository implements IRepository
     {
         try
         {
-            // Log current program state
             FileWriter writer = new FileWriter(this.logFilepath, true);
             writer.write(this.programStateList.toString());
             writer.write("\n\n\n");

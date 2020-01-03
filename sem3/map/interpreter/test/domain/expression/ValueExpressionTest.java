@@ -1,9 +1,7 @@
 package domain.expression;
 
 import domain.state.heap.DictionaryHeap;
-import domain.state.heap.IHeap;
-import domain.state.symbol.DictionarySymbolTable;
-import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.DictSymbolTable;
 import domain.value.IValue;
 import domain.value.IntegerValue;
 import org.junit.Before;
@@ -14,14 +12,14 @@ import static junit.framework.TestCase.*;
 public class ValueExpressionTest {
 
     private ValueExpression integerValueExpression;
-    private ISymbolTable mockSymbolTable;
-    private IHeap mockHeap;
+    private DictSymbolTable mockSymbolTable;
+    private DictionaryHeap mockHeap;
 
     @Before
     public void setUp()
     {
         this.integerValueExpression = new ValueExpression(new IntegerValue(5));
-        this.mockSymbolTable = new DictionarySymbolTable();
+        this.mockSymbolTable = new DictSymbolTable();
         this.mockHeap = new DictionaryHeap();
     }
 
@@ -40,7 +38,7 @@ public class ValueExpressionTest {
     @Test
     public void testEvaluate()
     {
-        IValue result = this.integerValueExpression.evaluate(this.mockSymbolTable, this.mockHeap);
+        IValue<?> result = this.integerValueExpression.evaluate(this.mockSymbolTable, this.mockHeap);
         assertEquals(result, this.integerValueExpression.getValue());
     }
 

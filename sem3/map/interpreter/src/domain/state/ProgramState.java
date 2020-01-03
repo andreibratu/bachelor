@@ -1,32 +1,28 @@
 package domain.state;
 
-import domain.state.file.*;
+import domain.state.file.DescriptorExistsException;
+import domain.state.file.DescriptorNotExistsException;
+import domain.state.file.DictionaryFileTable;
 import domain.state.heap.DictionaryHeap;
-import domain.state.heap.IHeap;
 import domain.state.heap.InvalidMemoryAddressException;
-import domain.state.symbol.DictionarySymbolTable;
-import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.DictSymbolTable;
 import domain.state.symbol.UndeclaredVariableException;
 import domain.state.symbol.VariableAlreadyDefinedException;
 import domain.statement.IStatement;
-import domain.statement.print.PrintStatement;
 import domain.type.IllegalTypeException;
 import domain.value.IValue;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 public class ProgramState
 {
     private Stack<IStatement> executionStack;
-    private ISymbolTable symbolTable;
+    private DictSymbolTable symbolTable;
     private List<IValue<?>> out;
-    private IFileTable fileTable;
-    private IHeap heap;
-    private final int id;
+    private static DictionaryFileTable fileTable;
+    private static DictionaryHeap heap;
+    public final int id;
     private static volatile int globalId = 1;
 
     public ProgramState(IStatement program) throws IllegalTypeException
@@ -35,10 +31,10 @@ public class ProgramState
         this.id = globalId;
         incrementGlobalId();
         this.executionStack = new Stack<>();
-        this.symbolTable = new DictionarySymbolTable();
-        this.out = new LinkedList<>();
-        this.fileTable = new DictionaryFileTable();
-        this.heap = new DictionaryHeap();
+        this.symbolTable = new DictSymbolTable();
+        this.out = new ArrayList<>();
+        fileTable = new DictionaryFileTable();
+        heap = new DictionaryHeap();
         this.executionStack.push(program);
     }
 
@@ -47,11 +43,11 @@ public class ProgramState
         this.id = globalId;
         incrementGlobalId();
         executionStack = new Stack<>();
-        symbolTable = new DictionarySymbolTable((DictionarySymbolTable) programState.symbolTable);
-        out = programState.out;
-        fileTable = programState.fileTable;
-        heap = programState.heap;
+        symbolTable = new DictSymbolTable(programState.symbolTable);
+        out = Collections.emptyList();
     }
+
+    public int getId() { return id; }
 
     public static synchronized int getGlobalIdId() { return globalId; }
 
@@ -61,11 +57,11 @@ public class ProgramState
 
     public Stack<IStatement> getExecutionStack() { return this.executionStack; }
 
-    public ISymbolTable getSymbolTable() { return this.symbolTable; }
+    public DictSymbolTable getSymbolTable() { return this.symbolTable; }
 
-    public IFileTable getFileTable() { return this.fileTable; }
+    public DictionaryFileTable getFileTable() { return fileTable; }
 
-    public IHeap getHeap() { return this.heap; }
+    public DictionaryHeap getHeap() { return heap; }
 
     public List<IValue<?>> getOut() { return this.out; }
 
@@ -73,18 +69,30 @@ public class ProgramState
 
     public ProgramState oneStep()
             throws VariableAlreadyDefinedException, UndeclaredVariableException,
-            IllegalTypeException, DescriptorExistsException, FileDoesNotExistException,
+            IllegalTypeException, DescriptorExistsException,
             DescriptorNotExistsException, IOException, InvalidMemoryAddressException
     {
         IStatement currentStatement = executionStack.pop();
-        ProgramState result = currentStatement.execute(this);
-        if (currentStatement instanceof PrintStatement)
-        {
-            List<IValue<?>> printLog = this.getOut();
-            IValue<?> lastPrint = printLog.get(printLog.size() - 1);
-            System.out.println("PRINT: " + lastPrint.toString());
-        }
-        return result;
+        //        if (currentStatement instanceof PrintStatement)
+//        {
+//            List<IValue<?>> printLog = this.getOut();
+//            IValue<?> lastPrint = printLog.get(printLog.size() - 1);
+//            System.out.println("PRINT: " + lastPrint.toString());
+//        }
+        return currentStatement.execute(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProgramState that = (ProgramState) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override
@@ -94,7 +102,7 @@ public class ProgramState
         final String DELIMITER = "======";
         StringBuilder output = new StringBuilder();
         Object[] programProperties =
-                {this.executionStack, this.symbolTable, this.heap, this.out, this.fileTable};
+                {this.executionStack, this.symbolTable, heap, this.out, fileTable};
         for (Object programProperty : programProperties)
         {
             output.append(DELIMITER).append("\n");

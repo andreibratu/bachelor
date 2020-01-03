@@ -2,9 +2,9 @@ package domain.statement.heap;
 
 import domain.expression.IExpression;
 import domain.state.ProgramState;
-import domain.state.heap.IHeap;
+import domain.state.heap.DictionaryHeap;
 import domain.state.heap.InvalidMemoryAddressException;
-import domain.state.symbol.ISymbolTable;
+import domain.state.symbol.DictSymbolTable;
 import domain.state.symbol.UndeclaredVariableException;
 import domain.statement.IStatement;
 import domain.type.IType;
@@ -30,8 +30,8 @@ public class WriteHeapStatement implements IStatement
     public ProgramState execute(ProgramState state)
             throws IllegalTypeException, UndeclaredVariableException, InvalidMemoryAddressException
     {
-        ISymbolTable table = state.getSymbolTable();
-        IHeap heap = state.getHeap();
+        DictSymbolTable table = state.getSymbolTable();
+        DictionaryHeap heap = state.getHeap();
 
         IValue<?> varValue = table.queryVariable(variable);
 

@@ -2,22 +2,23 @@ package domain.state.file;
 
 import domain.value.StringValue;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DictionaryFileTable implements IFileTable
+public class DictionaryFileTable
 {
-    private Map<String, BufferedReader> dictionary;
+    private final Map<String, BufferedReader> dictionary;
 
     public DictionaryFileTable()
     {
         this.dictionary = new HashMap<>();
     }
 
-    @Override
-    public void createDescriptor(StringValue filename)
-            throws DescriptorExistsException, FileNotFoundException
+    public void createDescriptor(StringValue filename) throws DescriptorExistsException, FileNotFoundException
     {
         String filepath = filename.getValue();
         if (dictionary.containsKey(filepath))
@@ -27,7 +28,6 @@ public class DictionaryFileTable implements IFileTable
         dictionary.put(filename.getValue(), buffered);
     }
 
-    @Override
     public BufferedReader getDescriptor(StringValue filename) throws DescriptorNotExistsException
     {
         String filepath = filename.getValue();
@@ -36,14 +36,16 @@ public class DictionaryFileTable implements IFileTable
         return dictionary.get(filepath);
     }
 
-    @Override
-    public void closeDescriptor(StringValue filename)
-            throws DescriptorNotExistsException, IOException
+    public void closeDescriptor(StringValue filename) throws DescriptorNotExistsException, IOException
     {
         String filepath = filename.getValue();
         if (!dictionary.containsKey(filepath))
             throw new DescriptorNotExistsException(filepath);
         dictionary.get(filepath).close();
         this.dictionary.remove(filepath);
+    }
+
+    public Map<String, BufferedReader> getDictionary() {
+        return dictionary;
     }
 }
