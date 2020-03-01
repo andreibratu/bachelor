@@ -47,3 +47,7 @@
 **/cmake-build-debug/*
 *.db
 oop/asg8-9/*.html
+
+
+**/labs
+**/.ipynb_checkpoints
