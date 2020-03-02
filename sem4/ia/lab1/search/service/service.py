@@ -21,7 +21,7 @@ def _to_hex(word: str, mapping: Dict[Char, Char]) -> str:
 class ProblemService:
 
     @staticmethod
-    def solve_sudoku(size: int, attempts: int = 1000) -> Optional[np.ndarray]:
+    def solve_sudoku(size: int, attempts: int = 1000) -> Optional[np.array]:
         return sudoku.solve(size, attempts=attempts)
 
     @staticmethod
@@ -34,6 +34,6 @@ class ProblemService:
                ' = ' + _to_hex(result, solution)
 
     @staticmethod
-    def solve_geometric(attempts: int) -> Optional[np.ndarray]:
+    def solve_geometric(attempts: int) -> Optional[np.array]:
         solution = geometric.solve(attempts)
         return solution

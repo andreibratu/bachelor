@@ -1,6 +1,6 @@
 from pandas import DataFrame
 
-from service.problem_service import ProblemService
+from service.service import ProblemService
 
 
 class CommandLineController:

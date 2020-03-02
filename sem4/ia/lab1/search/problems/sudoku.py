@@ -50,7 +50,7 @@ def __is_valid(board):
         return True
 
 
-def solve(size: int, board: np.ndarray = None, attempts: int = 10000) -> np.ndarray:
+def solve(size: int, board: np.array = None, attempts: int = 10000) -> np.array:
     """
     Use RS algorithm to find a solution to a {size x size} Sudoku board.
 
@@ -60,7 +60,7 @@ def solve(size: int, board: np.ndarray = None, attempts: int = 10000) -> np.ndar
     :return: A solution to the Sudoku board.
     """
 
-    def step(in_board: np.ndarray, in_empty: List[Tuple[int, int]]) -> Optional[np.ndarray]:
+    def step(in_board: np.array, in_empty: List[Tuple[int, int]]) -> Optional[np.array]:
         """
         Randomly fill an empty Sudoku box. Use recursive backtracking to fill up the board.
         :param in_board: Current board state.
