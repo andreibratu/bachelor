@@ -43,7 +43,7 @@
 
 # Data files
 *.csv
-
+*.json
 
 # Intellij stuff
 **/.idea/
