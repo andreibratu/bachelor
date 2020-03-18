@@ -1,0 +1,65 @@
+body {
+ background-color:#222;
+ font-family: "Open Sans";
+}
+
+#title {
+  color: #FFFFFF;
+  font-size: 100px;
+  text-align: center;
+  text-shadow:
+     0 -5px 10px #ff6600,
+     3px 0  3px #ffe680;
+}
+
+#subtitle {
+  text-align: center;
+  animation-name: glow;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  padding: 1rem;
+  font-size: 35px;
+  color: #b22f86;
+}
+
+@keyframes glow {
+ 0% {
+   text-shadow:
+   0 -1px 4px #ffb3e7,
+   5px 0 6px #b22f86;
+ }
+ 50% {
+   text-shadow:
+   0 -1px 4px #ffb3e7,
+   0 -5px 20px #b22bcc,
+   5px 0 10px #ff00aa;
+ }
+ 100% {
+   text-shadow:
+   0 -1px 4px #ffb3e7,
+   5px 0 6px #b22f86;
+ }
+}
+
+.post {
+  width: 80%;
+  color: #FFF;
+  word-wrap: break-word;
+  font-size: 3ch;
+  font-family: monospace;
+}
+
+.dashed {
+  background-image: linear-gradient(to right, white 75%, transparent 75%);
+  display: inline;
+  background-position: 0 1.04em;
+  background-repeat: repeat-x;
+  background-size: 1.01ch 3px;
+}
+
+.dashed-alt {
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-decoration-skip: edges,spaces;
+}
