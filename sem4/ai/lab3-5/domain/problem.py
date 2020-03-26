@@ -1,4 +1,4 @@
-from state import State, get_row, get_column
+from domain.state import State, get_row, get_column
 
 
 def heuristic(state: State) -> int:

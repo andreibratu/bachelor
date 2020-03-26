@@ -2,18 +2,15 @@ from PyQt5.QtCore import QThread, pyqtSignal
 
 
 class Worker(QThread):
-    """
-    Run arbitrary `func` method on a separate thread
-    """
 
-    # All signals should be declared as class variables
-    metrics = pyqtSignal(float, float, int)
+    """Worker responsible with computing the optimization task."""
 
     def __init__(self):
         QThread.__init__(self)
         self.result = None
         self.func = None
         self.args = None
+        self.running = False
 
     def set_task(self, func, args):
         """Set the method to by run in parallel, and its call arguments."""
@@ -22,6 +19,6 @@ class Worker(QThread):
 
     def run(self):
         """Inject logging signal and call the method with args."""
-        args = list(self.args) + [self.metrics]
-        result = self.func(*args)
-        self.result = result
+        self.running = True
+        self.result = self.func(*self.args)
+        self.running = False

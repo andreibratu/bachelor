@@ -1,4 +1,4 @@
-from service import genetic_algorithm, hill_climb, particle_swarm_optimisation
+from domain.service import genetic_algorithm, hill_climb, particle_swarm_optimisation
 
 default_values = {
     0:

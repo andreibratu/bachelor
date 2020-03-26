@@ -3,8 +3,8 @@ from typing import Tuple, List
 
 import numpy as np
 
-from problem import heuristic
-from state import build_random_state, State
+from domain.problem import heuristic
+from domain.state import build_random_state, State
 
 
 def _get_fitness(position) -> int:
