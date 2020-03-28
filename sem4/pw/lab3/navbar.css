@@ -1,0 +1,245 @@
+.navbar {
+  flex-direction: column;
+  height: 12vh;
+  margin: 0;
+  padding: 0;
+  background-color: #232F3E;
+  display: flex;
+}
+
+.navbar > div {
+  display: inline-flex;
+  height: 50%;
+  width: 100%;
+}
+
+.navbar > div > * {
+  margin-left: 0.3rem;
+  margin-top: 0.4rem;
+}
+
+.sandwich-menu > div {
+  width: 20px;
+  height: 2.2px;
+  background-color: white;
+  margin: 6px auto;
+}
+
+.sandwich-menu > div:first-child {
+  margin-top: 0.5em;
+}
+
+.sandwich-menu {
+  width: 3%;
+  height: auto;
+  border: 1px solid #666666;
+  border-radius: 3px;
+}
+
+.store-content {
+  height: 75%;
+  background-color: red;
+}
+
+.logo {
+  margin-left: 1em;
+  width: 10%;
+  position: relative;
+}
+
+.logo:hover {
+  border-style: solid;
+  border-width: 1px;
+  border-color: white;
+  border-radius: 2px;
+}
+
+.logo > img {
+  width: 60%;
+  height: 70%;
+  left: 0;
+  bottom: 8px;
+  position: absolute;
+}
+
+.search-bar {
+  width: 60%;
+  display: inline-flex;
+}
+
+.search-bar > * {
+  width: 60%;
+}
+
+.nav-left {
+  background-color: #F3F3F3;
+  width: 12%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 1px;
+  border-top-right-radius: 1px;
+}
+
+.search-bar-input {
+  width: 83%;
+}
+
+.nav-left > p {
+  font-size: 12px;
+  color: #5A5569;
+}
+
+.arrow-down {
+  margin-left: 0.2em;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid #5A5569;
+}
+
+.nav-input {
+  width: 5%;
+  background-color: #FEBD69;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.localisation {
+  width: 3%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.localisation > p {
+  font-weight: 50;
+  font-size: 0.7em;
+  color: #CCCCCC;
+  margin-top: 0.5em;
+}
+
+.localisation > svg {
+  margin-top: -0.4em;
+  fill: white;
+}
+
+.navbar-header-text-container {
+  width: 9%;
+  height: 100%;
+  margin-top: 0.5em;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.navbar-header-text-above {
+  color: #CCCCCC;
+  font-size: 0.7em;
+  font-weight: 50;
+  margin-top: 0.3em;
+}
+
+.navbar-header-text-below {
+  margin-top: -0.9em;
+  font-weight: bold;
+  font-size: 0.8em;
+  color: white;
+}
+
+.shopping-cart {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: -2.5em;
+  margin-right: 0.5em;
+}
+
+.shopping-cart-text {
+  font-weight: bold;
+  color: white;
+}
+
+.shopping-notification > svg {
+  fill: white;
+}
+
+.deliver {
+  width: 14.5%;
+  display: inline-flex;
+  align-items: center;
+  align-content: center;
+  float: left;
+}
+
+.deliver > svg {
+  width: 20%;
+  fill: white;
+}
+
+.deliver-to {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: -0.4em;
+}
+
+.deliver-to > span {
+  color: white;
+  margin-top: 1.2em;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.deliver-to > p {
+  font-weight: 600;
+  font-size: 15px;
+  color: white;
+  margin-top: -0.1em;
+}
+
+.links {
+  display: inline-flex;
+  align-items: center;
+  align-content: center;
+  width: 80%;
+  height: 100%;
+}
+
+.links > span {
+  color: #CCCCCC;
+  font-size: 14px;
+  font-weight: 300;
+  overflow: hidden;
+  margin: 1em;
+}
+
+.alert {
+  width: 26%;
+  height: 100%;
+  display: inline-flex;
+  align-items: flex-end;
+  align-content: flex-end;
+  position: relative;
+}
+
+.alert > p {
+  color: #CCCCCC;
+  font-weight: 400;
+  font-size: 20px;
+  text-align: right;
+  margin-top: 1em;
+  position: absolute;
+  right: 1em;
+  bottom: 0;
+}

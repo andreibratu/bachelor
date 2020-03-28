@@ -54,3 +54,7 @@ oop/asg8-9/*.html
 
 **/labs
 **/.ipynb_checkpoints
+
+# Static files
+*.jpg
+*.png

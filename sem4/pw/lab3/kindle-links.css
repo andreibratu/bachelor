@@ -1,0 +1,15 @@
+.nav-kindle {
+  width: 100%;
+  height: 4vh;
+  background-color: #FAFAFA;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 1px 1px 1px #555 inset;
+}
+
+.nav-kindle > span {
+  font-size: 12px;
+  margin-right: 2em;
+  color: #black;
+  font-weight: 300;
+}

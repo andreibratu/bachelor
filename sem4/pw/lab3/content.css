@@ -1,0 +1,276 @@
+.content-page {
+  height: 84vh;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  margin-left: 1vw;
+  margin-right: 1vw;
+  background-color: white;
+}
+
+.content-page > .navigation {
+  height: 5%;
+  display: flex;
+  align-items: center;
+  font-size: 0.75em;
+  color: gray;
+}
+
+.content-page > .navigation > a {
+  text-decoration: none;
+  color: gray;
+  margin-left: 0.2em;
+  margin-right: 0.2em;
+}
+
+.content-page > .navigation > a:hover {
+  color: #FF9900;
+}
+
+.content {
+  padding-top: 0.3em;
+  display: flex;
+  height: 100%;
+}
+
+.content-left {
+  height: 100%;
+  width: 20%;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 1em;
+}
+
+.content-left > img {
+  width: 85%;
+  height: 60%;
+  margin-bottom: 1.5em;
+  margin-top: 1.5em;
+}
+
+.image-gallery {
+  height: 10%;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  z-index: 0;
+}
+
+.image-gallery > img {
+  width: 25%;
+  margin-left: 0.1em;
+  margin-right: 0.1em;
+}
+
+.link-to-gallery {
+  background-color: white;
+  height: 4%;
+  width: 100%;
+  z-index: 1;
+  margin-top: -1em;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 0.9em;
+  border-bottom: 1px solid gray;
+}
+
+.link-to-gallery > a {
+  text-decoration: none;
+  color: #0068C4;
+}
+
+.link-to-gallery > a:hover {
+  text-decoration: underline;
+}
+
+.author-tab {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 20%;
+  background-color: white;
+}
+
+.author-tab > p {
+  height: 10%;
+  width: 100%;
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+.author-profile {
+  height: 90%;
+  width: 100%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.author-profile > * {
+  margin-top: -1em;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+.author-profile > img {
+  width: 3.5em;
+  height: 3.5em;
+  border-radius: 50%
+}
+
+.author-profile > button {
+  margin-left: -1em;
+  width: 10em;
+  height: 2.5em;
+  border-radius: 2px;
+  border: 1px solid gray;
+}
+
+.author-profile > a {
+  font-size: 0.9em;
+  text-decoration: none;
+  font-weight: 200;
+}
+
+.author-profile > button:hover {
+  -webkit-box-shadow: 0px 0px 14px 4px #FF9900;
+  -moz-box-shadow: 0px 0px 14px 4px #FF9900;
+  box-shadow: 0px 0px 14px 4px #FF9900;
+}
+
+.content-center {
+  width: 60%;
+  height: 100%
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  margin-top: -2em;
+}
+
+.content-center > * {
+  margin-top: 1em;
+}
+
+.content-center > h1 {
+  font-weight: 600;
+  font-size: 1.8em;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  text-rendering: optimizeLegibility;
+}
+
+.content-center .title {
+  line-height: 0.3em;
+  font-size: 0.8em;
+}
+
+.content-center > h1 > .kindle-edition {
+  font-size: 0.7em;
+}
+
+.kindle-edition {
+  color: #737373;
+  font-size: 0.8em;
+}
+
+.by-who a {
+  text-decoration: none;
+}
+
+.by-who {
+  width: 100%;
+  height: 2%;
+  margin-top: -1em;
+  font-size: 0.8em;
+}
+
+.see-more {
+  height: 2%;
+  width: 100%;
+  font-size: 0.8em;
+}
+
+.see-more a {
+  text-decoration: none;
+}
+
+.options {
+  height: 18%;
+  width: 83%;
+  display: flex;
+  background-color: white;
+}
+
+.option-container {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  margin-right: 1em;
+}
+
+.option-container > .option {
+  border-radius: 5px;
+  font-size: 0.8em;
+  height: 45%;
+}
+
+.option-selected {
+  background-color: #FEF8F2;
+  border: 1px solid #E77600;
+}
+
+.option-unselected {
+  border: 1px solid #ADB1B8;
+  background-color: white;
+}
+
+.option-container > .option > * {
+  margin-left: 0.5em;
+}
+
+.option-container > .option > .option-name {
+  font-weight: bold;
+  margin-bottom: -0.3em;
+}
+
+.option-links {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 0.5em;
+}
+
+.option-links > a {
+  text-decoration: none;
+  font-size: 0.7em;
+}
+
+.option-continer > .option > .option-price {
+  color: #737373;
+  margin-bottom: -0.1em;
+}
+
+.description {
+  height: 50%;
+  width: 83%;
+  background-color: white;
+  margin-top: -0.5em;
+  font-size: 14px;
+  line-height: 1.6em;
+}
+
+.description > p > span {
+  font-style: italic;
+  margin-bottom: -2em;
+}
+
+.description > a {
+  margin-top: -10em;
+  line-height: 0.8em;
+}
