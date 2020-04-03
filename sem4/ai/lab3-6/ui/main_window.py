@@ -1,21 +1,23 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './ai.ui'
+# Form implementation generated from reading ui file 'ai.ui'
 #
 # Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 import numpy as np
 from PyQt5 import QtGui
 from PyQt5.QtCore import QObject, pyqtSlot
-from matplotlib.backends.qt_compat import QtCore, QtWidgets, is_pyqt5
 
+from matplotlib.backends.qt_compat import QtCore, QtWidgets, is_pyqt5
 if is_pyqt5():
-    pass
+    from matplotlib.backends.backend_qt5agg import (
+        FigureCanvas, NavigationToolbar2QT as NavigationToolbar)
 else:
     from matplotlib.backends.backend_qt4agg import (
-        FigureCanvas)
+        FigureCanvas, NavigationToolbar2QT as NavigationToolbar)
 from matplotlib.figure import Figure
 
 from ui.validation_worker import ValidationWorker
@@ -32,10 +34,9 @@ class Ui_MainWindow(QObject):
     def __init__(self):
         QObject.__init__(self)
         self.worker = Worker()
-        self.validation_worker = ValidationWorker(data_points=30, evaluations=100)
+        self.validation_worker = ValidationWorker(data_points=100, evaluations=100)
         self.worker.finished.connect(self._done_slot)
         self.validation_worker.finished.connect(self._validation_done_slot)
-        self.validation_worker.fitness_update.connect(self._fitness_update_slot)
 
     def __workers_active(self) -> bool:
         """Check if worker threads are still alive."""
@@ -52,11 +53,12 @@ class Ui_MainWindow(QObject):
         self.medianValueLabel.setText('N/A')
         self.resultPlot.setText('')
         self.resultPlot.setStyleSheet('')
-        self.fitnessPlot.figure = Figure(figsize=(5,5))
+        self.fitnessPlot.figure = Figure(figsize=(5, 5))
         self.fitnessPlot.draw()
         self.calculateButton.setText('Working..')
 
     """Slot answering QThread's finished signal."""
+
     def _done_slot(self):
         """Print identified optimum or the closest solution."""
         # solution = self._to_string(self.worker.result[0])
@@ -75,11 +77,9 @@ class Ui_MainWindow(QObject):
         avg, med = np.average(validation_result), np.median(validation_result)
         self.averageValueLabel.setText(str(avg))
         self.medianValueLabel.setText(str(med))
-        self.__update_calculate_button()
 
-    @pyqtSlot(list, list)
-    def _fitness_update_slot(self, x, y):
-        """Plot the fitness of last evaluations."""
+        x = [idx for idx in range(len(self.validation_worker.results))][-self.validation_worker.data_points:]
+        y = self.validation_worker.results[-self.validation_worker.data_points:]
         ax = self.fitnessPlot.figure.gca()
         ax.clear()
         ax.set_yticks([])
@@ -87,7 +87,10 @@ class Ui_MainWindow(QObject):
         self.fitnessPlot.figure.subplots().plot(x, y)
         self.fitnessPlot.draw()
 
+        self.__update_calculate_button()
+
     """Slot answering QT's `clicked` signal."""
+
     def _calculate_button_clicked(self):
         if not self.__workers_active():
             tab_idx = self.configTabWidget.currentIndex()
@@ -108,7 +111,15 @@ class Ui_MainWindow(QObject):
             if tab_idx == 2:
                 args = (self.psoNInput.value(), self.psoRunsInput.value(), self.psoSwarmSizeInput.value(),
                         self.psoWInput.value(), self.psoC1Input.value(), self.psoC2Input.value())
-                valid_args = (self.psoNInput.value(), 30, 40, self.psoWInput.value(), self.psoC1Input.value(), self.psoC2Input.value())
+                valid_args = (self.psoNInput.value(), 30, 40, self.psoWInput.value(), self.psoC1Input.value(),
+                              self.psoC2Input.value())
+
+            if tab_idx == 3:
+                args = (self.acoRunsInput.value(), self.acoAntsCountInput.value(), self.acoNInput.value(),
+                        self.acoAlphaInput.value(), self.acoBetaInput.value(), self.acoQInput.value(),
+                        self.acoTraceInput.value())
+                valid_args = (30, 40, self.acoNInput.value(), self.acoAlphaInput.value(),
+                              self.acoBetaInput.value(), self.acoQInput.value(), self.acoTraceInput.value())
 
             method_call = approaches[tab_idx]
 
@@ -318,6 +329,89 @@ class Ui_MainWindow(QObject):
         self.psoC2Input.setObjectName("psoC2Input")
         self.psoFormLayout.setWidget(5, QtWidgets.QFormLayout.FieldRole, self.psoC2Input)
         self.configTabWidget.addTab(self.psoTab, "")
+        self.tab = QtWidgets.QWidget()
+        self.tab.setObjectName("tab")
+        self.formLayoutWidget_5 = QtWidgets.QWidget(self.tab)
+        self.formLayoutWidget_5.setGeometry(QtCore.QRect(0, 0, 451, 631))
+        self.formLayoutWidget_5.setObjectName("formLayoutWidget_5")
+        self.acoFormLayout = QtWidgets.QFormLayout(self.formLayoutWidget_5)
+        self.acoFormLayout.setLabelAlignment(QtCore.Qt.AlignCenter)
+        self.acoFormLayout.setFormAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.acoFormLayout.setContentsMargins(0, 0, 0, 0)
+        self.acoFormLayout.setObjectName("acoFormLayout")
+        self.acoNLabel = QtWidgets.QLabel(self.formLayoutWidget_5)
+        self.acoNLabel.setObjectName("acoNLabel")
+        self.acoFormLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.acoNLabel)
+        self.acoNInput = QtWidgets.QSpinBox(self.formLayoutWidget_5)
+        self.acoNInput.setMinimumSize(QtCore.QSize(100, 0))
+        self.acoNInput.setMaximumSize(QtCore.QSize(300, 16777215))
+        self.acoNInput.setMinimum(2)
+        self.acoNInput.setMaximum(10)
+        self.acoNInput.setProperty("value", 3)
+        self.acoNInput.setObjectName("acoNInput")
+        self.acoFormLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.acoNInput)
+        self.acoRunsLabel = QtWidgets.QLabel(self.formLayoutWidget_5)
+        self.acoRunsLabel.setObjectName("acoRunsLabel")
+        self.acoFormLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.acoRunsLabel)
+        self.acoRunsInput = QtWidgets.QSpinBox(self.formLayoutWidget_5)
+        self.acoRunsInput.setMaximumSize(QtCore.QSize(300, 16777215))
+        self.acoRunsInput.setMinimum(1)
+        self.acoRunsInput.setMaximum(10000)
+        self.acoRunsInput.setProperty("value", 99)
+        self.acoRunsInput.setObjectName("acoRunsInput")
+        self.acoFormLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.acoRunsInput)
+        self.acoAntsCountLabel = QtWidgets.QLabel(self.formLayoutWidget_5)
+        self.acoAntsCountLabel.setObjectName("acoAntsCountLabel")
+        self.acoFormLayout.setWidget(2, QtWidgets.QFormLayout.LabelRole, self.acoAntsCountLabel)
+        self.acoAntsCountInput = QtWidgets.QSpinBox(self.formLayoutWidget_5)
+        self.acoAntsCountInput.setMaximumSize(QtCore.QSize(300, 16777215))
+        self.acoAntsCountInput.setMinimum(2)
+        self.acoAntsCountInput.setMaximum(10000)
+        self.acoAntsCountInput.setSingleStep(1)
+        self.acoAntsCountInput.setProperty("value", 1000)
+        self.acoAntsCountInput.setObjectName("acoAntsCountInput")
+        self.acoFormLayout.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.acoAntsCountInput)
+        self.acoAlphaLabel = QtWidgets.QLabel(self.formLayoutWidget_5)
+        self.acoAlphaLabel.setObjectName("acoAlphaLabel")
+        self.acoFormLayout.setWidget(3, QtWidgets.QFormLayout.LabelRole, self.acoAlphaLabel)
+        self.acoAlphaInput = QtWidgets.QDoubleSpinBox(self.formLayoutWidget_5)
+        self.acoAlphaInput.setMaximumSize(QtCore.QSize(300, 16777215))
+        self.acoAlphaInput.setMaximum(1000)
+        self.acoAlphaInput.setSingleStep(1)
+        self.acoAlphaInput.setProperty("value", 3)
+        self.acoAlphaInput.setObjectName("acoAlphaInput")
+        self.acoFormLayout.setWidget(3, QtWidgets.QFormLayout.FieldRole, self.acoAlphaInput)
+        self.acoBetaLabel = QtWidgets.QLabel(self.formLayoutWidget_5)
+        self.acoBetaLabel.setObjectName("acoBetaLabel")
+        self.acoFormLayout.setWidget(4, QtWidgets.QFormLayout.LabelRole, self.acoBetaLabel)
+        self.acoBetaInput = QtWidgets.QDoubleSpinBox(self.formLayoutWidget_5)
+        self.acoBetaInput.setMaximumSize(QtCore.QSize(300, 16777215))
+        self.acoBetaInput.setMaximum(1000)
+        self.acoBetaInput.setSingleStep(1)
+        self.acoBetaInput.setProperty("value", 5)
+        self.acoBetaInput.setObjectName("acoBetaInput")
+        self.acoFormLayout.setWidget(4, QtWidgets.QFormLayout.FieldRole, self.acoBetaInput)
+        self.acoQLabel = QtWidgets.QLabel(self.formLayoutWidget_5)
+        self.acoQLabel.setObjectName("acoQLabel")
+        self.acoFormLayout.setWidget(5, QtWidgets.QFormLayout.LabelRole, self.acoQLabel)
+        self.acoQInput = QtWidgets.QDoubleSpinBox(self.formLayoutWidget_5)
+        self.acoQInput.setMaximumSize(QtCore.QSize(300, 16777215))
+        self.acoQInput.setMaximum(1.0)
+        self.acoQInput.setSingleStep(0.05)
+        self.acoQInput.setProperty("value", 0.7)
+        self.acoQInput.setObjectName("acoQInput")
+        self.acoFormLayout.setWidget(5, QtWidgets.QFormLayout.FieldRole, self.acoQInput)
+        self.acoTraceLabel = QtWidgets.QLabel(self.formLayoutWidget_5)
+        self.acoTraceLabel.setObjectName("acoTraceLabel")
+        self.acoFormLayout.setWidget(6, QtWidgets.QFormLayout.LabelRole, self.acoTraceLabel)
+        self.acoTraceInput = QtWidgets.QDoubleSpinBox(self.formLayoutWidget_5)
+        self.acoTraceInput.setMaximumSize(QtCore.QSize(300, 16777215))
+        self.acoTraceInput.setMaximum(1000)
+        self.acoTraceInput.setSingleStep(1)
+        self.acoTraceInput.setProperty("value", 5)
+        self.acoTraceInput.setObjectName("acoTraceInput")
+        self.acoFormLayout.setWidget(6, QtWidgets.QFormLayout.FieldRole, self.acoTraceInput)
+        self.configTabWidget.addTab(self.tab, "")
         self.configLayout.addWidget(self.configTabWidget)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -332,14 +426,15 @@ class Ui_MainWindow(QObject):
         self.resultsLayout.setObjectName("resultsLayout")
         spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.resultsLayout.addItem(spacerItem3)
-        self.resultPlot = QtWidgets.QLabel()
-        self.resultPlot.setWordWrap(True)
+        self.resultPlot = QtWidgets.QLabel(self.horizontalLayoutWidget_2)
+        self.resultPlot.setMinimumSize(QtCore.QSize(469, 200))
+        self.resultPlot.setStyleSheet("\"border: 1px solid black\"")
         self.resultPlot.setObjectName("resultPlot")
         self.resultsLayout.addWidget(self.resultPlot)
         spacerItem4 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.resultsLayout.addItem(spacerItem4)
-        self.fitnessPlot = FigureCanvas(Figure(figsize=(5,5)))
-        self.fitnessPlot.setMinimumSize(QtCore.QSize(1200, 300))
+        self.fitnessPlot = FigureCanvas(Figure((5, 5)))
+        self.fitnessPlot.setMinimumSize(QtCore.QSize(0, 200))
         self.fitnessPlot.setObjectName("fitnessPlot")
         self.resultsLayout.addWidget(self.fitnessPlot)
         spacerItem5 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
@@ -360,6 +455,13 @@ class Ui_MainWindow(QObject):
         self.medianValueLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.medianValueLabel.setObjectName("medianValueLabel")
         self.fitnessStatsLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.medianValueLabel)
+        self.runLabel = QtWidgets.QLabel(self.horizontalLayoutWidget_2)
+        self.runLabel.setObjectName("runLabel")
+        self.fitnessStatsLayout.setWidget(2, QtWidgets.QFormLayout.LabelRole, self.runLabel)
+        self.generationValueLabel = QtWidgets.QLabel(self.horizontalLayoutWidget_2)
+        self.generationValueLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.generationValueLabel.setObjectName("generationValueLabel")
+        self.fitnessStatsLayout.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.generationValueLabel)
         self.resultsLayout.addLayout(self.fitnessStatsLayout)
         spacerItem6 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.resultsLayout.addItem(spacerItem6)
@@ -377,6 +479,7 @@ class Ui_MainWindow(QObject):
         self.buttonsLayout.addItem(spacerItem9)
         self.calculateButton = QtWidgets.QPushButton(self.horizontalLayoutWidget_2)
         self.calculateButton.setObjectName("calculateButton")
+        self.calculateButton.clicked.connect(self._calculate_button_clicked)
         self.buttonsLayout.addWidget(self.calculateButton)
         spacerItem10 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.buttonsLayout.addItem(spacerItem10)
@@ -386,11 +489,8 @@ class Ui_MainWindow(QObject):
         self.configLayout.addItem(spacerItem11)
         MainWindow.setCentralWidget(self.centralwidget)
 
-        self.calculateButton.clicked.connect(self._calculate_button_clicked)
-        self.resetValuesButton.clicked.connect(self._reset_parameters)
-
         self.retranslateUi(MainWindow)
-        self.configTabWidget.setCurrentIndex(2)
+        self.configTabWidget.setCurrentIndex(3)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -414,9 +514,19 @@ class Ui_MainWindow(QObject):
         self.psoC1Label.setText(_translate("MainWindow", "c1"))
         self.psoC2Label.setText(_translate("MainWindow", "c2"))
         self.configTabWidget.setTabText(self.configTabWidget.indexOf(self.psoTab), _translate("MainWindow", "PSO"))
-        self.averageLabel.setText(_translate("MainWindow", "Average Validation Fitness"))
+        self.acoNLabel.setText(_translate("MainWindow", "n"))
+        self.acoRunsLabel.setText(_translate("MainWindow", "runs"))
+        self.acoAntsCountLabel.setText(_translate("MainWindow", "ants"))
+        self.acoAlphaLabel.setText(_translate("MainWindow", "alpha"))
+        self.acoBetaLabel.setText(_translate("MainWindow", "beta"))
+        self.acoQLabel.setText(_translate("MainWindow", "q"))
+        self.acoTraceLabel.setText(_translate("MainWindow", "trace"))
+        self.configTabWidget.setTabText(self.configTabWidget.indexOf(self.tab), _translate("MainWindow", "ACO"))
+        self.averageLabel.setText(_translate("MainWindow", "Average"))
         self.averageValueLabel.setText(_translate("MainWindow", "N/A"))
-        self.medianLabel.setText(_translate("MainWindow", "Median Validation Fitness"))
+        self.medianLabel.setText(_translate("MainWindow", "Median"))
         self.medianValueLabel.setText(_translate("MainWindow", "N/A"))
+        self.runLabel.setText(_translate("MainWindow", "Generation"))
+        self.generationValueLabel.setText(_translate("MainWindow", "N/A"))
         self.resetValuesButton.setText(_translate("MainWindow", "Reset"))
         self.calculateButton.setText(_translate("MainWindow", " Calculate"))

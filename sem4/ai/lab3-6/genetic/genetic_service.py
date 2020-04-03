@@ -1,51 +1,13 @@
 from copy import deepcopy
 from functools import reduce
-from itertools import product
 from operator import itemgetter
-from random import randint, choices, random, choice
-from typing import Generator, Optional, Tuple
+from random import randint, random, choices
+from typing import Tuple, Optional
 
 import numpy as np
 
-from domain.particle import Swarm
 from domain.problem import heuristic
-from domain.state import build_random_state, State, set_pos
-
-
-def __hill_climb_expand(state: State) -> Generator[State, None, None]:
-    """Explore neighbours of a given state. A neighbour is obtained by
-    replacing a random (i, j) index with a new value from the domain."""
-    n = len(state) // 2
-
-    for i, j in product(range(n), range(n)):
-        new_val = (choice(range(n), choice(range(n))))
-        for new_val in product(range(n), range(n)):
-            yield set_pos(state, i, j, new_val)
-
-
-def hill_climb(n: int, runs: int) -> Tuple[Optional[State], int]:
-    """Iteratively improve from a random state towards the optimum."""
-    best_state, best_cost = build_random_state(n), float('inf')
-
-    for i in range(runs):
-        changed = False
-        best_cost = heuristic(best_state)
-
-        for next_state in __hill_climb_expand(best_state):
-            next_cost = heuristic(next_state)
-            if next_cost < best_cost:
-                best_cost = next_cost
-                best_state = next_state
-                changed = True
-
-        if not changed:
-            # Got stuck
-            best_state = build_random_state(n)
-
-        if best_cost == 0:
-            break
-
-    return best_state, best_cost
+from domain.state import State, build_random_state
 
 
 def __crossover(parent_one: State, parent_two: State) -> State:
@@ -144,18 +106,3 @@ def genetic_algorithm(n: int, pop_size: int, pop_replace: int,
                 solution = ind
 
     return solution, best_fitness
-
-
-def particle_swarm_optimisation(n: int, runs: int, swarm_size: int,
-                                w: float, c1: float, c2: float) -> Tuple[Optional[State], int]:
-    """PSO approach. Each particle orients itself using its position, its best known position and swarm's best."""
-    swarm = Swarm(swarm_size, n, w, c1, c2)
-    solution, solution_fitness = swarm.get_swarm_best()
-    idx = 0
-
-    while idx < runs and solution_fitness > 0:
-        swarm.update()
-        solution, solution_fitness = swarm.get_swarm_best()
-        idx += 1
-
-    return solution, solution_fitness

@@ -26,8 +26,6 @@ class ValidationWorker(QThread):
         for i in range(self.evaluations):
             result = self.func(*args)
             self.results.append(result[1])
-            self.results = self.results
-            x = [idx for idx in range(len(self.results))][-self.data_points:]
-            y = self.results[-self.data_points:]
-            self.fitness_update.emit(x, y)
         self.running = False
+        # self.x = [idx for idx in range(len(self.results))][-self.data_points:]
+        # self.y = self.results[-self.data_points:]
