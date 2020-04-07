@@ -32,9 +32,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.ridesharingDataSet1 = new lab1_2.ridesharingDataSet();
             this.usersBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
-            this.usersTableAdapter1 = new lab1_2.ridesharingDataSetTableAdapters.UsersTableAdapter();
+            this.usersTableAdapter = new lab1_2.ridesharingDataSetTableAdapters.UsersTableAdapter();
             this.tableAdapterManager1 = new lab1_2.ridesharingDataSetTableAdapters.TableAdapterManager();
-            this.vehiclesTableAdapter1 = new lab1_2.ridesharingDataSetTableAdapters.VehiclesTableAdapter();
+            this.menusTableAdapter = new lab1_2.ridesharingDataSetTableAdapters.MenusTableAdapter();
+            this.restaurantsTableAdapter = new lab1_2.ridesharingDataSetTableAdapters.RestaurantsTableAdapter();
+            this.vehiclesTableAdapter = new lab1_2.ridesharingDataSetTableAdapters.VehiclesTableAdapter();
             this.usersBindingSource1BindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
             this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
@@ -49,24 +51,15 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.usersBindingSource1BindingNavigatorSaveItem = new System.Windows.Forms.ToolStripButton();
             this.vehiclesBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
-            this.dataGridViewTextBoxColumn16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.vehiclesDataGridView1 = new System.Windows.Forms.DataGridView();
-            this.dataGridViewCheckBoxColumn2 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.dataGridViewTextBoxColumn12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.usersDataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dataGridView2 = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.ridesharingDataSet1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.usersBindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.usersBindingSource1BindingNavigator)).BeginInit();
             this.usersBindingSource1BindingNavigator.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.vehiclesBindingSource1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.vehiclesDataGridView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.usersDataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.SuspendLayout();
             // 
             // ridesharingDataSet1
@@ -79,28 +72,36 @@
             this.usersBindingSource1.DataMember = "Users";
             this.usersBindingSource1.DataSource = this.ridesharingDataSet1;
             // 
-            // usersTableAdapter1
+            // usersTableAdapter
             // 
-            this.usersTableAdapter1.ClearBeforeFill = true;
+            this.usersTableAdapter.ClearBeforeFill = true;
             // 
             // tableAdapterManager1
             // 
             this.tableAdapterManager1.BackupDataSetBeforeUpdate = false;
             this.tableAdapterManager1.DeliveriesTableAdapter = null;
             this.tableAdapterManager1.MenuDeliveryBridgeTableAdapter = null;
-            this.tableAdapterManager1.MenusTableAdapter = null;
+            this.tableAdapterManager1.MenusTableAdapter = this.menusTableAdapter;
             this.tableAdapterManager1.PromotionsTableAdapter = null;
-            this.tableAdapterManager1.RestaurantsTableAdapter = null;
+            this.tableAdapterManager1.RestaurantsTableAdapter = this.restaurantsTableAdapter;
             this.tableAdapterManager1.RidesTableAdapter = null;
             this.tableAdapterManager1.UpdateOrder = lab1_2.ridesharingDataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
             this.tableAdapterManager1.UserDeliveryBridgeTableAdapter = null;
             this.tableAdapterManager1.UserRideBridgeTableAdapter = null;
-            this.tableAdapterManager1.UsersTableAdapter = this.usersTableAdapter1;
-            this.tableAdapterManager1.VehiclesTableAdapter = this.vehiclesTableAdapter1;
+            this.tableAdapterManager1.UsersTableAdapter = this.usersTableAdapter;
+            this.tableAdapterManager1.VehiclesTableAdapter = this.vehiclesTableAdapter;
             // 
-            // vehiclesTableAdapter1
+            // menusTableAdapter
             // 
-            this.vehiclesTableAdapter1.ClearBeforeFill = true;
+            this.menusTableAdapter.ClearBeforeFill = true;
+            // 
+            // restaurantsTableAdapter
+            // 
+            this.restaurantsTableAdapter.ClearBeforeFill = true;
+            // 
+            // vehiclesTableAdapter
+            // 
+            this.vehiclesTableAdapter.ClearBeforeFill = true;
             // 
             // usersBindingSource1BindingNavigator
             // 
@@ -233,130 +234,42 @@
             this.vehiclesBindingSource1.DataMember = "Vehicles";
             this.vehiclesBindingSource1.DataSource = this.ridesharingDataSet1;
             // 
-            // dataGridViewTextBoxColumn16
+            // dataGridView1
             // 
-            this.dataGridViewTextBoxColumn16.DataPropertyName = "UserId";
-            this.dataGridViewTextBoxColumn16.HeaderText = "UserId";
-            this.dataGridViewTextBoxColumn16.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn16.Name = "dataGridViewTextBoxColumn16";
-            this.dataGridViewTextBoxColumn16.Width = 125;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(12, 30);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowHeadersWidth = 51;
+            this.dataGridView1.RowTemplate.Height = 24;
+            this.dataGridView1.Size = new System.Drawing.Size(680, 348);
+            this.dataGridView1.TabIndex = 3;
+            this.dataGridView1.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DataGridView_RowHeaderMouseDoubleClick);
             // 
-            // dataGridViewTextBoxColumn15
+            // dataGridView2
             // 
-            this.dataGridViewTextBoxColumn15.DataPropertyName = "NumberSeats";
-            this.dataGridViewTextBoxColumn15.HeaderText = "NumberSeats";
-            this.dataGridViewTextBoxColumn15.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn15.Name = "dataGridViewTextBoxColumn15";
-            this.dataGridViewTextBoxColumn15.Width = 125;
-            // 
-            // dataGridViewTextBoxColumn14
-            // 
-            this.dataGridViewTextBoxColumn14.DataPropertyName = "VehicleType";
-            this.dataGridViewTextBoxColumn14.HeaderText = "VehicleType";
-            this.dataGridViewTextBoxColumn14.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn14.Name = "dataGridViewTextBoxColumn14";
-            this.dataGridViewTextBoxColumn14.Width = 125;
-            // 
-            // dataGridViewTextBoxColumn13
-            // 
-            this.dataGridViewTextBoxColumn13.DataPropertyName = "VehicleId";
-            this.dataGridViewTextBoxColumn13.HeaderText = "VehicleId";
-            this.dataGridViewTextBoxColumn13.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn13.Name = "dataGridViewTextBoxColumn13";
-            this.dataGridViewTextBoxColumn13.Width = 125;
-            // 
-            // vehiclesDataGridView1
-            // 
-            this.vehiclesDataGridView1.AutoGenerateColumns = false;
-            this.vehiclesDataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.vehiclesDataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn13,
-            this.dataGridViewTextBoxColumn14,
-            this.dataGridViewTextBoxColumn15,
-            this.dataGridViewTextBoxColumn16});
-            this.vehiclesDataGridView1.DataSource = this.vehiclesBindingSource1;
-            this.vehiclesDataGridView1.Location = new System.Drawing.Point(12, 413);
-            this.vehiclesDataGridView1.Name = "vehiclesDataGridView1";
-            this.vehiclesDataGridView1.RowHeadersWidth = 51;
-            this.vehiclesDataGridView1.RowTemplate.Height = 24;
-            this.vehiclesDataGridView1.Size = new System.Drawing.Size(680, 349);
-            this.vehiclesDataGridView1.TabIndex = 2;
-            // 
-            // dataGridViewCheckBoxColumn2
-            // 
-            this.dataGridViewCheckBoxColumn2.DataPropertyName = "IsDriver";
-            this.dataGridViewCheckBoxColumn2.HeaderText = "IsDriver";
-            this.dataGridViewCheckBoxColumn2.MinimumWidth = 6;
-            this.dataGridViewCheckBoxColumn2.Name = "dataGridViewCheckBoxColumn2";
-            this.dataGridViewCheckBoxColumn2.Width = 125;
-            // 
-            // dataGridViewTextBoxColumn12
-            // 
-            this.dataGridViewTextBoxColumn12.DataPropertyName = "BirthDate";
-            this.dataGridViewTextBoxColumn12.HeaderText = "BirthDate";
-            this.dataGridViewTextBoxColumn12.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn12.Name = "dataGridViewTextBoxColumn12";
-            this.dataGridViewTextBoxColumn12.Width = 125;
-            // 
-            // dataGridViewTextBoxColumn11
-            // 
-            this.dataGridViewTextBoxColumn11.DataPropertyName = "LastName";
-            this.dataGridViewTextBoxColumn11.HeaderText = "LastName";
-            this.dataGridViewTextBoxColumn11.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
-            this.dataGridViewTextBoxColumn11.Width = 125;
-            // 
-            // dataGridViewTextBoxColumn10
-            // 
-            this.dataGridViewTextBoxColumn10.DataPropertyName = "FirstName";
-            this.dataGridViewTextBoxColumn10.HeaderText = "FirstName";
-            this.dataGridViewTextBoxColumn10.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
-            this.dataGridViewTextBoxColumn10.Width = 125;
-            // 
-            // dataGridViewTextBoxColumn9
-            // 
-            this.dataGridViewTextBoxColumn9.DataPropertyName = "IdentityDocument";
-            this.dataGridViewTextBoxColumn9.HeaderText = "IdentityDocument";
-            this.dataGridViewTextBoxColumn9.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
-            this.dataGridViewTextBoxColumn9.Width = 125;
-            // 
-            // usersDataGridView1
-            // 
-            this.usersDataGridView1.AutoGenerateColumns = false;
-            this.usersDataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.usersDataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn9,
-            this.dataGridViewTextBoxColumn10,
-            this.dataGridViewTextBoxColumn11,
-            this.dataGridViewTextBoxColumn12,
-            this.dataGridViewCheckBoxColumn2});
-            this.usersDataGridView1.DataSource = this.usersBindingSource1;
-            this.usersDataGridView1.Location = new System.Drawing.Point(12, 32);
-            this.usersDataGridView1.Name = "usersDataGridView1";
-            this.usersDataGridView1.RowHeadersWidth = 51;
-            this.usersDataGridView1.RowTemplate.Height = 24;
-            this.usersDataGridView1.Size = new System.Drawing.Size(680, 333);
-            this.usersDataGridView1.TabIndex = 1;
-            this.usersDataGridView1.RowHeaderMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.UsersDataGridView_RowHeaderMouseDoubleClick);
+            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView2.Location = new System.Drawing.Point(12, 410);
+            this.dataGridView2.Name = "dataGridView2";
+            this.dataGridView2.RowHeadersWidth = 51;
+            this.dataGridView2.RowTemplate.Height = 24;
+            this.dataGridView2.Size = new System.Drawing.Size(680, 352);
+            this.dataGridView2.TabIndex = 4;
             // 
             // Form1
             // 
             this.ClientSize = new System.Drawing.Size(1305, 774);
-            this.Controls.Add(this.vehiclesDataGridView1);
-            this.Controls.Add(this.usersDataGridView1);
+            this.Controls.Add(this.dataGridView2);
+            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.usersBindingSource1BindingNavigator);
             this.Name = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load_1);
             ((System.ComponentModel.ISupportInitialize)(this.ridesharingDataSet1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.usersBindingSource1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.usersBindingSource1BindingNavigator)).EndInit();
             this.usersBindingSource1BindingNavigator.ResumeLayout(false);
             this.usersBindingSource1BindingNavigator.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.vehiclesBindingSource1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.vehiclesDataGridView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.usersDataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -390,6 +303,7 @@
         private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
         private System.Windows.Forms.BindingSource vehiclesBindingSource;
         private System.Windows.Forms.DataGridView vehiclesDataGridView;
+        private ridesharingDataSetTableAdapters.VehiclesTableAdapter vehiclesTableAdapter1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
@@ -411,19 +325,11 @@
         private System.Windows.Forms.ToolStripButton toolStripButton4;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton usersBindingSource1BindingNavigatorSaveItem;
-        private ridesharingDataSetTableAdapters.VehiclesTableAdapter vehiclesTableAdapter1;
+        private ridesharingDataSetTableAdapters.MenusTableAdapter menusTableAdapter;
+        private ridesharingDataSetTableAdapters.RestaurantsTableAdapter restaurantsTableAdapter;
         private System.Windows.Forms.BindingSource vehiclesBindingSource1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn16;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn15;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn14;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn13;
-        private System.Windows.Forms.DataGridView vehiclesDataGridView1;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
-        private System.Windows.Forms.DataGridView usersDataGridView1;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dataGridView2;
     }
 }
 

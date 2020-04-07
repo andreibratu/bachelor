@@ -1,29 +1,51 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace lab1_2
 {
     public partial class Form1 : Form
     {
+        private string scenario;
+        private string masterTableName;
+        private string slaveTableName;
+        private string slaveQuery;
+        private string slaveParam;
+        private string connectionString;
+
         public Form1()
         {
+            setUpScenario();
+
             InitializeComponent();
+
+            this.usersTableAdapter.Fill(this.ridesharingDataSet1.Users);
+            this.vehiclesTableAdapter.Fill(this.ridesharingDataSet1.Vehicles);
+            this.menusTableAdapter.Fill(this.ridesharingDataSet1.Menus);
+            this.restaurantsTableAdapter.Fill(this.ridesharingDataSet1.Restaurants);
+
+            this.dataGridView1.DataSource = this.ridesharingDataSet1.Tables[this.masterTableName];
+            this.dataGridView2.DataSource = this.ridesharingDataSet1.Tables[this.slaveTableName];
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void setUpScenario()
         {
-            // TODO: This line of code loads data into the 'ridesharingDataSet.Vehicles' table. You can move, or remove it, as needed.
-            this.vehiclesTableAdapter.Fill(this.ridesharingDataSet.Vehicles);
-            // TODO: This line of code loads data into the 'ridesharingDataSet.Users' table. You can move, or remove it, as needed.
-            this.usersTableAdapter.Fill(this.ridesharingDataSet.Users);
+            this.connectionString = ConfigurationManager.AppSettings["connection"];
+            this.scenario = ConfigurationManager.AppSettings["scenario"];
+
+            string master_key = scenario == "1" ? "scenario_one_master_table" : "scenario_two_master_table";
+            string slave_key = scenario == "1" ? "scenario_one_slave_table" : "scenario_two_slave_table";
+
+            this.masterTableName = ConfigurationManager.AppSettings[master_key];
+            this.slaveTableName = ConfigurationManager.AppSettings[slave_key];
+
+            string paramKey = scenario == "1" ? "scenario_one_param_name" : "scenario_two_param_name";
+            string queryKey = scenario == "1" ? "scenario_one_query" : "scenario_two_query";
+
+            this.slaveParam = ConfigurationManager.AppSettings[paramKey];
+            this.slaveQuery = ConfigurationManager.AppSettings[queryKey];
         }
 
         private void usersBindingNavigatorSaveItem_Click(object sender, EventArgs e)
@@ -33,13 +55,13 @@ namespace lab1_2
             this.tableAdapterManager.UpdateAll(this.ridesharingDataSet);
         }
 
-        private void UsersDataGridView_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        private void DataGridView_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            var row = usersDataGridView1.Rows[e.RowIndex];
-            var isDriver = row.Cells[4].Value;
-            var userId = row.Cells[0].Value.ToString();
+            var row = dataGridView1.Rows[e.RowIndex];
+            var isDriver = scenario == "1" ? row.Cells[4].Value : null;
+            var masterId = row.Cells[0].Value.ToString();
             
-            if (isDriver.Equals(false))
+            if (scenario == "1" && isDriver.Equals(false))
             {
                 MessageBox.Show("Selected user is not a driver!");
                 return;
@@ -49,12 +71,12 @@ namespace lab1_2
             using (connection = new SqlConnection("Server=DESKTOP-R4AMR8A\\SQLEXPRESS;Database=ridesharing;Trusted_Connection=True"))
             {
                 connection.Open();
-                SqlCommand query = new SqlCommand("SELECT * FROM Vehicles WHERE UserId=@UserId", connection);
-                query.Parameters.Add(new SqlParameter("@UserId", userId));
+                SqlCommand query = new SqlCommand(this.slaveQuery, connection);
+                query.Parameters.Add(new SqlParameter(this.slaveParam, masterId));
                 SqlDataAdapter adapter = new SqlDataAdapter(query);
-                DataSet vehicles = new DataSet();
-                int result = adapter.Fill(vehicles, "Vehicles");
-                this.vehiclesDataGridView1.DataSource = vehicles.Tables["Vehicles"];
+                DataSet new_ds = new DataSet();
+                int result = adapter.Fill(new_ds, this.slaveTableName);
+                this.dataGridView2.DataSource = new_ds.Tables[this.slaveTableName];
                 connection.Close();
             }
         }
@@ -65,14 +87,6 @@ namespace lab1_2
             this.usersBindingSource1.EndEdit();
             this.tableAdapterManager1.UpdateAll(this.ridesharingDataSet1);
 
-        }
-
-        private void Form1_Load_1(object sender, EventArgs e)
-        {
-            // TODO: This line of code loads data into the 'ridesharingDataSet1.Vehicles' table. You can move, or remove it, as needed.
-            this.vehiclesTableAdapter1.Fill(this.ridesharingDataSet1.Vehicles);
-            // TODO: This line of code loads data into the 'ridesharingDataSet1.Users' table. You can move, or remove it, as needed.
-            this.usersTableAdapter1.Fill(this.ridesharingDataSet1.Users);
         }
     }
 }
