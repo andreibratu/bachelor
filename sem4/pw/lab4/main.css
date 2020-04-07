@@ -1,0 +1,67 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+  }
+
+body {
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  width: 40%;
+  height: 70%;
+  border: 0.2rem solid white;
+  border-radius: 0.5rem;
+  background-color: white;
+  opacity: 0.5;
+}
+
+#link-container > svg {
+  height: 20%;
+  width: 20%;
+  margin: 0.6rem;
+  background-color: red;
+}
+
+polygon {
+  width: 100%;
+  height: 100%;
+}
+
+.button-container {
+  height: 20%;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-container > button {
+  margin: 2rem;
+  height: 40%;
+  width: 30%;
+  background-color: transparent;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+}
+
+#link-container {
+  height: 80%;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+#link-container a {
+  width: 20%;
+  height: 20%;
+  background-color: red;
+  margin: 0.6rem;
+}
