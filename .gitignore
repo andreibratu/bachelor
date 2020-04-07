@@ -49,9 +49,11 @@
 **/.idea/
 **/cmake-build-debug/*
 *.db
+
+# OOP
 oop/asg8-9/*.html
 
-
+# AI & Jupyter
 **/labs
 **/.ipynb_checkpoints
 
@@ -59,3 +61,8 @@ oop/asg8-9/*.html
 *.jpg
 *.png
 */dataset
+
+# Visual Studio
+**/.vs/
+**/bin/
+**/obj/
