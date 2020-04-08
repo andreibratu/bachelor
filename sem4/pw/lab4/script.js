@@ -29,21 +29,19 @@ function setRandomWallpaper()
 function generateRandomLink()
 {
   colors = ['pink', 'green', 'red', 'yellow', 'orange']
+  shapes = ['rectangle', 'square']
 
-  polygon = document.createElement('polygon')
-  pointsAttrVal = ''
-  points = Array.apply(null, {length: randint(3, 7)})
-                .map((_) => ({x: randint(0, 50), y: randint(0, 50)}))
-  points.forEach(point => pointsAttrVal += `${point.x},${point.y} `)
-  styleAttrVal = `fill:${choice(colors)};stroke:${choice(colors)};stroke-width:2`;
-  styleAttrVal = styleAttrVal.trim()
-  polygon.setAttribute('style', styleAttrVal)
-  polygon.setAttribute('points', pointsAttrVal)
+  a = document.createElement('a')
+  a.setAttribute('href', 'google.com')
+  a.innerHTML = "Link!"
 
-  svg = document.createElement('svg')
-  svg.appendChild(polygon)
+  div = document.createElement('div')
+  div.className = `${choice(shapes)} link-wrapper`
+  div.style.background = choice(colors)
 
-  return svg
+  div.appendChild(a)
+
+  return div
 }
 
 function setLinkContainer()
