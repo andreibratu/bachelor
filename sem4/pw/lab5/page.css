@@ -1,0 +1,30 @@
+body {
+  height: 500vh;
+  width: 100vw;
+  background-color: red;
+  margin: 0;
+}
+
+.slide {
+  height: 20%;
+}
+
+#slide-1 {
+  background-color: pink;
+}
+
+#slide-2 {
+  background-color: green;
+}
+
+#slide-3 {
+  background-color: yellow;
+}
+
+#slide-4 {
+  background-color: orange;
+}
+
+.stop-scrolling {
+  overflow: hidden;
+}
