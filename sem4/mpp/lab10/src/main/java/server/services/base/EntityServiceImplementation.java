@@ -26,9 +26,17 @@ public abstract class EntityServiceImplementation<T extends BaseEntity<Long>> im
     }
 
     @Override
+    public T getEntity(Long id)
+    {
+        return this.repository.findById(id).orElseThrow(RuntimeException::new);
+    }
+
+    @Override
     public T addEntity(T entity)
     {
-        return this.repository.save(entity);
+        T result = this.repository.save(entity);
+        System.out.println(this.repository.count());
+        return result;
     }
 
     @Override
@@ -58,11 +66,5 @@ public abstract class EntityServiceImplementation<T extends BaseEntity<Long>> im
     public Iterable<T> filter(FilterStrategy strategy)
     {
         return this.filtering.filter(this.repository.findAll(), strategy);
-    }
-
-    @Override
-    public T getEntity(Long id)
-    {
-        return this.repository.findById(id).orElseThrow(RuntimeException::new);
     }
 }
