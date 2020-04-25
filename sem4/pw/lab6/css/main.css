@@ -1,0 +1,11 @@
+body {
+    height: 100%;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+body > * {
+    margin-top: 1em;
+}
