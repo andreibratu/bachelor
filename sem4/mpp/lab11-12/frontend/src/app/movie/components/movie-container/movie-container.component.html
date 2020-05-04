@@ -1,0 +1,14 @@
+<app-movie-form [newMovieEmitter]="newMovieEmitter"></app-movie-form>
+<app-filter
+  [attributes]="['title', 'year', 'genre']"
+  [operators]="{title: ['CONTAINS', 'NEQ', 'EQ'], year: ['==', '!=', '>', '<'], genre: ['CONTAINS', 'NEQ', 'EQ']}"
+  [entityFilterEmitter]="movieFilterEmitter">
+</app-filter>
+<app-sort [attributes]="['title', 'year', 'genre']" [entitySortEmitter]="movieSortEmitter"></app-sort>
+<app-movie-card-list
+  [newMovieEmitter]="newMovieEmitter"
+  [editMovieOpenModalEmitter]="editMovieOpenModalEmitter"
+  [movieFilterEmitter]="movieFilterEmitter"
+  [movieSortEmitter]="movieSortEmitter">
+</app-movie-card-list>
+<app-movie-edit-modal [editMovieOpenModalEmitter]="editMovieOpenModalEmitter"></app-movie-edit-modal>

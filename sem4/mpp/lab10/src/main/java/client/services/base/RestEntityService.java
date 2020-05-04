@@ -68,6 +68,7 @@ public abstract class RestEntityService<T extends BaseEntity<Long>> implements E
         {
             System.out.println(e.toString());
         }
+//        System.out.println(result);
         return result;
     }
 

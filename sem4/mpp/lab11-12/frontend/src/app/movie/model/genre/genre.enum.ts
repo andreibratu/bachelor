@@ -1,0 +1,9 @@
+export enum Genre
+{
+  ACTION = 'ACTION',
+  COMEDY = 'COMEDY',
+  THRILLER = 'THRILLER',
+  DOCUMENTARY = 'DOCUMENTARY',
+  HORROR = 'HORROR',
+  ROMANTIC = 'ROMANTIC'
+}

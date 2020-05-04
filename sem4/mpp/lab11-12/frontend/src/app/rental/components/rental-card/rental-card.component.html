@@ -1,0 +1,13 @@
+<div class="card mb-4" style="width: 18rem;">
+  <div class="card-body">
+    <div class="d-flex flex-row">
+      <h5 class="card-text font-weight-bolder mr-4">{{rental.movie.title}}</h5>
+      <h5 class="card-title font-weight-bold">{{rental.client.name}}</h5>
+    </div>
+    <p>{{'Rented: ' + rental.startDate.toLocaleString('en-GB')}}</p>
+    <p>{{'Checked-in: ' + (rental.endDate != null ? rental.endDate.toLocaleString('en-GB') : 'Still rented')}}</p>
+    <button (click)="onCheckIn()" [disabled]="rental.endDate!=null" class="btn btn-primary mr">
+      {{rental.endDate != null ? 'Checked' : 'Check-in'}}
+    </button>
+  </div>
+</div>

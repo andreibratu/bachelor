@@ -1,0 +1,6 @@
+<div class="container d-flex align-content-around justify-content-between flex-wrap">
+  <app-rental-card *ngFor="let rental of rentals"
+   [rental]="rental"
+   [fetchRentalsEmitter]="fetchRentalsEmitter">
+  </app-rental-card>
+</div>

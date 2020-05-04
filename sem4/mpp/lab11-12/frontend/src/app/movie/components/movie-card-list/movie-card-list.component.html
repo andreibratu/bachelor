@@ -1,0 +1,7 @@
+<div class="container d-flex align-content-around justify-content-between flex-wrap">
+  <app-movie-card *ngFor="let movie of moviesDisplay"
+    [movie]="movie"
+    [deleteMovieHandler]="deleteMovieEmitter"
+    [editMovieOpenModalHandler]="editMovieOpenModalEmitter">
+  </app-movie-card>
+</div>

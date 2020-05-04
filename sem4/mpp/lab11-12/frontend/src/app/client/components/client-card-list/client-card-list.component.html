@@ -1,0 +1,7 @@
+<div class="container d-flex align-content-around justify-content-between flex-wrap">
+  <app-client-card *ngFor="let client of clientsDisplay"
+       [client]="client"
+       [deleteClientHandler]="deleteClientEmitter"
+       [editClientOpenModalHandler]="editClientOpenModalEmitter">
+  </app-client-card>
+</div>

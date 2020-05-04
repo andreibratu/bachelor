@@ -1,0 +1,18 @@
+<div class="container d-flex flex-row justify-content-between">
+  <div class="form-group">
+    <label for="filter-attribute">Attribute</label>
+    <select #selectAttributeRef id="filter-attribute" class="form-control" (change)="onSelectAttribute(selectAttributeRef)">
+      <option *ngFor="let attr of attributes">{{attr | titlecase}}</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="filter-operator">Operator</label>
+    <select id="filter-operator" [(ngModel)]="selectedOperator" class="form-control">
+      <option *ngFor="let ops of attributeOperators">{{ops}}</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="filter-value">Value</label>
+    <input type="text" id="filter-value" [(ngModel)]="selectedValue" (input)="onValueInput()" class="form-control">
+  </div>
+</div>

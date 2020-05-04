@@ -1,0 +1,11 @@
+<div class="card mb-4" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title font-weight-bolder">{{movie.title}}</h5>
+    <div class="d-flex flex-row">
+      <p class="card-text font-weight-bold">{{movie.genre}}</p>
+      <p class="ml-4">{{movie.year}}</p>
+    </div>
+    <a href="#" (click)="onEdit()" class="btn btn-primary mr-2">Edit</a>
+    <a href="#" (click)="onDelete()" class="btn btn-danger">Delete</a>
+  </div>
+</div>

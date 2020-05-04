@@ -1,0 +1,31 @@
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Edit Client</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('dismiss')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #clientEditForm="ngForm" (ngSubmit)="onSubmit(clientEditForm)">
+      <div class="form-group">
+        <label for="title">Name</label>
+        <input type="text" class="form-control" id="title" name="title" [(ngModel)]="model.name" #name="ngModel" required>
+        <div [hidden]="name.valid || name.pristine"
+             class="alert alert-danger">
+          Name is required
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="address">Address</label>
+        <input type="text" class="form-control" id="address" name="address" [(ngModel)]="model.address" #address="ngModel" required>
+        <div [hidden]="address.valid || address.pristine"
+             class="alert alert-danger">
+          Address is required
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" [disabled]="!clientEditForm.form.valid" (click)="modal.close('save')">Save</button>
+  </div>
+</ng-template>

@@ -1,0 +1,14 @@
+<app-client-form [newClientEmitter]="newClientEmitter"></app-client-form>
+<app-filter
+  [attributes]="['name', 'address']"
+  [operators]="{name: ['CONTAINS', 'NEQ', 'EQ'], address: ['CONTAINS', 'NEQ', 'EQ']}"
+  [entityFilterEmitter]="clientFilterEmitter">
+</app-filter>
+<app-sort [attributes]="['name', 'address']" [entitySortEmitter]="clientSortEmitter"></app-sort>
+<app-client-card-list
+  [newClientEmitter]="newClientEmitter"
+  [editClientOpenModalEmitter]="editClientOpenModalEmitter"
+  [clientFilterEmitter]="clientFilterEmitter"
+  [clientSortEmitter]="clientSortEmitter">
+</app-client-card-list>
+<app-client-edit-modal [editClientOpenModalEmitter]="editClientOpenModalEmitter"></app-client-edit-modal>

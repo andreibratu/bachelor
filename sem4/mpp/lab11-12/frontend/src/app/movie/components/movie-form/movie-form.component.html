@@ -1,0 +1,34 @@
+<div class="mt-4"></div>
+<div class="container">
+  <h2>Add new movie</h2>
+  <form #movieForm="ngForm" (ngSubmit)="onSubmit(movieForm)">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input type="text" class="form-control" id="title" name="title" [(ngModel)]="model.title" #title="ngModel" required>
+      <div [hidden]="title.valid || title.pristine"
+           class="alert alert-danger">
+        Title is required
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="year">Year</label>
+      <input type="number" min="1900" max="2020" class="form-control" id="year" name="address" [(ngModel)]="model.year" #year="ngModel" required>
+      <div [hidden]="year.valid || year.pristine"
+           class="alert alert-danger">
+        Year is required
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="genre">Genre</label>
+      <select class="form-control" id="genre" name="genre" [(ngModel)]="model.genre" #genre="ngModel" required>
+        <option *ngFor="let gnr of genres">{{gnr}}</option>
+      </select>
+      <div [hidden]="genre.valid || genre.pristine"
+        class="alert alert-danger">
+        Genre is required
+      </div>
+    </div>
+    <button type="submit" class="btn btn-success" [disabled]="!movieForm.form.valid">Submit</button>
+  </form>
+</div>
+<div class="mb-4"></div>

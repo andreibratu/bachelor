@@ -1,0 +1,14 @@
+<div class="container d-flex flex-row justify-content-between">
+  <div class="form-group">
+    <label for="sort-attribute">Attribute</label>
+    <select #selectAttributeRef id="sort-attribute" class="form-control" (change)="onSelectAttribute(selectAttributeRef)">
+      <option *ngFor="let attr of attributes">{{attr | titlecase}}</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="sort-operator">Operator</label>
+    <select #selectOperatorRef id="sort-operator" class="form-control" (change)="onSelectOperator(selectOperatorRef)">
+      <option *ngFor="let ops of operators">{{ops}}</option>
+    </select>
+  </div>
+</div>

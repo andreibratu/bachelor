@@ -57,7 +57,7 @@ public class Console
         while (true)
         {
             System.out.println(menu);
-            System.out.println("command: ");
+            System.out.println("Command: ");
             int command;
             try
             {
@@ -85,7 +85,7 @@ public class Console
             ).thenAccept(movie -> System.out.println("Added movie: " + movie));
         });
         menu.addCommand("Show all movies", () -> CompletableFuture.supplyAsync(
-            () -> this.movieService.getAllEntities(null)
+            () -> (Iterable<?>) this.movieService.getAllEntities(null)
         ).thenAccept(movies -> movies.forEach(System.out::println)));
         menu.addCommand("Update movie", () ->
         {
@@ -94,7 +94,7 @@ public class Console
             Objects.requireNonNull(newMovie).setId(updateMovieId);
 
             CompletableFuture.supplyAsync(
-                ()-> this.movieService.updateEntity(newMovie)
+                () -> this.movieService.updateEntity(newMovie)
             ).thenAccept(movie -> System.out.println("Updated movie: " + movie));
         });
         menu.addCommand("Delete movie", () ->
@@ -107,7 +107,7 @@ public class Console
         });
         menu.addCommand("Filter movies", () ->
             CompletableFuture.supplyAsync(
-                ()-> this.movieService.filter(filterEntities(Movie.class))
+                ()-> (Iterable<?>) this.movieService.filter(filterEntities(Movie.class))
         ).thenAccept(movies ->  movies.forEach(System.out::println)));
         menu.addCommand("Show clients sorted", () ->
         {
@@ -148,7 +148,7 @@ public class Console
                 sort.add(fieldName, SortStrategy.Direction.valueOf(order));
             }
             CompletableFuture.supplyAsync(
-                ()-> this.clientService.getAllEntities(sort)
+                ()-> (Iterable<?>) this.clientService.getAllEntities(sort)
             ).thenAccept(
                 clients -> clients.forEach(System.out::println)
             );
@@ -165,7 +165,7 @@ public class Console
         });
         menu.addCommand("Show all clients", () ->
             CompletableFuture.supplyAsync(
-                ()-> this.clientService.getAllEntities(null)
+                ()-> (Iterable<?>) this.clientService.getAllEntities(null)
         ).thenAccept(clients -> clients.forEach(System.out::println)));
         menu.addCommand("Update client", () ->
         {
@@ -185,7 +185,8 @@ public class Console
             ).thenAccept(client -> System.out.println("Deleted client: " + client));
         });
         menu.addCommand("Filter clients",
-            () -> CompletableFuture.supplyAsync(()-> this.clientService.filter(filterEntities(Client.class))
+            () -> CompletableFuture.supplyAsync(
+                ()-> (Iterable<?>) this.clientService.filter(filterEntities(Client.class))
         ).thenAccept(clients -> clients.forEach(System.out::println)));
 
         // Rental CRUD
@@ -229,7 +230,7 @@ public class Console
         });
         menu.addCommand("Show all rentals", () ->
             CompletableFuture.supplyAsync(
-                ()-> this.rentalService.getAllEntities(null)
+                ()-> (Iterable<?>) this.rentalService.getAllEntities(null)
             ).thenAccept(rentals -> rentals.forEach(System.out::println)));
 
         // Reporting
