@@ -1,0 +1,33 @@
+.comment-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    flex-direction: column;
+}
+
+hr {
+    background-color: gray;
+}
+
+.comment-content {
+    width: 100%;
+}
+
+.comment-form {
+    width: 100%;
+    margin-top: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.comment-form > input {
+    margin-right: 1em;
+}
+
+.comment {
+    width: 100%;
+    margin-top: 1em;
+    display: flex;
+}

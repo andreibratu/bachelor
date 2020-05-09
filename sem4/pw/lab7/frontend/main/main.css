@@ -1,0 +1,38 @@
+.post-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    flex-direction: column;
+}
+
+.post {
+    width: 90vw;
+    margin-top: 1em;
+    display: flex;
+}
+
+.post-content {
+    cursor: pointer;
+    width: 100%;
+}
+
+.post-delete {
+    width: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.topic-form {
+    width: 90vw;
+    margin-top: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.topic-form > input {
+    margin-right: 1em;
+}
+
