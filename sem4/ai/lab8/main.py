@@ -2,13 +2,13 @@ from typing import List, Tuple
 
 import numpy as np
 
-from functions import d_relu, mse, relu
+from functions import d_relu, mse, relu, linear, d_linear
 from network import NeuralNetwork
 
 
 def remodel_dataset(rows: List[List]) -> Tuple[np.ndarray, np.ndarray]:
     """Transform read input into numpy arrays."""
-    X = [line[:-1] for line in rows]
+    X = [[1] + line[:-1] for line in rows]
     y = [line[-1] for line in rows]
     return np.array(X), np.array(y)
 
@@ -26,11 +26,11 @@ def process_dataset(filename: str) -> List[List]:
 if __name__ == '__main__':
     dataset = process_dataset('bdate2.txt')
     X, y = remodel_dataset(dataset)
+    print(X.shape, y.shape)
     y = y.reshape(-1, 1)
     model = NeuralNetwork(X.shape[1], 20, 1, relu, d_relu)
-    for _ in range(5000):
+    for _ in range(10):
         model.train(X, y)
     y_hat = model.predict(X)
-    # MSE is a bit high?
     print(f'MSE: {mse(y, y_hat)}')
 
