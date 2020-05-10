@@ -12,6 +12,14 @@ def d_relu(X):
     return dz
 
 
+def linear(x: np.array) -> np.array:
+    return x
+
+
+def d_linear(x: np.array):
+    return 1
+
+
 def mse(y_hat: np.ndarray, y: np.ndarray) -> float:
     """Calculate MSE for predictions."""
     return (np.square(y - y_hat)).mean()

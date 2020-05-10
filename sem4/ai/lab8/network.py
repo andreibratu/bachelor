@@ -1,14 +1,25 @@
+from typing import Callable
+
 import numpy as np
 
 
 class NeuralNetwork:
 
-    def __init__(self, inputSize, hiddenSize, outputSize, activation, derivative):
+    def __init__(
+            self,
+            inputSize: int,
+            hiddenSize: int,
+            outputSize: int,
+            activation: Callable,
+            derivative: Callable,
+            l_rate: float = 0.0001
+    ):
         self.inputSize = inputSize
         self.hiddenSize = hiddenSize
         self.outputSize = outputSize
         self.activation = activation
         self.derivative = derivative
+        self.l_rate = l_rate
 
         self.weights1 = np.random.randn(inputSize, hiddenSize)
         self.weights2 = np.random.randn(hiddenSize, outputSize)
@@ -16,28 +27,17 @@ class NeuralNetwork:
         self.z = None
 
     def forward(self, X):
-        self.z = self.activation(X @ self.weights1)
-        output = self.z @ self.weights2
+        self.z = self.activation(np.dot(X, self.weights1))
+        output = self.activation(np.dot(self.z, self.weights2))
         return output
 
     def backward(self, X, y, y_hat):
-        """
-        We do not have an activation function after the last layer
-        since this is a regression task rather then a classification one;
-        thus the derivative used in calculating output_delta is the
-        derivative of the identity function i.e. 1
-        """
-        output_error = y - y_hat
-        output_delta = output_error * np.ones(y_hat.shape)
+        d_weights2 = np.dot(self.z.T, (2 * (y - y_hat) * self.derivative(y_hat)))
+        d_weights1 = np.dot(X.T, (np.dot(2 * (y - y_hat) * self.derivative(y),
+                                                  self.weights2.T) * self.derivative(self.z)))
 
-        # Z error: how much our hidden layer weights contribute to output error
-        z_error = output_delta @ self.weights2.T
-        print(z_error.shape, self.z.shape)
-        z_delta = z_error * self.derivative(self.z)
-
-        # Ameliorate weights
-        self.weights1 -= X.T @ z_delta
-        self.weights2 -= self.z.T @ output_delta
+        self.weights1 += (1 / X.shape[0]) * self.l_rate * d_weights1
+        self.weights2 += (1 / X.shape[0]) * self.l_rate * d_weights2
 
     def train(self, X, y):
         output = self.forward(X)
