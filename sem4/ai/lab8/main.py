@@ -31,5 +31,6 @@ if __name__ == '__main__':
     for _ in range(5000):
         model.train(X, y)
     y_hat = model.predict(X)
+    # MSE is a bit high?
     print(f'MSE: {mse(y, y_hat)}')
 
