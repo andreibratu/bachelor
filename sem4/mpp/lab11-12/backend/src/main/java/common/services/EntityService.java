@@ -1,14 +1,14 @@
 package common.services;
 
-import common.services.behaviours.filter.FilterStrategy;
-import common.services.behaviours.sort.SortStrategy;
 import common.entities.BaseEntity;
+import org.springframework.data.domain.PageRequest;
+import common.services.behaviours.filter.FilterStrategy;
 
 public interface EntityService<T extends BaseEntity<Long>>
 {
     T addEntity(T entity);
 
-    Iterable<T> getAllEntities(SortStrategy strategy);
+    Iterable<T> getAllEntities(PageRequest request);
 
     T deleteEntity(Long id);
 

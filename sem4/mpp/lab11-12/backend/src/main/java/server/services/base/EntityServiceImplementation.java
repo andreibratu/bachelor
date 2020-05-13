@@ -4,8 +4,8 @@ import common.entities.BaseEntity;
 import common.services.EntityService;
 import common.services.behaviours.filter.FilterBehaviour;
 import common.services.behaviours.filter.FilterStrategy;
-import common.services.behaviours.sort.SortBehaviour;
-import common.services.behaviours.sort.SortStrategy;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -14,14 +14,13 @@ public abstract class EntityServiceImplementation<T extends BaseEntity<Long>> im
 {
     private final FilterBehaviour filtering;
 
-    private final SortBehaviour sorting;
-
     private final JpaRepository<T, Long> repository;
 
-    public EntityServiceImplementation(FilterBehaviour filtering, SortBehaviour sorting, JpaRepository<T, Long> repository)
-    {
+    public EntityServiceImplementation(
+        FilterBehaviour filtering,
+        JpaRepository<T, Long> repository
+    ) {
         this.filtering = filtering;
-        this.sorting = sorting;
         this.repository = repository;
     }
 
@@ -40,9 +39,9 @@ public abstract class EntityServiceImplementation<T extends BaseEntity<Long>> im
     }
 
     @Override
-    public Iterable<T> getAllEntities(SortStrategy strategy)
+    public Iterable<T> getAllEntities(PageRequest request)
     {
-        return this.sorting.sort(this.repository.findAll(), strategy);
+        return this.repository.findAll(request);
     }
 
     @Override

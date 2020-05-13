@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit} from '@angular/core';
-import {FilterStrategy} from '../model/filter-strategy';
+import {FilterStrategy} from '../../model/filter-strategy';
 
 @Component({
   selector: 'app-filter',

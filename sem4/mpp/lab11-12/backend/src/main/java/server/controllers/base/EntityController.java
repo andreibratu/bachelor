@@ -1,14 +1,15 @@
 package server.controllers.base;
 
-import common.entities.BaseEntity;
-import common.entities.GenreEnum;
-import common.services.EntityService;
-import common.services.behaviours.filter.FilterStrategy;
-import common.services.behaviours.sort.SortStrategy;
 import lombok.SneakyThrows;
+import common.entities.GenreEnum;
+import common.entities.BaseEntity;
+import common.services.EntityService;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import common.services.behaviours.filter.FilterStrategy;
 
 import java.util.Map;
 import java.util.Set;
@@ -39,22 +40,30 @@ public abstract class EntityController<T extends BaseEntity<Long>>
     @GetMapping(produces = "application/json")
     public ResponseEntity<?> getAllEntities(@RequestParam Map<String,String> params)
     {
-        SortStrategy strategy = null;
+        int offset = Integer.parseInt(params.getOrDefault("offset", "0"));
+        if (offset % 50 != 0)
+        {
+            return ResponseEntity.badRequest().body("Offset should be multiple of 50");
+        }
+        params.remove("offset");
+        Sort sortStrategy = Sort.unsorted();
         if (params.size() != 0)
         {
-            strategy = new SortStrategy();
             for(Map.Entry<String, String> entry : params.entrySet())
             {
                 String k = entry.getKey();
                 String v = entry.getValue();
-                SortStrategy.Direction direction = (v.equals("ASC")) ?
-                        SortStrategy.Direction.ASC :
-                        SortStrategy.Direction.DESC;
-                strategy.add(k, direction);
+                if (v.equals("ASC"))
+                {
+                    sortStrategy.and(Sort.by(k).ascending());
+                }
+                else
+                {
+                    sortStrategy.and(Sort.by(k).descending());
+                }
             }
         }
-        Iterable<T> response = this.service.getAllEntities(strategy);
-        System.out.println("SERVER " + response.toString());
+        Iterable<T> response = this.service.getAllEntities(PageRequest.of(offset / 50, 50, sortStrategy));
         return ResponseEntity.ok(response);
     }
 

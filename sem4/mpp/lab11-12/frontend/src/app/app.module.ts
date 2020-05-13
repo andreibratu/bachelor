@@ -13,7 +13,7 @@ import { MovieCardComponent } from './movie/components/movie-card/movie-card.com
 import { MovieCardListComponent } from './movie/components/movie-card-list/movie-card-list.component';
 import { MovieEditModalComponent } from './movie/components/movie-edit-modal/movie-edit-modal.component';
 import { ClientEditModalComponent } from './client/components/client-edit-modal/client-edit-modal.component';
-import { FilterComponent } from './filter/component/filter.component';
+import { FilterComponent } from './filter/component/filter/filter.component';
 import { SortComponent } from './sort/component/sort.component';
 import { ClientContainerComponent } from './client/components/client-container/client-container.component';
 import { MovieContainerComponent } from './movie/components/movie-container/movie-container.component';
@@ -21,6 +21,7 @@ import { RentalCardComponent } from './rental/components/rental-card/rental-card
 import { RentalCardListComponent } from './rental/components/rental-card-list/rental-card-list.component';
 import { RentalContainerComponent } from './rental/components/rental-container/rental-container.component';
 import {RentalFormComponent} from './rental/components/rental-form/rental-form.component';
+import { CompoundFilterComponent } from './compound-filter/component/compound-filter.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import {RentalFormComponent} from './rental/components/rental-form/rental-form.c
     RentalCardListComponent,
     RentalContainerComponent,
     RentalFormComponent,
+    CompoundFilterComponent,
   ],
     imports: [
         BrowserModule,
