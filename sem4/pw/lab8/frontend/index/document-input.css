@@ -1,0 +1,6 @@
+.document-input {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    padding: 1em;
+}
