@@ -17,7 +17,6 @@ def __point_on_segment_known_y(a: Point, b: Point, yC: float) -> Point:
         return Point(xA, yC)
     slope = (yB - yA) / (xB - xA)
     intercept = - slope * xA + yA
-    print(intercept, slope)
     xC = (yC - intercept) / slope
     return Point(xC, yC)
 
@@ -94,8 +93,6 @@ def calculate_power_value(power_probabilities: Dict[int, float]) -> float:
     Pro Gamer Move: Shapely expects points to be in order when constructing a Polygon object.
     Instead, we calculate the convex hull of the unordered set of points to get there.
     """
-    for point in fuzzy_polygon_vertices:
-        print(point)
     fuzzy_polygon = MultiPoint(fuzzy_polygon_vertices).convex_hull
     centroid_fuzzy_polygon = fuzzy_polygon.centroid
     # Centroid's projection on the Ox axis is the answer
@@ -107,7 +104,3 @@ def control(input_temperature: int, input_capacity: int) -> float:
     cap_probabilities = get_probability(input.capacity, input_capacity)
     power_probabilities = get_fuzzy_sets(temp_probabilities, cap_probabilities)
     return calculate_power_value(power_probabilities)
-
-
-if __name__ == '__main__':
-    print(control(105, 6))
