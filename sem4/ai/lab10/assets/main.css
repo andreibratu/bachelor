@@ -1,0 +1,10 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+    text-align: center;
+    margin-top: 20vh;
+}
+
+.container > * {
+    margin-top: 2em;
+}
