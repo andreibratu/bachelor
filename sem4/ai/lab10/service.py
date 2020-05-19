@@ -109,7 +109,3 @@ def control(input_temperature: int, input_capacity: int) -> float:
     cap_probabilities = get_probability(input.capacity, input_capacity)
     power_probabilities = get_fuzzy_sets(temp_probabilities, cap_probabilities)
     return calculate_power_value(power_probabilities)
-
-
-if __name__ == '__main__':
-    control(30, 6)
