@@ -1,4 +1,5 @@
-<div class="container d-flex align-content-around justify-content-between flex-wrap">
+<h3 *ngIf="moviesDisplay != null && moviesDisplay.length === 0;" class="text-center text-muted">No movies to display..</h3>
+<div *ngIf="moviesDisplay != null && moviesDisplay.length > 0" class="container d-flex align-content-around justify-content-between flex-wrap">
   <app-movie-card *ngFor="let movie of moviesDisplay"
     [movie]="movie"
     [deleteMovieHandler]="deleteMovieEmitter"

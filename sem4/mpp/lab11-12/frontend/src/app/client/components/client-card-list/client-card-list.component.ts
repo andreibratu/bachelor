@@ -19,7 +19,7 @@ export class ClientCardListComponent implements OnInit
   deleteClientEmitter: EventEmitter<number>;
   @Input() newClientEmitter: EventEmitter<Client>;
   @Input() editClientOpenModalEmitter: EventEmitter<Client>;
-  @Input() clientFilterEmitter: EventEmitter<FilterStrategy>;
+  @Input() clientFilterEmitter: EventEmitter<FilterStrategy[]>;
   @Input() clientSortEmitter: EventEmitter<SortStrategy>;
 
   constructor(
@@ -34,9 +34,11 @@ export class ClientCardListComponent implements OnInit
 
   ngOnInit(): void
   {
-    this.clientService.getAllClients().subscribe((clients: Client[]) => {
-      this.clients = clients;
-      this.clientsDisplay = clients.slice();
+    this.clientService.getAllClients().subscribe((response: object) => {
+      // @ts-ignore
+      const { content } = response;
+      this.clients = content;
+      this.clientsDisplay = this.clients.slice();
     });
     this.newClientEmitter.subscribe(client => {
       this.clients.push(client);
@@ -48,8 +50,8 @@ export class ClientCardListComponent implements OnInit
         this.clientsDisplay = this.clients.slice();
       });
     });
-    this.clientFilterEmitter.subscribe((strategy) => {
-      this.clientsDisplay = this.filterService.filter(this.clients, strategy);
+    this.clientFilterEmitter.subscribe((strategies: FilterStrategy[]) => {
+      this.clientsDisplay = this.filterService.multipleFilter(this.clients, strategies);
       // Re-apply sorting strategy on the new filtered list.
       this.clientsDisplay = this.sortService.sort(this.clientsDisplay, this.sortStrategy);
     });

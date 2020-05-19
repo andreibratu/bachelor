@@ -1,10 +1,10 @@
+// @ts-nocheck
+
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {forkJoin, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {Rental} from '../model/rental';
-import {Client} from '../../client/model/client';
-import {Movie} from '../../movie/model/movie/movie';
 
 @Injectable({
   providedIn: 'root'
@@ -23,14 +23,15 @@ export class RentalService
 
   getAllRentals(): Observable<object>
   {
-    type ReceivedRental = {id: number, clientID: number, movieID: number, startDate: string, endDate: string};
     return forkJoin([
       this.http.get(this.RENTALS_URL),
       this.http.get(this.CLIENTS_URL),
       this.http.get(this.MOVIES_URL)]
-    ).pipe(map((result: [ReceivedRental[], Client[], Movie[]]) => {
-      console.log(result);
-      const [rentals, clients, movies] = result;
+    ).pipe(map((response: object[]) => {
+      let [rentals, clients, movies] = response;
+      rentals = rentals.content;
+      clients = clients.content;
+      movies = movies.content;
       console.log(rentals, clients, movies);
       const wow = rentals.map(received => ({
             id: received.id,
@@ -47,7 +48,6 @@ export class RentalService
   createRental(rental: {clientID: number, movieID: number}): Observable<object>
   {
     console.log(rental);
-    // @ts-ignore
     const payload = {
       clientID: rental.clientID,
       movieID: rental.movieID,

@@ -1,10 +1,12 @@
 package server.validators;
 
 import common.entities.Client;
+import org.springframework.stereotype.Component;
 
 /**
  * Validator for {code Movie} common.entities
  */
+@Component("client-validator")
 public class ClientValidator implements Validator<Client>
 {
     /**

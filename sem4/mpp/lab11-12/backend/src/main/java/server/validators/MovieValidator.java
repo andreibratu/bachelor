@@ -1,12 +1,14 @@
 package server.validators;
 
 import common.entities.Movie;
+import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
 
 /**
  * Validator for {code Movie} common.entities
  */
+@Component("movie-validator")
 public class MovieValidator implements Validator<Movie>
 {
     /**

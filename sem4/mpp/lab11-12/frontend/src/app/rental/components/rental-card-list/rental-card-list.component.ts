@@ -19,7 +19,9 @@ export class RentalCardListComponent implements OnInit
 
   fetchRenters()
   {
-    this.rentalService.getAllRentals().subscribe((rentals: Rental[]) => this.rentals = rentals);
+    this.rentalService.getAllRentals().subscribe((rentals: Rental[]) => {
+      this.rentals = rentals;
+    });
   }
 
   ngOnInit(): void

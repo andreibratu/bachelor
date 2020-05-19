@@ -5,7 +5,6 @@ import common.services.EntityService;
 import common.services.behaviours.filter.FilterBehaviour;
 import common.services.behaviours.filter.FilterStrategy;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -25,17 +24,16 @@ public abstract class EntityServiceImplementation<T extends BaseEntity<Long>> im
     }
 
     @Override
-    public T getEntity(Long id)
+    public Optional<T> getEntity(Long id)
     {
-        return this.repository.findById(id).orElseThrow(RuntimeException::new);
+        return this.repository.findById(id);
     }
 
     @Override
     public T addEntity(T entity)
     {
-        T result = this.repository.save(entity);
-        System.out.println(this.repository.count());
-        return result;
+        if (entity == null) throw new IllegalArgumentException();
+        return this.repository.save(entity);
     }
 
     @Override
@@ -45,20 +43,22 @@ public abstract class EntityServiceImplementation<T extends BaseEntity<Long>> im
     }
 
     @Override
-    public T deleteEntity(Long id)
+    public Optional<T> deleteEntity(Long id)
     {
         Optional<T> oldEntity = repository.findById(id);
         repository.deleteById(id);
-        return oldEntity.orElseThrow(RuntimeException::new);
+        return oldEntity;
     }
 
     @Override
-    public T updateEntity(T updatedEntity)
+    public Optional<T> updateEntity(T updatedEntity)
     {
-        T oldEntity = repository.findById(updatedEntity.getId()).orElseThrow(RuntimeException::new);
-        repository.delete(oldEntity);
-        repository.save(updatedEntity);
-        return oldEntity;
+        Optional<T> oldEntityOptional = repository.findById(updatedEntity.getId());
+        oldEntityOptional.ifPresent(oldEntity -> {
+            repository.delete(oldEntity);
+            repository.save(updatedEntity);
+        });
+        return oldEntityOptional;
     }
 
     @Override

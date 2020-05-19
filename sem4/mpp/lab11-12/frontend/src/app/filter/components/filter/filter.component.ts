@@ -11,6 +11,7 @@ export class FilterComponent implements OnInit
   @Input() attributes: string[];
   @Input() operators: object;
   @Input() entityFilterEmitter: EventEmitter<FilterStrategy>;
+  @Input() filterId: number;
   selectedValue = '';
   selectedAttribute: string;
   selectedOperator: string;
@@ -35,7 +36,10 @@ export class FilterComponent implements OnInit
 
   toAttributeCase(str: string)
   {
-    // Lowercase the first letter of the attribute name, leaving all other uppercases as they are
+    /*
+      Lowercase the first letter of the attribute name,
+      leaving all other uppercase letters as they are
+    */
     return str.charAt(0).toLowerCase() + str.slice(1);
   }
 
@@ -51,7 +55,8 @@ export class FilterComponent implements OnInit
       this.entityFilterEmitter.emit({
         attribute: this.toAttributeCase(this.selectedAttribute),
         operator: this.selectedOperator,
-        value: this.selectedValue
+        value: this.selectedValue,
+        filterId: this.filterId
       });
     }
   }

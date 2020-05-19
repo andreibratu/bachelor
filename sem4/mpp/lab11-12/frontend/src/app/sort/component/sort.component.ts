@@ -10,6 +10,8 @@ export class SortComponent implements OnInit
 {
   @Input() attributes: string[];
   @Input() entitySortEmitter: EventEmitter<SortStrategy>;
+  @Input() headerText: string;
+
   operators = ['-', 'ASC', 'DESC'];
   selectedAttribute: string;
   selectedOperator = '-';

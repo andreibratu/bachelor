@@ -8,6 +8,17 @@ export class FilterService {
 
   constructor() { }
 
+  multipleFilter(entities, strategies: FilterStrategy[])
+  {
+    let filteredEntities = this.filter(entities, strategies[0]);
+    strategies.slice(1).forEach((strategy: FilterStrategy) => {
+      const otherFilterEntities = this.filter(entities, strategy);
+      // Only keep an entity in `filteredEntities` if it can also be found in the `otherFilterEntities`
+      filteredEntities = filteredEntities.filter(e => otherFilterEntities.find(f => f.id === e.id) != null);
+    });
+    return filteredEntities;
+  }
+
   filter(entities, strategy: FilterStrategy)
   {
     if (strategy == null) { return entities; }

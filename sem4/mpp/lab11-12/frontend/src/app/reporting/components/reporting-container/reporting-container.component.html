@@ -1,0 +1,23 @@
+<div class="container">
+  <h2 class="mt-4">Reports</h2>
+  <div class="container d-flex flex-column align-content-between">
+    <div class="mt-4"></div>
+    <app-reporting-card
+      [reportTitle]="'Top clients'"
+      [report]="reportingService.getTopClients()"
+      [callback]="topClientsCallback">
+    </app-reporting-card>
+    <div class="mt-4"></div>
+    <app-reporting-card
+      [reportTitle]="'Bad renters'"
+      [report]="reportingService.getBadRenters()"
+      [callback]="badRentersCallback">
+    </app-reporting-card>
+    <div class="mt-4"></div>
+    <app-reporting-card
+      [reportTitle]="'Rentals by Genre'"
+      [report]="reportingService.getRentalsByGenre()"
+      [callback]="rentalsGenreCallback">
+    </app-reporting-card>
+  </div>
+</div>

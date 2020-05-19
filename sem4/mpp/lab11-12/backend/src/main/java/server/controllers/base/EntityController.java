@@ -4,37 +4,65 @@ import lombok.SneakyThrows;
 import common.entities.GenreEnum;
 import common.entities.BaseEntity;
 import common.services.EntityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import common.services.behaviours.filter.FilterStrategy;
+import server.validators.Validator;
+import server.validators.ValidatorException;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @SuppressWarnings("unused")
 public abstract class EntityController<T extends BaseEntity<Long>>
 {
-    final EntityService<T> service;
+    private final EntityService<T> service;
+    private final Validator<T> validator;
 
-    public EntityController(EntityService<T> service)
+    @Autowired
+    public EntityController(EntityService<T> service, Validator<T> validator)
     {
         this.service = service;
+        this.validator = validator;
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> getEntity(@PathVariable long id)
     {
-        return ResponseEntity.ok(this.service.getEntity(id));
+        try
+        {
+            Optional<T> entity = service.getEntity(id);
+            if (entity.isEmpty())
+            {
+                return ResponseEntity.badRequest().body("Illegal id");
+            }
+            return ResponseEntity.ok(entity.get());
+        }
+        catch (IllegalArgumentException e)
+        {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping(produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> postEntity(@RequestBody T newEntity)
+    public ResponseEntity<?> createEntity(@RequestBody T newEntity)
     {
-        return ResponseEntity.ok(this.service.addEntity(newEntity));
+        try
+        {
+            validator.validate(newEntity);
+            T savedEntity = service.addEntity(newEntity);
+            return ResponseEntity.ok(savedEntity);
+        }
+        catch (IllegalArgumentException | ValidatorException e)
+        {
+            return ResponseEntity.badRequest().body("Illegal request body");
+        }
     }
 
     @GetMapping(produces = "application/json")
@@ -70,13 +98,38 @@ public abstract class EntityController<T extends BaseEntity<Long>>
     @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> deleteEntity(@PathVariable long id)
     {
-        return ResponseEntity.ok(this.service.deleteEntity(id));
+        try
+        {
+            Optional<T> oldEntity = this.service.deleteEntity(id);
+            if (oldEntity.isEmpty())
+            {
+                return ResponseEntity.badRequest().body("Illegal id");
+            }
+            return ResponseEntity.ok(oldEntity.get());
+        }
+        catch (IllegalArgumentException e)
+        {
+            return ResponseEntity.badRequest().body("Null id");
+        }
     }
 
     @PutMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<?> updateEntity(@RequestBody T updatedEntity)
     {
-        return ResponseEntity.ok(this.service.updateEntity(updatedEntity));
+        try
+        {
+            validator.validate(updatedEntity);
+            Optional<T> oldEntity = service.updateEntity(updatedEntity);
+            if (oldEntity.isEmpty())
+            {
+                return ResponseEntity.badRequest().body("Illegal request body");
+            }
+            return ResponseEntity.ok(oldEntity.get());
+        }
+        catch (IllegalArgumentException | NullPointerException | ValidatorException e)
+        {
+            return ResponseEntity.badRequest().body("Bad request body");
+        }
     }
 
     @SneakyThrows
@@ -86,7 +139,7 @@ public abstract class EntityController<T extends BaseEntity<Long>>
         FilterStrategy strategy;
         if (params.size() != 4 || !params.keySet().equals(Set.of("attribute", "operator", "compareValue", "attrClass")))
         {
-            return ResponseEntity.badRequest().body("Invalid filter strategy!");
+            return ResponseEntity.badRequest().body("Invalid filter object in request body");
         }
         else
         {

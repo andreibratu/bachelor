@@ -4,7 +4,6 @@ import common.services.behaviours.GenericBehaviour;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -76,18 +75,5 @@ public class FilterBehaviour extends GenericBehaviour
             return result;
         };
         return StreamSupport.stream(list.spliterator(), false).filter(filter).collect(Collectors.toList());
-    }
-
-    public static Iterable<String> getFilters(Class<?> cls)
-    {
-        if(cls == Integer.class || cls == Float.class || cls == Double.class)
-        {
-            return List.of("==", "!=", ">", ">=", "<", "<=");
-        }
-        else if (cls == String.class)
-        {
-            return List.of("STARTS", "CONTAINS");
-        }
-        return List.of("EQ", "NEQ");
     }
 }

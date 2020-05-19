@@ -12,14 +12,14 @@ export class ClientContainerComponent implements OnInit {
 
   newClientEmitter: EventEmitter<Client>;
   editClientOpenModalEmitter: EventEmitter<Client>;
-  clientFilterEmitter: EventEmitter<FilterStrategy>;
+  clientFilterEmitter: EventEmitter<FilterStrategy[]>;
   clientSortEmitter: EventEmitter<SortStrategy>;
 
   constructor()
   {
     this.newClientEmitter = new EventEmitter<Client>();
     this.editClientOpenModalEmitter = new EventEmitter<Client>();
-    this.clientFilterEmitter = new EventEmitter<FilterStrategy>();
+    this.clientFilterEmitter = new EventEmitter<FilterStrategy[]>();
     this.clientSortEmitter = new EventEmitter<SortStrategy>();
   }
 

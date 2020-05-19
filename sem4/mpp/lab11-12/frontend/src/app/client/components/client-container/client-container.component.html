@@ -1,10 +1,15 @@
 <app-client-form [newClientEmitter]="newClientEmitter"></app-client-form>
-<app-filter
+<app-multi-filter
+  [headerText]="'Filter clients'"
   [attributes]="['name', 'address']"
   [operators]="{name: ['CONTAINS', 'NEQ', 'EQ'], address: ['CONTAINS', 'NEQ', 'EQ']}"
-  [entityFilterEmitter]="clientFilterEmitter">
-</app-filter>
-<app-sort [attributes]="['name', 'address']" [entitySortEmitter]="clientSortEmitter"></app-sort>
+  [filterOutput]="clientFilterEmitter">
+</app-multi-filter>
+<app-sort
+  [headerText]="'Sort clients'"
+  [attributes]="['name', 'address']"
+  [entitySortEmitter]="clientSortEmitter">
+</app-sort>
 <app-client-card-list
   [newClientEmitter]="newClientEmitter"
   [editClientOpenModalEmitter]="editClientOpenModalEmitter"

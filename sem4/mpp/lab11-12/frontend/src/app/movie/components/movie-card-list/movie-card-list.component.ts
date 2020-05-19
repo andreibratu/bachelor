@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import {Movie} from '../../model/movie/movie';
-import {Genre} from '../../model/genre/genre.enum';
 import {MovieService} from '../../service/movie.service';
 import {FilterStrategy} from '../../../filter/model/filter-strategy';
 import {SortStrategy} from '../../../sort/model/sort-strategy';
@@ -20,7 +19,7 @@ export class MovieCardListComponent implements OnInit
   deleteMovieEmitter: EventEmitter<number>;
   @Input() newMovieEmitter: EventEmitter<Movie>;
   @Input() editMovieOpenModalEmitter: EventEmitter<Movie>;
-  @Input() movieFilterEmitter: EventEmitter<FilterStrategy>;
+  @Input() movieFilterEmitter: EventEmitter<FilterStrategy[]>;
   @Input() movieSortEmitter: EventEmitter<SortStrategy>;
 
   constructor(
@@ -35,19 +34,24 @@ export class MovieCardListComponent implements OnInit
 
   ngOnInit(): void
   {
-    this.movieService.getAllMovies().subscribe((movies: Movie[]) => {
-      this.movies = movies;
-      this.moviesDisplay = movies.slice();
+    this.movieService.getAllMovies().subscribe((response: object) => {
+      // @ts-ignore
+      const { content } = response;
+      this.movies = content;
+      this.moviesDisplay = this.movies.slice();
     });
-    this.newMovieEmitter.subscribe(movie => this.movies.push(movie));
+    this.newMovieEmitter.subscribe(movie => {
+      this.movies.push(movie);
+      this.moviesDisplay = this.movies.slice();
+    });
     this.deleteMovieEmitter.subscribe(id => {
       this.movieService.deleteMovie(id).subscribe(_ => {
         this.movies = this.movies.filter(movie => movie.id !== id);
+        this.moviesDisplay = this.movies.slice();
       });
     });
-    this.movieFilterEmitter.subscribe((strategy) => {
-      console.log('BVVVVV');
-      this.moviesDisplay = this.filterService.filter(this.movies, strategy);
+    this.movieFilterEmitter.subscribe((strategies: FilterStrategy[]) => {
+      this.moviesDisplay = this.filterService.multipleFilter(this.movies, strategies);
       // Re-apply sorting strategy on the new filtered list.
       this.moviesDisplay = this.sortService.sort(this.moviesDisplay, this.sortStrategy);
     });

@@ -1,0 +1,10 @@
+<div class="container">
+  <h2>{{headerText}}</h2>
+  <app-filter
+    *ngFor="let emitter of filterEmitters; let i = index"
+    [operators]="operators"
+    [attributes]="attributes"
+    [entityFilterEmitter]="emitter"
+    [filterId]="i">
+  </app-filter>
+</div>

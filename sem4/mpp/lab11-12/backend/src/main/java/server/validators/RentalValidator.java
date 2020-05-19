@@ -1,12 +1,14 @@
 package server.validators;
 
 import common.entities.Rental;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
 /**
  * Validator for {code Rental} common.entities
  */
+@Component("rental-validator")
 public class RentalValidator implements Validator<Rental>
 {
     /**
