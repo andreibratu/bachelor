@@ -36,6 +36,7 @@ def get_probability(parameter: Dict[int, Dict], param_value: int) -> Dict[int, f
             ans[cls] = 0
         else:
             ans[cls] = probabilities[param_value]
+    print(ans)
     return ans
 
 
@@ -57,6 +58,7 @@ def get_fuzzy_sets(
             power_classes[power_cls] = power_probability
         else:
             power_classes[power_cls] = max(power_classes[power_cls], power_probability)
+    print(power_classes)
     return power_classes
 
 
@@ -93,9 +95,12 @@ def calculate_power_value(power_probabilities: Dict[int, float]) -> float:
     Pro Gamer Move: Shapely expects points to be in order when constructing a Polygon object.
     Instead, we calculate the convex hull of the unordered set of points to get there.
     """
+    for point in fuzzy_polygon_vertices:
+        print(point)
     fuzzy_polygon = MultiPoint(fuzzy_polygon_vertices).convex_hull
     centroid_fuzzy_polygon = fuzzy_polygon.centroid
     # Centroid's projection on the Ox axis is the answer
+    print(centroid_fuzzy_polygon)
     return centroid_fuzzy_polygon.x
 
 
@@ -104,3 +109,7 @@ def control(input_temperature: int, input_capacity: int) -> float:
     cap_probabilities = get_probability(input.capacity, input_capacity)
     power_probabilities = get_fuzzy_sets(temp_probabilities, cap_probabilities)
     return calculate_power_value(power_probabilities)
+
+
+if __name__ == '__main__':
+    control(30, 6)
