@@ -8,15 +8,15 @@ function prependDownloadRequest(xhr) {
 }
 
 function createDocumentCard(data) {
-    console.log(data)
+    let username = sessionStorage.getItem('username');
     let newCard = $($("#document-card-template").html().trim())
     newCard.find('.document-title').text(data.title)
     newCard.find('.document-author').text(data.author.username)
     newCard.find('.document-type').text(data.type)
     newCard.find('.document-format').text(data.extension)
-    newCard.find('.document-delete').click(
-        () => deleteDocument(newCard, data.id)
-    )
+    newCard.find('.document-delete').click(function() {
+        $("#deleteDocumentHiddenInput").val(data.id)
+    });
     newCard.find('.document-edit').click(() => {
         $('#input-edit-document-id').val(data.id)
         $('#input-edit-document-author').val(data.author)
@@ -45,10 +45,15 @@ function createDocumentCard(data) {
             }
         })
     })
+    if(username !== data.author.username)
+    {
+        // newCard.find('.document-delete').remove();
+        // newCard.find('.document-edit').remove();
+    }
     $('.content').append(newCard)
 }
 
-function deleteDocument(cardRef, id) {
+function deleteDocument(id) {
     $.ajax({
         url: `https://localhost:44377/api/documents/${id}`,
         type: 'DELETE',
@@ -56,10 +61,10 @@ function deleteDocument(cardRef, id) {
         statusCode: {
             200: function() { window.location = 'index.html' },
             401: function() { window.location = '../login/login.html' },
+            403: function() { alert('Forbidden action!') },
             500: function(response) { console.log(response.responseText); }
         }
     });
-    cardRef.remove();
 }
 
 function filterDocuments() {
@@ -215,6 +220,11 @@ $(document).ready(() => {
     $('#log-out').click(function () {
         sessionStorage.removeItem('jwt');
         window.location = '../login/login.html';
+    })
+
+    $('#submitDeleteButton').click(function () {
+        let deleteId = $("#deleteDocumentHiddenInput").val();
+        deleteDocument(deleteId);
     })
 
     $('#new-document-form').submit(function (e) {

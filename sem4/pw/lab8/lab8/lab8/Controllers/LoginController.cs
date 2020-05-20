@@ -22,7 +22,7 @@ namespace lab8.Controllers
 
             if (token == null)
             {
-                return BadRequest("Invalid credentials");
+                return BadRequest("Invalid cr edentials");
             }
 
             return Ok(token);

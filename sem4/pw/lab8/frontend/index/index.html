@@ -73,7 +73,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form id="edit-document-form" enctype="multipart/form-data" action="php/update_document_handler.php" method="post">
+                        <form id="edit-document-form" enctype="multipart/form-data" method="post">
                             <input type="hidden" id="input-edit-document-id" name="input-edit-document-id" required>
                             <div class="form-group row">
                                 <label for="input-document-type" class="col-sm-2 col-form-label">Type</label>
@@ -92,6 +92,27 @@
                             </button>
                         </form>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="deleteDocumentModal" tabindex="-1" role="dialog" aria-labelledby="deleteDocumentModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content bg-light">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteDocumentModalTitle">Delete Document</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Are you sure you want to proceed?</h5>
+                        <input id="deleteDocumentHiddenInput" type="hidden">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" id="submitDeleteButton" data-dismiss="modal">Confirm</button>
+                      </div>
                 </div>
             </div>
         </div>
@@ -114,7 +135,7 @@
                             <path fill-rule="evenodd" d="M8 6a.5.5 0 01.5.5v8a.5.5 0 01-1 0v-8A.5.5 0 018 6z" clip-rule="evenodd" />
                         </svg>
                     </button>
-                    <button class="btn document-delete">
+                    <button class="btn document-delete" data-toggle="modal" data-target="#deleteDocumentModal">
                         <svg class="bi bi-trash" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path d="M5.5 5.5A.5.5 0 016 6v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm2.5 0a.5.5 0 01.5.5v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm3 .5a.5.5 0 00-1 0v6a.5.5 0 001 0V6z" />
                             <path fill-rule="evenodd" d="M14.5 3a1 1 0 01-1 1H13v9a2 2 0 01-2 2H5a2 2 0 01-2-2V4h-.5a1 1 0 01-1-1V2a1 1 0 011-1H6a1 1 0 011-1h2a1 1 0 011 1h3.5a1 1 0 011 1v1zM4.118 4L4 4.059V13a1 1 0 001 1h6a1 1 0 001-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" clip-rule="evenodd" />

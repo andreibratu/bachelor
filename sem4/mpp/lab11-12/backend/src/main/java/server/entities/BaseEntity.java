@@ -1,6 +1,5 @@
 package common.entities;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.ToString;
 
@@ -16,6 +15,5 @@ public abstract class BaseEntity<ID extends Serializable> implements Serializabl
 {
     @Id
     @GeneratedValue
-    @JsonProperty("id")
     private ID id;
 }

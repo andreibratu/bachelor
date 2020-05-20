@@ -104,8 +104,17 @@ namespace lab8.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<DocumentOutputDTO>> DeleteDocument(int id)
         {
+            string jwt = ((string)Request.Headers["Authorization"]).Substring(7);
             var document = await _context.Document.FindAsync(id);
             document.Author = _context.Users.First(u => u.Id == document.AuthorId);
+            string username = new JwtSecurityTokenHandler().ReadJwtToken(jwt).Claims.First(c => c.Type == "user").Value;
+            User requester = _context.Users.First(u => u.Username == username);
+
+            if (requester.Id != document.Author.Id)
+            {
+                return Forbid();
+            }
+
             if (document == null)
             {
                 return NotFound();

@@ -1,4 +1,4 @@
-package common.services.behaviours.filter;
+package common.strategies.sort;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,9 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class FilterStrategy
+public class SortStrategy
 {
     private String attribute;
-    private String operator;
-    private Object compareValue;
+    private String order;
 }

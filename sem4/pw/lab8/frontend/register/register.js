@@ -40,6 +40,7 @@ $(document).ready(() => {
                     console.log(response);
                     show_alerts(false, false);
                     sessionStorage.setItem('jwt', response);
+                    sessionStorage.setItem('username', usrn);
                     window.location = '../login/login.html';
                 },
                 409: function () { show_alerts(false, true); },

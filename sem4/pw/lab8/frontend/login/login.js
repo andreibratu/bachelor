@@ -32,6 +32,7 @@ $(document).ready(() => {
                 200: function(response) { 
                     $('#invalid-credentials-alert').css('display', 'none');
                     sessionStorage.setItem('jwt', response);
+                    sessionStorage.setItem('username', usrn);
                     window.location = '../index/index.html';
                 },
             }
