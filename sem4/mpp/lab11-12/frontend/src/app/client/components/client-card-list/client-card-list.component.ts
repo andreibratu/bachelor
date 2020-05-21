@@ -34,10 +34,8 @@ export class ClientCardListComponent implements OnInit
 
   ngOnInit(): void
   {
-    this.clientService.getAllClients().subscribe((response: object) => {
-      // @ts-ignore
-      const { content } = response;
-      this.clients = content;
+    this.clientService.getAllClients().subscribe((response: Client[]) => {
+      this.clients = response;
       this.clientsDisplay = this.clients.slice();
     });
     this.newClientEmitter.subscribe(client => {

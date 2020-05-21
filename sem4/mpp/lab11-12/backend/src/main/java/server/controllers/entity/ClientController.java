@@ -1,16 +1,16 @@
-package server.controllers;
+package server.controllers.entity;
 
-import common.entities.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import server.controllers.base.EntityController;
-import server.services.ClientEntityServiceImplementation;
+import server.controllers.base.BaseEntityController;
+import server.entities.Client;
+import server.services.entity.ClientEntityServiceImplementation;
 import server.validators.ClientValidator;
 
 @RestController
 @RequestMapping("/clients")
-public class ClientController extends EntityController<Client>
+public class ClientController extends BaseEntityController<Client>
 {
     @Autowired
     public ClientController(

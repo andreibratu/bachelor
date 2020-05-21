@@ -1,25 +1,20 @@
 package server.services.base;
 
-import common.entities.BaseEntity;
-import common.services.EntityService;
-import common.services.behaviours.filter.FilterBehaviour;
-import common.services.behaviours.filter.FilterStrategy;
+import lombok.SneakyThrows;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import server.strategies.sort.SortStrategy;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
-public abstract class EntityServiceImplementation<T extends BaseEntity<Long>> implements EntityService<T>
+public abstract class EntityServiceImplementation<T> implements EntityService<T>
 {
-    private final FilterBehaviour filtering;
-
     private final JpaRepository<T, Long> repository;
 
-    public EntityServiceImplementation(
-        FilterBehaviour filtering,
-        JpaRepository<T, Long> repository
-    ) {
-        this.filtering = filtering;
+    protected EntityServiceImplementation(JpaRepository<T, Long> repository)
+    {
         this.repository = repository;
     }
 
@@ -37,9 +32,23 @@ public abstract class EntityServiceImplementation<T extends BaseEntity<Long>> im
     }
 
     @Override
-    public Iterable<T> getAllEntities(PageRequest request)
+    public Iterable<T> getAllEntities(Iterable<SortStrategy> sortStrategies, int page)
     {
-        return this.repository.findAll(request);
+        AtomicReference<Sort> sortStrategy = new AtomicReference<>(Sort.unsorted());
+        sortStrategies.forEach(strategy -> {
+            String attribute = strategy.getAttribute();
+            String order = strategy.getOrder();
+            if (order.equals("ASC"))
+            {
+                sortStrategy.set(sortStrategy.get().and(Sort.by(attribute).ascending()));
+            }
+            else
+            {
+                sortStrategy.set(sortStrategy.get().and(Sort.by(attribute).descending()));
+            }
+        });
+        PageRequest pageRequest = PageRequest.of(page, 50, sortStrategy.get());
+        return this.repository.findAll(pageRequest);
     }
 
     @Override
@@ -51,19 +60,15 @@ public abstract class EntityServiceImplementation<T extends BaseEntity<Long>> im
     }
 
     @Override
+    @SneakyThrows
     public Optional<T> updateEntity(T updatedEntity)
     {
-        Optional<T> oldEntityOptional = repository.findById(updatedEntity.getId());
+        Long id = updatedEntity.getClass().getField("id").getLong(updatedEntity);
+        Optional<T> oldEntityOptional = repository.findById(id);
         oldEntityOptional.ifPresent(oldEntity -> {
-            repository.delete(oldEntity);
+            repository.deleteById(id);
             repository.save(updatedEntity);
         });
         return oldEntityOptional;
-    }
-
-    @Override
-    public Iterable<T> filter(FilterStrategy strategy)
-    {
-        return this.filtering.filter(this.repository.findAll(), strategy);
     }
 }

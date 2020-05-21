@@ -1,6 +1,6 @@
 package server.validators;
 
-import common.entities.Rental;
+import server.entities.Rental;
 import org.junit.Test;
 
 import static org.junit.Assert.fail;

@@ -1,12 +1,10 @@
-package common.services;
+package server.services.base;
 
-import common.entities.BaseEntity;
-import common.strategies.sort.SortStrategy;
-import org.springframework.data.domain.PageRequest;
+import server.strategies.sort.SortStrategy;
 
 import java.util.Optional;
 
-public interface EntityService<T extends BaseEntity<Long>>
+public interface EntityService<T>
 {
     T addEntity(T entity);
 

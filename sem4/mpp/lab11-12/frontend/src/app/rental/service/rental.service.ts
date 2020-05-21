@@ -28,10 +28,8 @@ export class RentalService
       this.http.get(this.CLIENTS_URL),
       this.http.get(this.MOVIES_URL)]
     ).pipe(map((response: object[]) => {
+      // tslint:disable-next-line:prefer-const
       let [rentals, clients, movies] = response;
-      rentals = rentals.content;
-      clients = clients.content;
-      movies = movies.content;
       console.log(rentals, clients, movies);
       const wow = rentals.map(received => ({
             id: received.id,
@@ -47,7 +45,6 @@ export class RentalService
 
   createRental(rental: {clientID: number, movieID: number}): Observable<object>
   {
-    console.log(rental);
     const payload = {
       clientID: rental.clientID,
       movieID: rental.movieID,

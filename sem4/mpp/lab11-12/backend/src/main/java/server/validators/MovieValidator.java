@@ -1,6 +1,6 @@
 package server.validators;
 
-import common.entities.Movie;
+import server.entities.Movie;
 import org.springframework.stereotype.Component;
 
 import java.util.Calendar;

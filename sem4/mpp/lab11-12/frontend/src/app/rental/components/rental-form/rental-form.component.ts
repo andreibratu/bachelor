@@ -23,15 +23,11 @@ export class RentalFormComponent
     private movieService: MovieService
   ) {
     this.model = this.emptyModel();
-    this.movieService.getAllMovies().subscribe((response: object) => {
-      // @ts-ignore
-      const { content } = response;
-      this.movies = content.map(movie => ({id: movie.id, title: movie.title}));
+    this.movieService.getAllMovies().subscribe((response: Movie[]) => {
+      this.movies = response.map(movie => ({id: movie.id, title: movie.title}));
     });
-    this.clientService.getAllClients().subscribe((response: object) => {
-      // @ts-ignore
-      const { content } = response;
-      this.clients = content.map(client => ({id: client.id, name: client.name}));
+    this.clientService.getAllClients().subscribe((response: Client[]) => {
+      this.clients = response.map(client => ({id: client.id, name: client.name}));
     });
   }
 

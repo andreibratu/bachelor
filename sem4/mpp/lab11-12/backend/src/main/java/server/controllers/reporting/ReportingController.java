@@ -1,13 +1,15 @@
-package server.controllers;
+package server.controllers.reporting;
 
-import common.entities.Client;
-import common.entities.GenreEnum;
-import common.services.ReportingService;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import server.dtos.Transferable;
+import server.services.reporting.ReportingService;
+
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 @RestController("/reports")
@@ -22,20 +24,25 @@ public class ReportingController
     }
 
     @GetMapping(value = "/top-clients", produces = "application/json")
-    public Iterable<Pair<Client, Integer>> getTopClients(@RequestParam int limit)
+    public ResponseEntity<?> getTopClients(@RequestParam int limit)
     {
-        return reportingService.getTopClients(limit);
+        return ResponseEntity.ok(reportingService.getTopClients(limit).stream()
+                .map(pair -> new Pair<>(pair.getKey().toDTO(), pair.getValue()))
+                .collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/bad-renters", produces = "application/json")
-    public Iterable<Client> getBadRenters()
+    public ResponseEntity<?> getBadRenters()
     {
-        return reportingService.getBadRenters();
+        return ResponseEntity.ok(reportingService.getBadRenters().stream()
+                .map(Transferable::toDTO)
+                .collect(Collectors.toList())
+        );
     }
 
     @GetMapping(value = "/rentals-genre", produces = "application/json")
-    public Iterable<Pair<GenreEnum, Integer>> getRentalsByGenre()
+    public ResponseEntity<?> getRentalsByGenre()
     {
-        return reportingService.getRentalsByGenre();
+        return ResponseEntity.ok(reportingService.getRentalsByGenre());
     }
 }

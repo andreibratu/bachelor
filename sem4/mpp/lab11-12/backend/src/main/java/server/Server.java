@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
-@SpringBootApplication(scanBasePackages = {"common", "server"})
-@EntityScan("common.entities")
+@SpringBootApplication(scanBasePackages = {"server"})
+@EntityScan("server.entities")
 public class Server
 {
     public static void main(String[] args)

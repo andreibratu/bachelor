@@ -1,13 +1,12 @@
-package server.services;
+package server.services.reporting;
 
-import common.entities.*;
-import common.services.ReportingService;
 import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
+import server.entities.*;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -18,38 +17,42 @@ import java.util.stream.StreamSupport;
 @Component
 public class ReportingServiceImplementation implements ReportingService
 {
-    private final JpaRepository<Rental, Long> rentalRepository;
-
     private final JpaRepository<Client, Long> clientRepository;
 
     private final JpaRepository<Movie, Long> movieRepository;
 
     private final static Logger logger = LoggerFactory.getLogger(ReportingServiceImplementation.class);
 
+    private List<Rental> getAllRentals()
+    {
+        return clientRepository.findAll().stream()
+                .map(Client::getRentals)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
     @Autowired
     public ReportingServiceImplementation(
             JpaRepository<Client, Long> clientRepository,
-            JpaRepository<Movie, Long> movieRepository,
-            JpaRepository<Rental, Long> rentalRepository
+            JpaRepository<Movie, Long> movieRepository
     )
     {
-        this.rentalRepository = rentalRepository;
         this.clientRepository = clientRepository;
         this.movieRepository = movieRepository;
     }
 
     public List<Pair<Client, Integer>> getTopClients(int limit)
     {
-        Iterable<Rental> rentals = rentalRepository.findAll();
+        Iterable<Rental> rentals = getAllRentals();
         Iterable<Long> clientIds = clientRepository.findAll().stream()
-                .map(BaseEntity::getId).collect(Collectors.toList());
+                .map(Client::getId).collect(Collectors.toList());
 
         // Count rentals
         Map<Long, Integer> countRentals = new HashMap<>();
         for(Long id: clientIds)
         {
             int clientCount = Math.toIntExact(StreamSupport.stream(rentals.spliterator(), false)
-                    .filter(rental -> rental.getClientID().equals(id))
+                    .filter(rental -> rental.getClient().getId().equals(id))
                     .count());
             countRentals.put(id, clientCount);
         }
@@ -70,7 +73,7 @@ public class ReportingServiceImplementation implements ReportingService
 
     public List<Client> getBadRenters()
     {
-        Set<Long> badRenterIds = rentalRepository.findAll().stream()
+        Set<Long> badRenterIds = getAllRentals().stream()
                 .filter(rental -> {
                     LocalDate startDate = rental.getStartDate();
                     LocalDate endDate = (rental.getEndDate() == null) ? LocalDate.now() : rental.getEndDate();
@@ -78,7 +81,7 @@ public class ReportingServiceImplementation implements ReportingService
                     Period diff = Period.between(startDate, endDate);
                     return diff.getMonths() >= 1;
                 })
-                .map(Rental::getClientID)
+                .map(rental -> rental.getClient().getId())
                 .collect(Collectors.toSet());
         return clientRepository.findAll().stream()
                 .filter(client -> badRenterIds.contains(client.getId()))
@@ -88,8 +91,11 @@ public class ReportingServiceImplementation implements ReportingService
     public List<Pair<GenreEnum, Integer>> getRentalsByGenre()
     {
         Map<GenreEnum, Integer> countRentals = new HashMap<>();
-        rentalRepository.findAll().forEach(rental -> {
-            GenreEnum genre = movieRepository.findById(rental.getMovieID()).orElseThrow(RuntimeException::new).getGenre();
+        getAllRentals().forEach(rental -> {
+            GenreEnum genre = movieRepository
+                    .findById(rental.getMovie().getId())
+                    .orElseThrow(RuntimeException::new)
+                    .getGenre();
             countRentals.computeIfPresent(genre, (k, v) -> v+1);
             countRentals.putIfAbsent(genre, 1);
         });

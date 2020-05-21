@@ -1,4 +1,4 @@
-package common.strategies.sort;
+package server.strategies.sort;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

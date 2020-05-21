@@ -1,52 +1,48 @@
-package common.entities;
+package server.entities;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import server.dtos.DTO;
+import server.dtos.MovieDTO;
+import server.dtos.Transferable;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+@SuppressWarnings("JpaDataSourceORMInspection")
 @Data
 @Entity
 @ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class Movie extends BaseEntity<Long> implements Serializable
+public class Movie implements Serializable, Transferable<Movie>
 {
-    @JsonProperty("title")
+    @Id
+    @GeneratedValue
+    @Column(name = "movie_id")
+    private Long id;
+
     private String title;
 
-    @JsonProperty("genre")
     private GenreEnum genre;
 
-    @JsonProperty("year")
     private Integer year;
 
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Rental> rentals = new HashSet<>();
 
-    public Set<Client> getRentingClients()
+    @Override
+    public DTO<Movie> toDTO()
     {
-        rentals = rentals == null ? new HashSet<>() : rentals;
-        return rentals.stream()
-                .map(Rental::getClient)
-                .collect(Collectors.toUnmodifiableSet());
-    }
-
-    public void addRenter(Client client, LocalDate startDate)
-    {
-        Rental rental = new Rental();
-        rental.setClient(client);
-        rental.setMovie(this);
-        rental.setStartDate(startDate);
-        rentals.add(rental);
+        return MovieDTO.builder()
+                .id(id)
+                .genreEnum(genre)
+                .year(year)
+                .title(title)
+                .build();
     }
 }

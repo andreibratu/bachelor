@@ -1,20 +1,17 @@
-package server.services;
+package server.services.entity;
 
-import common.entities.Movie;
-import org.springframework.stereotype.Component;
-import server.services.base.EntityServiceImplementation;
-import common.services.behaviours.filter.FilterBehaviour;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Component;
+import server.entities.Movie;
+import server.services.base.EntityServiceImplementation;
 
 @Component
 public class MovieEntityServiceImplementation extends EntityServiceImplementation<Movie>
 {
     @Autowired
-    public MovieEntityServiceImplementation(
-            FilterBehaviour filtering,
-            JpaRepository<Movie, Long> repository
-    ) {
-        super(filtering, repository);
+    public MovieEntityServiceImplementation(JpaRepository<Movie, Long> repository)
+    {
+        super(repository);
     }
 }

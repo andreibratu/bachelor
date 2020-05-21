@@ -1,7 +1,7 @@
-package common.services;
+package server.services.reporting;
 
-import common.entities.Client;
-import common.entities.GenreEnum;
+import server.entities.Client;
+import server.entities.GenreEnum;
 import javafx.util.Pair;
 
 import java.util.List;

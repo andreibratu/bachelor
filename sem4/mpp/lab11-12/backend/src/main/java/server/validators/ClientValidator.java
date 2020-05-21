@@ -1,6 +1,6 @@
 package server.validators;
 
-import common.entities.Client;
+import server.entities.Client;
 import org.springframework.stereotype.Component;
 
 /**

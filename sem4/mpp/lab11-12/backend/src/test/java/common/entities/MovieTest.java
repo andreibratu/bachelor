@@ -3,6 +3,8 @@ package common.entities;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import server.entities.GenreEnum;
+import server.entities.Movie;
 
 import static org.junit.Assert.assertEquals;
 

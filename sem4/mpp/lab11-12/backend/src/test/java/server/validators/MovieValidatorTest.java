@@ -1,7 +1,7 @@
 package server.validators;
 
-import common.entities.GenreEnum;
-import common.entities.Movie;
+import server.entities.GenreEnum;
+import server.entities.Movie;
 import org.junit.Test;
 
 import static org.junit.Assert.fail;

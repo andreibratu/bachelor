@@ -34,10 +34,8 @@ export class MovieCardListComponent implements OnInit
 
   ngOnInit(): void
   {
-    this.movieService.getAllMovies().subscribe((response: object) => {
-      // @ts-ignore
-      const { content } = response;
-      this.movies = content;
+    this.movieService.getAllMovies().subscribe((movies: Movie[]) => {
+      this.movies = movies;
       this.moviesDisplay = this.movies.slice();
     });
     this.newMovieEmitter.subscribe(movie => {

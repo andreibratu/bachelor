@@ -1,4 +1,4 @@
-package common.entities;
+package server.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

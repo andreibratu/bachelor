@@ -1,10 +1,10 @@
 package server.services;
 
-import common.services.behaviours.GenericBehaviour;
-import common.services.behaviours.filter.FilterBehaviour;
-import common.services.behaviours.filter.FilterStrategy;
-import common.entities.GenreEnum;
-import common.entities.Movie;
+import common.strategies.GenericBehaviour;
+import common.strategies.filter.FilterBehaviour;
+import common.strategies.filter.FilterStrategy;
+import server.entities.GenreEnum;
+import server.entities.Movie;
 import org.junit.Before;
 import org.junit.Test;
 
