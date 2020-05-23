@@ -89,11 +89,6 @@ class Chromosome:
             elif node_fct == 'cos':
                 aux = self.evaluate_expression(pos + 1, data_row)
                 return cos(aux[0]), aux[1]
-            elif node_fct == 'sigmoid':
-                aux = self.evaluate_expression(pos + 1, data_row)
-                if aux[0] < 0:
-                    return 1 - 1 / (1 + math.exp(aux[0])), aux[1]
-                return 1 / (1 + math.exp(-aux[0])), aux[1]
 
     def compute_fitness(self, dataset: List[List[float]], labels: List[int]):
         """
@@ -180,8 +175,8 @@ class Chromosome:
         str_repr = ''
         for _, pos in enumerate(self._representation):
             if self._representation[pos] < 0:
-                str_repr += self.get_func_at_index(pos)
+                str_repr += self.get_func_at_index(pos) + ' '
             else:
-                str_repr += self.get_terminal_at_index(pos)
+                str_repr += self.get_terminal_at_index(pos) + ' '
         return str_repr
 
