@@ -1,0 +1,17 @@
+.Evaluation {}
+
+.fade {
+    filter: grayscale(100%);
+}
+
+.fade p {
+    color: lightgray;
+}
+
+.fade:hover {
+    filter: none;
+}
+
+.fade:hover p {
+    color: black;
+}

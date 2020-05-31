@@ -1,6 +1,9 @@
 package server.entities;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import server.dtos.ClientDTO;
 import server.dtos.Transferable;
 
@@ -11,13 +14,29 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("JpaDataSourceORMInspection")
 @Data
 @Entity
 @Builder
-@ToString(callSuper = true)
-@AllArgsConstructor
 @NoArgsConstructor
+@ToString(callSuper = true)
+@SuppressWarnings("JpaDataSourceORMInspection")
+@NamedEntityGraph(
+        name = "client-full-details",
+        attributeNodes = {
+                @NamedAttributeNode("id"),
+                @NamedAttributeNode("name"),
+                @NamedAttributeNode("address"),
+                @NamedAttributeNode(value = "rentals", subgraph = "rental-basic")
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = "rental-basic",
+                        attributeNodes = {
+                            @NamedAttributeNode("id"),
+                        }
+                )
+        }
+)
 public class Client implements Serializable, Transferable<Client>
 {
     @Id

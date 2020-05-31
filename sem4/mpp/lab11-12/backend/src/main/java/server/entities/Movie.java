@@ -1,9 +1,7 @@
 package server.entities;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import server.dtos.DTO;
 import server.dtos.MovieDTO;
 import server.dtos.Transferable;
@@ -13,12 +11,28 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-@SuppressWarnings("JpaDataSourceORMInspection")
 @Data
 @Entity
-@ToString(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
+@SuppressWarnings("JpaDataSourceORMInspection")
+@NamedEntityGraph(
+        name = "movie-full-details",
+        attributeNodes = {
+                @NamedAttributeNode("id"),
+                @NamedAttributeNode("title"),
+                @NamedAttributeNode("genre"),
+                @NamedAttributeNode("year"),
+                @NamedAttributeNode(value = "rentals", subgraph = "rental-basic")
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = "rental-basic",
+                        attributeNodes = {
+                                @NamedAttributeNode("id")
+                        }
+                )
+        }
+)
 public class Movie implements Serializable, Transferable<Movie>
 {
     @Id

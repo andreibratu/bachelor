@@ -1,0 +1,14 @@
+.ConferenceCard {
+
+}
+
+.CardConferenceDeadlines {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.CardConferenceDeadlines > * {
+    flex: 0 0 50%;
+    padding: 10px;
+    box-sizing: border-box;
+}

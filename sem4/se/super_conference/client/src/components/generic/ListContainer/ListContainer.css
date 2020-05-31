@@ -1,0 +1,12 @@
+.ListContainer {
+    height: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto;
+}
+
+.ListContainer > * {
+    margin-top: 1em;
+}

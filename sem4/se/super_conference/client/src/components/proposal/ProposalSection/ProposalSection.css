@@ -1,0 +1,5 @@
+.ProposalSection {
+    min-height: 100%;
+    overflow: hidden; /*makes body non-scrollable - individual scrolling will be added to sidebar and main content */
+    display: flex;
+}

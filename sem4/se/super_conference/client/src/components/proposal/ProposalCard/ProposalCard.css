@@ -1,0 +1,20 @@
+.ProposalCardTopics {
+    display: flex;
+}
+
+.ProposalExtraInfoContainer {
+    margin-top: 1em;
+    display: flex;
+}
+
+.ProposalTagsTopics {
+    flex-grow: 4;
+}
+
+.ProposalDownload {
+    flex-grow: 1;
+    margin-right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
