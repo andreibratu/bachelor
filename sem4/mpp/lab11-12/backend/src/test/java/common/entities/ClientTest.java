@@ -20,7 +20,7 @@ public class ClientTest {
 
     @Before
     public void setUp() {
-        client = new Client(NAME, ADDRESS);
+        client = Client.builder().name(NAME).address(ADDRESS).build();
         client.setId(ID);
     }
 

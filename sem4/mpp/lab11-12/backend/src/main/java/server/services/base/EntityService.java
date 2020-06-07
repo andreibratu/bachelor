@@ -1,14 +1,15 @@
 package server.services.base;
 
-import server.strategies.sort.SortStrategy;
-
 import java.util.Optional;
 
+@SuppressWarnings("unused")
 public interface EntityService<T>
 {
     T addEntity(T entity);
 
-    Iterable<T> getAllEntities(Iterable<SortStrategy> sortStrategies, int page);
+    Iterable<T> getAllEntities(int page);
+
+    Iterable<T> getAllEntitiesSorted(int page);
 
     Optional<T> deleteEntity(Long id);
 

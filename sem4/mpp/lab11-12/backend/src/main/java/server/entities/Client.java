@@ -1,54 +1,48 @@
 package server.entities;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+import org.springframework.data.jpa.repository.Modifying;
 import server.dtos.ClientDTO;
 import server.dtos.Transferable;
 
 import javax.persistence.*;
-import java.io.Serializable;
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Data
 @Entity
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @SuppressWarnings("JpaDataSourceORMInspection")
-@NamedEntityGraph(
-        name = "client-full-details",
-        attributeNodes = {
-                @NamedAttributeNode("id"),
-                @NamedAttributeNode("name"),
-                @NamedAttributeNode("address"),
-                @NamedAttributeNode(value = "rentals", subgraph = "rental-basic")
-        },
-        subgraphs = {
-                @NamedSubgraph(
-                        name = "rental-basic",
-                        attributeNodes = {
-                            @NamedAttributeNode("id"),
-                        }
-                )
-        }
-)
-public class Client implements Serializable, Transferable<Client>
+@NamedEntityGraphs({
+        @NamedEntityGraph(name = "clientWithRentals",
+                attributeNodes = @NamedAttributeNode(value = "rentals")),
+        @NamedEntityGraph(name = "clientWithRentalsAndMovie",
+                attributeNodes = @NamedAttributeNode(value = "rentals", subgraph = "rentalWithMovie"),
+                subgraphs = @NamedSubgraph(name = "rentalWithMovie",
+                        attributeNodes = @NamedAttributeNode(value = "movie")))
+})
+public class Client extends BaseEntity<Long> implements Transferable<Client>
 {
-    @Id
-    @GeneratedValue
-    @Column(name = "client_id")
-    private Long id;
-
+    @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "address", nullable = false)
     private String address;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(
+            mappedBy = "client",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true
+    )
     private Set<Rental> rentals;
 
     public Set<Movie> getRentedMovies()
@@ -66,18 +60,19 @@ public class Client implements Serializable, Transferable<Client>
         rental.setMovie(movie);
         rental.setStartDate(startDate);
         rentals.add(rental);
-        movie.getRentals().add(rental);
     }
 
+    @Modifying
+    @Transactional
     public void returnMovie(Movie movie, LocalDate endDate)
     {
-        Rental rental = rentals.stream()
-            .filter(r -> r.getMovie().getId().equals(movie.getId()))
+        Predicate<Rental> findRentalPredicate = r -> r.getMovie().getId().equals(movie.getId());
+        Rental updatedRental = rentals.stream()
+            .filter(findRentalPredicate)
             .findFirst().orElseThrow(RuntimeException::new);
-        rental.setEndDate(endDate);
+        updatedRental.setEndDate(endDate);
         movie.setRentals(movie.getRentals().stream()
-                .filter(rental1 -> rental1.getId().equals(rental.getId()))
-                .map(rental1 -> rental)
+                .map(r -> r.getMovie().getId().equals(movie.getId()) ? updatedRental : r)
                 .collect(Collectors.toSet())
         );
     }
@@ -87,7 +82,7 @@ public class Client implements Serializable, Transferable<Client>
         return ClientDTO.builder()
                 .address(address)
                 .name(name)
-                .id(id)
+                .id(this.getId())
                 .build();
     }
 }

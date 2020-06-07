@@ -2,19 +2,28 @@ package server.repositories;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import server.entities.Client;
-import server.entities.Rental;
+import server.repositories.custom.ClientRepositoryCustom;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
-
-@Repository("clientRepository")
-public interface ClientRepository extends JpaRepository<Client, Long>
+@Repository
+@Transactional
+public interface ClientRepository extends JpaRepository<Client, Long>, ClientRepositoryCustom
 {
-    @EntityGraph("rental-detailed-query")
-    List<Rental> getRentals(Integer clientId);
 
-    @EntityGraph("client-full-details")
-    List<Client> findAll();
+    @Query("select distinct c from Client c")
+    @EntityGraph(
+            value = "clientWithRentalsAndMovie",
+            type = EntityGraph.EntityGraphType.LOAD)
+    List<Client> findAllWithRentalsAndMovieGraph();
+
+    @Query("select distinct c from Client c order by c.name")
+    @EntityGraph(value = "clientWithRentalsAndMovie", type =
+            EntityGraph.EntityGraphType.LOAD)
+    List<Client> findAllWithRentalsAndMovieOrderByNameGraph();
 }
+

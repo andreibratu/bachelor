@@ -23,7 +23,7 @@ public class MovieTest {
 
     @Before
     public  void setUp() {
-        movie =new Movie(TITLE, GENRE, YEAR);
+        movie = Movie.builder().title(TITLE).genre(GENRE).year(YEAR).build();
         movie.setId(ID);
     }
 

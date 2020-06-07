@@ -1,19 +1,30 @@
 package server.repositories;
 
 import org.springframework.data.jpa.repository.EntityGraph;
-import server.entities.Movie;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import server.entities.Rental;
+import server.entities.Movie;
+import server.repositories.custom.MovieRepositoryCustom;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
-@Repository("movieRepository")
-public interface MovieRepository extends JpaRepository<Movie, Long>
+@Repository
+@Transactional
+public interface MovieRepository extends JpaRepository<Movie, Long>, MovieRepositoryCustom
 {
-    @EntityGraph("movie-full-details")
-    List<Movie> findAll();
+    @Query("select distinct m from Movie m")
+    @EntityGraph(
+            value = "movieWithRentalsAndClient",
+            type = EntityGraph.EntityGraphType.LOAD
+    )
+    List<Movie> findAllMoviesWithRentalsAndClientGraph();
 
-    @EntityGraph("rental-detailed-query")
-    List<Rental> getRentals(Integer movieId);
+    @Query("select distinct m from Movie m order by m.title")
+    @EntityGraph(
+            value = "movieWithRentalsAndClient",
+            type = EntityGraph.EntityGraphType.LOAD
+    )
+    List<Movie> findAllMoviesWithRentalsAndClientOrderByTitleGraph();
 }

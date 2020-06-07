@@ -5,14 +5,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.dtos.Transferable;
 import server.services.base.EntityService;
-import server.strategies.sort.SortStrategy;
 import server.validators.Validator;
 import server.validators.ValidatorException;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 @SuppressWarnings("unused")
@@ -72,18 +70,7 @@ public abstract class BaseEntityController<T extends Transferable<T>>
         {
             return ResponseEntity.badRequest().body("Offset should be multiple of 50");
         }
-        if (attributes != null && attributes.size() != orders.size())
-        {
-            return ResponseEntity.badRequest().body("Invalid query arguments for sorting");
-        }
-        List<SortStrategy> sortStrategies = attributes != null ?
-                IntStream
-                    .range(0, attributes.size())
-                    .mapToObj(i -> new SortStrategy(attributes.get(i), orders.get(i)))
-                    .collect(Collectors.toList())
-                :
-                List.of();
-        Iterable<T> response = this.service.getAllEntities(sortStrategies, offset / 50);
+        Iterable<T> response = this.service.getAllEntities(offset / 50);
         return ResponseEntity.ok(
                 StreamSupport.stream(response.spliterator(), false)
                     .map(Transferable::toDTO)
