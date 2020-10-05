@@ -1,0 +1,23 @@
+// Max of 3 numbers
+a <- 7
+b <- 10
+c <- 3
+
+max1 <- NEGINF
+max2 <- NEGINF
+
+if a < b do
+    max1 <- b
+fi
+else do
+    max1 <- a
+esle
+
+if max1 < c do
+    max2 <- c
+fi
+else do
+    max2 <- max1
+esle
+
+print(max2)

@@ -10,7 +10,7 @@ namespace lab8.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySQL("server=localhost;database=doc-manager;user=root;password=supercool");
+            optionsBuilder.UseMySQL("server=localhost;database=examen;user=root;password=supercool");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

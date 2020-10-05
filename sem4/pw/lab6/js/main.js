@@ -22,7 +22,8 @@ function createDocumentCard(data) {
     $('body').append(newCard)
 }
 
-function deleteDocument(cardRef, id) {
+function deleteDocument(cardRef, id) 
+{
     $.get(`php/delete_document_handler.php?id=${id}`)
     cardRef.remove()
 }
