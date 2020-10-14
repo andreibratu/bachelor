@@ -81,3 +81,5 @@ oop/asg8-9/*.html
 *mvnw
 
 *data
+
+**/venv
