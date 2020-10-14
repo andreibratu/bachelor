@@ -33,13 +33,12 @@ public class GlobalLockInventoryRepository implements InventoryRepository
     @Override
     public void executeOrder(List<Pair<Product, Integer>> items)
     {
+        Order newOrder = new Order(items);
         synchronized (inventory)
         {
+            items.forEach(item -> inventory.computeIfPresent(item.getKey(), (k, v) -> (v - item.getValue())));
             synchronized (executedOrders)
             {
-                Order newOrder = new Order(items);
-                items.forEach(item -> inventory.computeIfPresent(item.getKey(), (k, v) -> (v - item.getValue())));
-                // No need to lock executedOrders since only one thread can get inside this block
                 executedOrders.add(newOrder);
             }
         }

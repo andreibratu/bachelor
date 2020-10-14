@@ -47,12 +47,13 @@ public class ExecutionService
                 .map(fnc ->  fnc.apply(repository))
                 .collect(Collectors.toList());
 
+        List<InventoryCommand> parallel_tasks = commands.subList(1, commands.size() - 1);
         // Start execution
         Long startTime = System.currentTimeMillis();
         // Fill in inventory
         commands.get(0).call();
         // Run intermediate operations in parallel
-        executor.invokeAll(commands.subList(1, commands.size() - 1));
+        executor.invokeAll(parallel_tasks);
         // Wait for threads to join
         executor.shutdown();
         // Run final report
