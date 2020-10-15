@@ -22,9 +22,9 @@ class Sample:
         self.values = [[0 for _ in range(w_size)] for _ in range(h_size)]
 
         sample_i = 0
-        for i in range(up_left_h, down_right_h):
+        for i in range(up_left_h, down_right_h+1):
             sample_j = 0
-            for j in range(up_left_w, down_right_w):
+            for j in range(up_left_w, down_right_w+1):
                 self.values[sample_i][sample_j] = image[i][j][channel]
                 sample_j += 1
             sample_i += 1

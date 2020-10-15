@@ -41,6 +41,6 @@ def up_sample(init: Matrix, factor: int) -> Matrix:
             for row in newRows:
                 for k in range(factor):
                     row.append(init[i][j])
-        result.append(newRows)
+        result.extend(newRows)
 
     return result

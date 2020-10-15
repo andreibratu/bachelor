@@ -1,3 +1,4 @@
+import math
 from concurrent.futures.thread import ThreadPoolExecutor
 from typing import Tuple, List
 
@@ -51,12 +52,12 @@ class DecoderService:
 
     @staticmethod
     def _reconstruct_yuv_subregion(yuv: YUVImage, y_sample: Upsample, u_sample: Upsample, v_sample: Upsample):
-        assert (y_sample[1:] == u_sample[1:] == v_sample[1:], "Coordinates not aligned!")
         i, j = 0, 0  # Used  to iterate through the upsampled values
         up_left_h, up_left_w, down_right_h, down_right_w = y_sample[1:]
         # For loops for iterating through original image indices
-        for ii in range(up_left_h, down_right_h):
-            for jj in range(up_left_w, down_right_w):
+        for ii in range(up_left_h, down_right_h+1):
+            j = 0
+            for jj in range(up_left_w, down_right_w+1):
                 yuv[ii][jj] = y_sample[0][i][j], u_sample[0][i][j], v_sample[0][i][j]
                 j += 1
             i += 1
@@ -64,9 +65,9 @@ class DecoderService:
     @staticmethod
     def _reconstruct_yuv(yuv_channels: Tuple[List[Upsample], List[Upsample], List[Upsample]]) -> YUVImage:
         y, u, v = yuv_channels
+        # min_h, max_h are obviously equal to zero but whatever
         min_h, min_w, max_h, max_w = DecoderService._find_image_coords(y)
-        yuv = [[(0, 0, 0) for _ in range(min_w, max_w)] for _ in range(min_h, max_h)]
-        assert(len(y) == len(u) == len(v), "Channels contain different amount samples!")
+        yuv = [[(0, 0, 0) for _ in range(min_w, max_w+1)] for _ in range(min_h, max_h+1)]
         with ThreadPoolExecutor(max_workers=8) as executor:
             for y_sample, u_sample, v_sample in zip(y, u, v):
                 executor.submit(
@@ -82,10 +83,22 @@ class DecoderService:
         for i in range(top_left_h, bottom_right_h + 1):
             for j in range(top_left_w, bottom_right_w + 1):
                 y, u, v = yuv[i][j]
+                """
+                Y -> Y'
+                U -> Cb
+                V -> Cr
+                """
+                def _round_to_rgb_interval(x: float) -> int:
+                    if x < 0:
+                        return 0
+                    if x > 255:
+                        return 255
+                    return math.floor(x)
+
                 rgb[i][j] = (
-                    int(y + 1.402 * (v - 128)),
-                    int(y - 0.344136 * (u - 128) - 0.714136 * (v - 128)),
-                    int(y + 1.772 * (u - 128))
+                    _round_to_rgb_interval(y + 1.402 * (v - 128)),
+                    _round_to_rgb_interval(y - 0.344 * (u - 128) - 0.714 * (v - 128)),
+                    _round_to_rgb_interval(y + 1.772 * (u - 128))
                 )
 
     # noinspection DuplicatedCode

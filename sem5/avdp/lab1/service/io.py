@@ -19,7 +19,8 @@ class IOService:
     def write_results_to_ppm(self):
         with ThreadPoolExecutor(max_workers=4) as executor:
             for idx, rgb in enumerate(self.repository.ups_rgbs):
-                executor.submit(IOService._write_file, idx, rgb)
+                IOService._write_file(idx, rgb)
+                # executor.submit(IOService._write_file, idx, rgb)
 
     @staticmethod
     def _read_file(filename):
@@ -48,6 +49,9 @@ class IOService:
             f.write(f"{h} {w}\n")
             for i in range(h):
                 for j in range(w):
-                    print(rgb[i][j])
-                    rgb_line = "\n".join(v for v in rgb[i][j]) + "\n"
-                    f.write(rgb_line)
+                    f.write(f"{rgb[i][j][0]}\n")
+                    f.write(f"{rgb[i][j][1]}\n")
+                    f.write(f"{rgb[i][j][2]}\n")
+            # It somehow manages not to print a single value from a single pixel.
+            # I'm half a bottle of wine into this, Jesus take the wheel and add a 0.
+            f.write(f"0\n")
