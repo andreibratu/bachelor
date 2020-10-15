@@ -29,18 +29,6 @@ class DecoderService:
     def yuvs_to_rgbs(self):
         self.repository.ups_rgbs = list(map(DecoderService._yuv_to_rgb, self.repository.ups_yuvs))
 
-    def write_rgbs_to_ppm(self):
-        for idx, rgb in enumerate(self.repository.ups_rgbs):
-            h, w = len(rgb), len(rgb[0])
-            with open(f"ups_rgb_{idx}", "w+") as f:
-                f.write("P3\n")
-                f.write("# WRITTEN BY MY DUMBASS VIDEO DECODER")
-                f.write(f"{h} {w}\n")
-                for i in range(h):
-                    for j in range(w):
-                        rgb_line = "\n".join(v for v in rgb[i][j]) + "\n"
-                        f.write(rgb_line)
-
     @staticmethod
     def _get_upsample_info(sample: Sample) -> Upsample:
         """Get a sample's upsampled values and its coordinates in the original YUV image."""
@@ -62,7 +50,7 @@ class DecoderService:
         return first_sample[1], first_sample[2], last_sample[3], last_sample[4]
 
     @staticmethod
-    def _reconstruct_yuv_sector(yuv: YUVImage, y_sample: Upsample, u_sample: Upsample, v_sample: Upsample):
+    def _reconstruct_yuv_subregion(yuv: YUVImage, y_sample: Upsample, u_sample: Upsample, v_sample: Upsample):
         assert (y_sample[1:] == u_sample[1:] == v_sample[1:], "Coordinates not aligned!")
         i, j = 0, 0  # Used  to iterate through the upsampled values
         up_left_h, up_left_w, down_right_h, down_right_w = y_sample[1:]
@@ -81,12 +69,16 @@ class DecoderService:
         assert(len(y) == len(u) == len(v), "Channels contain different amount samples!")
         with ThreadPoolExecutor(max_workers=8) as executor:
             for y_sample, u_sample, v_sample in zip(y, u, v):
-                executor.submit(DecoderService._reconstruct_yuv_sector, yuv, y_sample, u_sample, v_sample)
+                executor.submit(
+                    DecoderService._reconstruct_yuv_subregion,
+                    yuv, y_sample, u_sample, v_sample
+                )
         return yuv
 
     @staticmethod
-    def _divide_conquer_rgb_conv_task(yuv: YUVImage, rgb: RGBImage, top_left_h: int,
-                                      top_left_w: int, bottom_right_h: int, bottom_right_w: int):
+    def yuv_to_rgb_conv_subtask(yuv: YUVImage, rgb: RGBImage, top_left_h: int,
+                                top_left_w: int, bottom_right_h: int, bottom_right_w: int):
+        """Convert coordinates defined subregion of YUV image to RGB in parallel."""
         for i in range(top_left_h, bottom_right_h + 1):
             for j in range(top_left_w, bottom_right_w + 1):
                 y, u, v = yuv[i][j]
@@ -109,7 +101,7 @@ class DecoderService:
                     bot_right_h = min(top_left_h + h_step - 1, h - 1)
                     bot_right_w = min(top_left_w + w_step - 1, w - 1)
                     executor.submit(
-                        DecoderService._divide_conquer_rgb_conv_task, yuv, rgb,
+                        DecoderService.yuv_to_rgb_conv_subtask, yuv, rgb,
                         top_left_h, top_left_w, bot_right_h, bot_right_w
                     )
         return rgb

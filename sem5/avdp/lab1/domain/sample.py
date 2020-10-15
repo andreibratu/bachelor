@@ -41,5 +41,5 @@ class Sample:
         return self.upsample(self.values)
 
 
-SampledChannel = List[Sample]
-SampledYUV = Tuple[SampledChannel, SampledChannel, SampledChannel]
+# One list for each channel
+SampledYUV = Tuple[List[Sample], List[Sample], List[Sample]]

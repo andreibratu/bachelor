@@ -1,6 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import List
 
-from domain.sample import Sample, SampledChannel, SampledYUV
+from domain.sample import Sample, SampledYUV
 from domain.types import RGBImage, YUVImage, Convolution
 from repository.ppm_repository import PPMRepository
 from service.convolutions import identity, average_2d, up_sample
@@ -30,14 +31,15 @@ class EncoderService:
                     bot_right_h = min(top_left_h + h_step - 1, h - 1)
                     bot_right_w = min(top_left_w + w_step - 1, w - 1)
                     executor.submit(
-                        EncoderService._divide_conquer_yuv_conv_task, rgb, yuv,
+                        EncoderService._rgb_to_yuv_conv_subtask, rgb, yuv,
                         top_left_h, top_left_w, bot_right_h, bot_right_w
                     )
         return yuv
 
     @staticmethod
-    def _divide_conquer_yuv_conv_task(rgb: RGBImage, yuv: YUVImage, top_left_h: int,
-                                      top_left_w: int, bottom_right_h: int, bottom_right_w: int):
+    def _rgb_to_yuv_conv_subtask(rgb: RGBImage, yuv: YUVImage, top_left_h: int,
+                                 top_left_w: int, bottom_right_h: int, bottom_right_w: int):
+        """Convert coordinates defined subregion of RGB image to YUV in parallel."""
         for i in range(top_left_h, bottom_right_h + 1):
             for j in range(top_left_w, bottom_right_w + 1):
                 r, g, b = rgb[i][j]
@@ -79,7 +81,7 @@ class EncoderService:
 
     @staticmethod
     def _extract_channel(image: YUVImage, channel: int, dim: int,
-                         subsample: Convolution, upsample: Convolution) -> SampledChannel:
+                         subsample: Convolution, upsample: Convolution) -> List[Sample]:
         h, w = len(image), len(image[0])
         samples = []
         for up_left_h in range(0, h, dim):
@@ -92,6 +94,6 @@ class EncoderService:
                     up_left_w, down_right_h, down_right_w,
                     subsample, upsample
                 )
-                sample.subsample()
+                sample.apply_subsample()
                 samples.append(sample)
         return samples

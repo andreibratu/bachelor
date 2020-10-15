@@ -3,10 +3,15 @@ from domain.types import Matrix
 
 
 def identity(init: Matrix) -> Matrix:
+    """Return copy of initial matrix."""
     return deepcopy(init)
 
 
 def average_2d(init: Matrix, convSize: int) -> Matrix:
+    """Reduce each convSize by convSize area from init Matrix into one square by averaging.
+
+    Effectively condenses init matrix by a factor of `convSize`.
+    """
     h, w = len(init), len(init[0])
     result = []
 
@@ -26,6 +31,7 @@ def average_2d(init: Matrix, convSize: int) -> Matrix:
 
 
 def up_sample(init: Matrix, factor: int) -> Matrix:
+    """Expand each value from init Matrix into `factor` by `factor` sized area in final result."""
     h, w = len(init), len(init[0])
     result = []
 
@@ -35,5 +41,6 @@ def up_sample(init: Matrix, factor: int) -> Matrix:
             for row in newRows:
                 for k in range(factor):
                     row.append(init[i][j])
+        result.append(newRows)
 
     return result
