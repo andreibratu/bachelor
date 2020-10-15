@@ -22,9 +22,8 @@ class PPMRepository:
         return image
 
     def __init__(self, filenames):
-        self.rgbs = []
-        self.yuvs = []
-        self.samples = []
+        self.rgbs, self.yuvs, self.samples = [], [], []
+        self.upsamples, self.ups_yuvs, self.ups_rgbs = [], [], []
         with ThreadPoolExecutor(max_workers=5) as executor:
             futures = [executor.submit(PPMRepository.read_file, fn) for idx, fn in enumerate(filenames)]
             self.rgbs = [future.result() for future in futures]

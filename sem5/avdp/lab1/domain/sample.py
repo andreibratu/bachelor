@@ -34,8 +34,11 @@ class Sample:
 
     __rep__ = __str__
 
-    def apply_subsampling(self):
-        self.values = self.upsample(self.values)
+    def apply_subsample(self):
+        self.values = self.subsample(self.values)
+
+    def get_upsample(self):
+        return self.upsample(self.values)
 
 
 SampledChannel = List[Sample]

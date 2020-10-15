@@ -1,7 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from domain.sample import Sample, SampledChannel, SampledYUV
-from domain.types import RGBPixel, YUVPixel, RGBImage, YUVImage, Convolution
+from domain.types import RGBImage, YUVImage, Convolution
 from repository.ppm_repository import PPMRepository
 from service.convolutions import identity, average_2d, up_sample
 
@@ -17,13 +17,14 @@ class EncoderService:
     def subsample(self):
         self.repository.samples = list(map(EncoderService._subsample_yuv, self.repository.yuvs))
 
+    # noinspection DuplicatedCode
     @staticmethod
     def _rgb_image_to_yuv_image(rgb: RGBImage) -> YUVImage:
         h, w = len(rgb), len(rgb[0])
         h_step, w_step = h // 8, w // 8
         yuv = [[(0, 0, 0) for _ in range(w)] for _ in range(h)]
 
-        with ThreadPoolExecutor(max_workers=5) as executor:
+        with ThreadPoolExecutor(max_workers=8) as executor:
             for top_left_h in range(0, h, h_step):
                 for top_left_w in range(0, w, w_step):
                     bot_right_h = min(top_left_h + h_step - 1, h - 1)
@@ -39,16 +40,12 @@ class EncoderService:
                                       top_left_w: int, bottom_right_h: int, bottom_right_w: int):
         for i in range(top_left_h, bottom_right_h + 1):
             for j in range(top_left_w, bottom_right_w + 1):
-                yuv[i][j] = rgb[i][j]
-
-    @staticmethod
-    def _rgb_pixel_to_yuv_pixel(pixel: RGBPixel) -> YUVPixel:
-        r, g, b = pixel
-        return (
-            0.299 * r + 0.587 * g + 0.114 * b,
-            128 - 0.1687 * r - 0.3312 * g + 0.5 * b,
-            128 + 0.5 * r - 0.4186 * g - 0.0813 * b
-        )
+                r, g, b = rgb[i][j]
+                yuv[i][j] = (
+                    0.299 * r + 0.587 * g + 0.114 * b,
+                    128 - 0.168736 * r - 0.331264 * g + 0.5 * b,
+                    128 + 0.5 * r - 0.418688 * g - 0.081312 * b
+                )
 
     @staticmethod
     def _subsample_yuv(image: YUVImage) -> SampledYUV:
@@ -95,6 +92,6 @@ class EncoderService:
                     up_left_w, down_right_h, down_right_w,
                     subsample, upsample
                 )
-                sample.apply_subsampling()
+                sample.subsample()
                 samples.append(sample)
         return samples
