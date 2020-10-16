@@ -11,6 +11,9 @@
 *.gch
 *.pch
 
+# Images
+*.ppm
+
 # Compiled Dynamic libraries
 *.so
 *.dylib
