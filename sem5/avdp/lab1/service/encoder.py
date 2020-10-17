@@ -4,7 +4,9 @@ from typing import List
 from domain.sample import Sample, SampledYUV
 from domain.types import RGBImage, YUVImage, Convolution
 from repository.ppm_repository import PPMRepository
-from service.convolutions import identity, average_2d, up_sample
+from helper.convolutions import identity, average_2d, up_sample
+from helper.math import forward_dct, component_wise_division
+from helper.quants import Q
 
 
 class EncoderService:
@@ -17,6 +19,20 @@ class EncoderService:
 
     def subsample(self):
         self.repository.samples = list(map(EncoderService._subsample_yuv, self.repository.yuvs))
+
+    def quantizize(self):
+        # 8x8 blocks are required for DCT - upsample Cb and Cr channels
+        for sampled_yuv in self.repository.samples:
+            for channel in range(1, 3):
+                for sample in sampled_yuv[channel]:
+                    sample.values = sample.get_upsample()
+                    # Sample is now in 8x8 format, no need to upsample again in decoder
+                    sample.upsample = identity
+            for channel in sampled_yuv:
+                for sample in channel:
+                    quant_values = forward_dct(sample.values)
+                    quant_values = component_wise_division(quant_values, Q)
+                    sample.values = quant_values
 
     # noinspection DuplicatedCode
     @staticmethod
@@ -44,9 +60,9 @@ class EncoderService:
             for j in range(top_left_w, bottom_right_w + 1):
                 r, g, b = rgb[i][j]
                 yuv[i][j] = (
-                    0 + (0.299 * r) + (0.587 * g) + (0.114 * b),
-                    128 - (0.169 * r) - (0.331 * g) + (0.4999 * b),
-                    128 + (0.499 * r) - (0.418 * g) - (0.0813 * b)
+                    0.299 * r + 0.587 * g + 0.114 * b,
+                    -0.147 * r - 0.289 * g + 0.436 * b,
+                    0.615 * r - 0.515 * g - 0.100 * b
                 )
 
     @staticmethod
@@ -67,6 +83,10 @@ class EncoderService:
             ))
             for future in as_completed(futures):
                 result.append(future.result())
+        # Executor seems not to guarantee order of the futures; that or I messed up somewhere above
+        # Anyways, big sort incoming
+        result.sort(key=lambda ch: {'y': 0, 'u': 1, 'v': 2}[ch[0].channel])
+        assert result[0][0].channel == 'y' and result[1][0].channel == 'u' and result[2][0].channel == 'v'
         return tuple(result)
 
     @staticmethod

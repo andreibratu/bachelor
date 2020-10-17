@@ -53,5 +53,5 @@ class IOService:
                     f.write(f"{rgb[i][j][1]}\n")
                     f.write(f"{rgb[i][j][2]}\n")
             # It somehow manages not to print a single value from a single pixel.
-            # I'm half a bottle of wine into this, Jesus take the wheel and add a 0.
-            f.write(f"0\n")
+            # I'm half a bottle of wine into this, Jesus take the wheel and add a 255.
+            f.write(f"255\n")

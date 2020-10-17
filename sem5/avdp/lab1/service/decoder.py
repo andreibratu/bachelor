@@ -4,6 +4,8 @@ from typing import Tuple, List
 
 from domain.sample import Sample
 from domain.types import Matrix, YUVImage, RGBImage
+from helper.math import component_wise_multiplication, inverse_dct
+from helper.quants import Q
 from repository.ppm_repository import PPMRepository
 
 Upsample = Tuple[Matrix, int, int, int, int]
@@ -16,9 +18,9 @@ class DecoderService:
 
     def upsample(self):
         for sampled_yuv_chns in self.repository.samples:
-            self.repository.upsamples.append(
+             self.repository.upsamples.append(
                 (
-                    list(map(DecoderService._get_upsample_info, sampled_yuv_chns[0])),
+                     list(map(DecoderService._get_upsample_info, sampled_yuv_chns[0])),
                     list(map(DecoderService._get_upsample_info, sampled_yuv_chns[1])),
                     list(map(DecoderService._get_upsample_info, sampled_yuv_chns[2]))
                 )
@@ -29,6 +31,14 @@ class DecoderService:
 
     def yuvs_to_rgbs(self):
         self.repository.ups_rgbs = list(map(DecoderService._yuv_to_rgb, self.repository.ups_yuvs))
+
+    def dequantizize(self):
+        for quant_yuv in self.repository.samples:
+            for channel in quant_yuv:
+                for sample in channel:
+                    dequant_values = component_wise_multiplication(sample.values, Q)
+                    dequant_values = inverse_dct(dequant_values)
+                    sample.values = dequant_values
 
     @staticmethod
     def _get_upsample_info(sample: Sample) -> Upsample:
@@ -83,11 +93,7 @@ class DecoderService:
         for i in range(top_left_h, bottom_right_h + 1):
             for j in range(top_left_w, bottom_right_w + 1):
                 y, u, v = yuv[i][j]
-                """
-                Y -> Y'
-                U -> Cb
-                V -> Cr
-                """
+
                 def _round_to_rgb_interval(x: float) -> int:
                     if x < 0:
                         return 0
@@ -96,9 +102,9 @@ class DecoderService:
                     return math.floor(x)
 
                 rgb[i][j] = (
-                    _round_to_rgb_interval(y + 1.402 * (v - 128)),
-                    _round_to_rgb_interval(y - 0.344 * (u - 128) - 0.714 * (v - 128)),
-                    _round_to_rgb_interval(y + 1.772 * (u - 128))
+                    _round_to_rgb_interval(y + 1.140 * v),
+                    _round_to_rgb_interval(y - 0.395 * u - 0.581 * v),
+                    _round_to_rgb_interval(y + 2.032 * u)
                 )
 
     # noinspection DuplicatedCode
