@@ -3,7 +3,7 @@
 #include <cassert>
 #include <thread>
 #include "Queue.hpp"
-#include "random_service.hpp"
+#include "util.hpp"
 
 void produce(Queue<double>& queue, const std::vector<double>& vec_one, const std::vector<double>& vec_two)
 {
@@ -29,10 +29,10 @@ void consume(Queue<double>& queue)
         }
         sum += value;
     }
-    std::cout << sum << '\n';
+    std::cout << "SMART PRODUCT " << sum << '\n';
 }
 
-void submit_task(Queue<double> &buffer, std::vector<double> &one, std::vector<double> &two)
+void smart_product(Queue<double> &buffer, std::vector<double> &one, std::vector<double> &two)
 {
     std::thread first([&](){produce(buffer, one, two);});
     std::thread second([&buffer](){consume(buffer);});
@@ -40,18 +40,31 @@ void submit_task(Queue<double> &buffer, std::vector<double> &one, std::vector<do
     second.join();
 }
 
-int main() {
-    auto buffer = Queue<double>(100);
-    std::vector<double> vec_one = {1, 2, 3};
-    std::vector<double> vec_two = {4, 5, 6};
-    submit_task(buffer, vec_one, vec_two);
-    vec_one.resize(0);
-    vec_two.resize(0);
-    for (int i = 0; i < 1000000; i++)
+void dumb_product(std::vector<double> &one, std::vector<double> &two)
+{
+    assert(one.size() == two.size());
+    double product = 0;
+    for(int i = 0; i < one.size(); i++)
     {
-        vec_one.push_back(my_rand(0., 50.));
-        vec_two.push_back(my_rand(0., 50.));
+        product += one[i] * two[i];
     }
-    submit_task(buffer, vec_one, vec_two);
+    std::cout << "DUMB PRODUCT " << product << '\n';
+}
+
+int main()
+{
+    auto buffer = Queue<double>(100);
+    std::vector<double> vec_one = make_random_vector(1000000);
+    std::vector<double> vec_two = make_random_vector(1000000);
+
+    std::cout << time_execution_seconds(
+            [&vec_one, &vec_two]()
+            {
+                dumb_product(vec_one, vec_two);
+            }) << '\n';
+    std::cout << time_execution_seconds(
+            [&vec_one, &vec_two, &buffer](){
+                smart_product(buffer, vec_one, vec_two);
+            }) << '\n';
     return 0;
 }
