@@ -46,7 +46,7 @@ Matrix make_result_matrix(const Matrix &a, const Matrix &b)
 
     double make_random_double(double lo, double hi)
     {
-        double f = (double)rand() / RAND_MAX;
+        double f = (double)rand() / RAND_MAX; // NOLINT(cert-msc50-cpp)
         return lo + f * (hi - lo);
     }
 
