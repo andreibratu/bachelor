@@ -6,14 +6,14 @@ from domain.sample import Sample
 from domain.types import Matrix, YUVImage, RGBImage
 from helper.math import component_wise_multiplication, inverse_dct
 from helper.quants import Q
-from repository.ppm_repository import PPMRepository
+from repository.repository import Repository
 
 Upsample = Tuple[Matrix, int, int, int, int]
 
 
 class DecoderService:
 
-    def __init__(self, repo: PPMRepository):
+    def __init__(self, repo: Repository):
         self.repository = repo
 
     def upsample(self):
@@ -39,6 +39,46 @@ class DecoderService:
                     dequant_values = component_wise_multiplication(sample.values, Q)
                     dequant_values = inverse_dct(dequant_values)
                     sample.values = dequant_values
+
+    def decode(self):
+        for encoded_img in self.repository.bytes:
+            y_samples, u_samples, v_samples = [], [], []
+            bytes_iter = iter(encoded_img)
+            flag = 0
+            try:
+                while True:
+                    values = DecoderService._decode_sample(bytes_iter)
+
+            except StopIteration:
+                # Iterator was exhausted, as did my patience
+                pass
+
+    @staticmethod
+    def _decode_sample(bytes_iter: iter) -> Matrix:
+        decoded_walk = []
+        # Read first number
+        first_size = DecoderService._read_integer(bytes_iter, 1)
+        decoded_walk.append(DecoderService._read_integer(bytes, first_size))
+        while True:
+            # Read until two zero bytes are reached
+            count_zero = DecoderService._read_integer(bytes_iter, 1)
+            size = DecoderService._read_integer(bytes_iter, 1)
+            if count_zero == 0 and size == 0:
+                break
+            decoded_walk.extend([0 for _ in range(count_zero)])
+            decoded_walk.append(DecoderService._read_integer(bytes_iter, size))
+        # Encoding will not include ending zeros, add them if needed
+        decoded_walk.extend([0 for _ in range(64 - len(decoded_walk))])
+        assert len(decoded_walk) == 64
+
+
+    @staticmethod
+    def _read_integer(bytes_iter: iter, int_size: int) -> int:
+        """Read int_size bytes from iterator and """
+        int_bytes = bytes(0)
+        for _ in range(int_size):
+            int_bytes += next(bytes_iter)
+        return int.from_bytes(int_bytes, "big", signed=True)
 
     @staticmethod
     def _get_upsample_info(sample: Sample) -> Upsample:
