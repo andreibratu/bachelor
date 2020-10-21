@@ -24,8 +24,10 @@ with open(file_input, "r") as fp:
 parsed = []
 for substr in content:
     extension = [substr]
+    # Handle "my_var;" or "int;\n"
     if extension[0][-1] in [":", ";", ","]:
         extension = [substr[:-1], substr[-1]]
+    # Array declaration edge case
     if "[" in extension[0] and "]" in extension[0]:
         idx_p_start = extension[0].find("[")
         idx_p_end = extension[0].find("]")
@@ -37,6 +39,8 @@ for substr in content:
             "]",
             extension[0][idx_p_end + 1 :],
         ] + extension[1:]
+    # Next 2 cases handle first and last element from array in-line decl
+    # "[4", "5]"
     elif "[" in extension[0]:
         extension = ["[", extension[0][1:]] + extension[1:]
     elif "]" in extension[0]:
