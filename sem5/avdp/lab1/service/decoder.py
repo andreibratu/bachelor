@@ -32,7 +32,7 @@ class DecoderService:
     def yuvs_to_rgbs(self):
         self.repository.ups_rgbs = list(map(DecoderService._yuv_to_rgb, self.repository.ups_yuvs))
 
-    def dequantizize(self):
+    def dequantisize(self):
         for quant_yuv in self.repository.samples:
             for channel in quant_yuv:
                 for sample in channel:

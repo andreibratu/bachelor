@@ -33,6 +33,8 @@ class IOService:
 
             height, width = [int(v) for v in f.readline().split()]
             image = [[None for _ in range(width)] for _ in range(height)]
+            # Skip max value of pixels - assumed 255
+            next(f)
             for i in range(height):
                 for j in range(width):
                     r, g, b = [int(v) for v in [f.readline(), f.readline(), f.readline()]]
@@ -47,11 +49,9 @@ class IOService:
             f.write("P3\n")
             f.write("# WRITTEN BY MY DUMBASS VIDEO DECODER\n")
             f.write(f"{h} {w}\n")
+            f.write(f"{255}\n")
             for i in range(h):
                 for j in range(w):
                     f.write(f"{rgb[i][j][0]}\n")
                     f.write(f"{rgb[i][j][1]}\n")
                     f.write(f"{rgb[i][j][2]}\n")
-            # It somehow manages not to print a single value from a single pixel.
-            # I'm half a bottle of wine into this, Jesus take the wheel and add a 255.
-            f.write(f"255\n")

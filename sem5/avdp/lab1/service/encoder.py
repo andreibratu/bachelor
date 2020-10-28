@@ -20,7 +20,7 @@ class EncoderService:
     def subsample(self):
         self.repository.samples = list(map(EncoderService._subsample_yuv, self.repository.yuvs))
 
-    def quantizize(self):
+    def quantisize(self):
         # 8x8 blocks are required for DCT - upsample Cb and Cr channels
         for sampled_yuv in self.repository.samples:
             for channel in range(1, 3):
