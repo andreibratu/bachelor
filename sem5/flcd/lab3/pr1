@@ -1,20 +1,20 @@
 BEGIN
 
-a : int;
-b : int;
-c : int;
-d : str;
+a: int[100];
+b: int;
+c: int;
+d: str;
 
-d <- 'abb';
+d <- "abc";
 
 read a;
 read b;
 read c;
 
-max1 <- -1;
+max1 <- +0;
 max2 <- -1;
 
-if a < b do
+if a < (-10 + 5 ) do
     max1 <- b;
 fi
 else do

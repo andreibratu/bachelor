@@ -4,8 +4,8 @@
 )
 :
 ;
-,
 .
+,
 <-
 <
 <=
@@ -32,5 +32,3 @@ esle
 for
 rof
 do
-BEGIN
-END

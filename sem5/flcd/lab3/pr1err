@@ -8,7 +8,7 @@ read a;
 read b;
 aux <- 0
 
-if b > a do
+if b >= a do
     aux <- a;
     a <- b;
     b $ 1aux;
