@@ -72,12 +72,15 @@ class EncoderService:
         avg_conv = lambda img: average_2d(img, 2)
         up_conv = lambda img: up_sample(img, 2)
         with ThreadPoolExecutor(max_workers=3) as executor:
+            # Extract Y channel
             futures.append(executor.submit(
                 EncoderService._extract_channel, image, 0, 8, identity, identity
             ))
+            # Extract U channel
             futures.append(executor.submit(
                 EncoderService._extract_channel, image, 1, 8, avg_conv, up_conv
             ))
+            # Extract V channel
             futures.append(executor.submit(
                 EncoderService._extract_channel, image, 2, 8, avg_conv, up_conv
             ))

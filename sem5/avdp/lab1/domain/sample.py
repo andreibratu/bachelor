@@ -19,6 +19,7 @@ class Sample:
 
         h_size = down_right_h - up_left_h + 1
         w_size = down_right_w - up_left_w + 1
+        assert h_size == w_size == 8
         self.values = [[0 for _ in range(w_size)] for _ in range(h_size)]
 
         sample_i = 0
@@ -28,6 +29,7 @@ class Sample:
                 self.values[sample_i][sample_j] = image[i][j][channel]
                 sample_j += 1
             sample_i += 1
+        assert sample_i == 8
 
     def __str__(self):
         print(self.values)

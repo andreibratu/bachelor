@@ -18,9 +18,9 @@ class DecoderService:
 
     def upsample(self):
         for sampled_yuv_chns in self.repository.samples:
-             self.repository.upsamples.append(
+            self.repository.upsamples.append(
                 (
-                     list(map(DecoderService._get_upsample_info, sampled_yuv_chns[0])),
+                    list(map(DecoderService._get_upsample_info, sampled_yuv_chns[0])),
                     list(map(DecoderService._get_upsample_info, sampled_yuv_chns[1])),
                     list(map(DecoderService._get_upsample_info, sampled_yuv_chns[2]))
                 )
@@ -65,9 +65,9 @@ class DecoderService:
         i, j = 0, 0  # Used  to iterate through the upsampled values
         up_left_h, up_left_w, down_right_h, down_right_w = y_sample[1:]
         # For loops for iterating through original image indices
-        for ii in range(up_left_h, down_right_h+1):
+        for ii in range(up_left_h, down_right_h + 1):
             j = 0
-            for jj in range(up_left_w, down_right_w+1):
+            for jj in range(up_left_w, down_right_w + 1):
                 yuv[ii][jj] = y_sample[0][i][j], u_sample[0][i][j], v_sample[0][i][j]
                 j += 1
             i += 1
@@ -77,14 +77,33 @@ class DecoderService:
         y, u, v = yuv_channels
         # min_h, max_h are obviously equal to zero but whatever
         min_h, min_w, max_h, max_w = DecoderService._find_image_coords(y)
-        yuv = [[(0, 0, 0) for _ in range(min_w, max_w+1)] for _ in range(min_h, max_h+1)]
-        with ThreadPoolExecutor(max_workers=8) as executor:
-            for y_sample, u_sample, v_sample in zip(y, u, v):
+        assert min_w == min_h == 0
+        yuv = [[(0, 0, 0) for _ in range(min_w, max_w + 1)] for _ in range(min_h, max_h + 1)]
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            for idx in range(len(y)):
                 executor.submit(
                     DecoderService._reconstruct_yuv_subregion,
-                    yuv, y_sample, u_sample, v_sample
+                    yuv, y[idx], u[idx], v[idx]
                 )
         return yuv
+
+    # noinspection DuplicatedCode
+    @staticmethod
+    def _yuv_to_rgb(yuv: YUVImage) -> RGBImage:
+        h, w = len(yuv), len(yuv[0])
+        h_step, w_step = h // 8, w // 8
+        rgb = [[(0, 0, 0) for _ in range(w)] for _ in range(h)]
+
+        with ThreadPoolExecutor(max_workers=8) as executor:
+            for top_left_h in range(0, h, h_step):
+                for top_left_w in range(0, w, w_step):
+                    bot_right_h = top_left_h + h_step - 1
+                    bot_right_w = top_left_w + w_step - 1
+                    executor.submit(
+                        DecoderService.yuv_to_rgb_conv_subtask, yuv, rgb,
+                        top_left_h, top_left_w, bot_right_h, bot_right_w
+                    )
+        return rgb
 
     @staticmethod
     def yuv_to_rgb_conv_subtask(yuv: YUVImage, rgb: RGBImage, top_left_h: int,
@@ -106,21 +125,3 @@ class DecoderService:
                     _round_to_rgb_interval(y - 0.395 * u - 0.581 * v),
                     _round_to_rgb_interval(y + 2.032 * u)
                 )
-
-    # noinspection DuplicatedCode
-    @staticmethod
-    def _yuv_to_rgb(yuv: YUVImage) -> RGBImage:
-        h, w = len(yuv), len(yuv[0])
-        h_step, w_step = h // 8, w // 8
-        rgb = [[(0, 0, 0) for _ in range(w)] for _ in range(h)]
-
-        with ThreadPoolExecutor(max_workers=8) as executor:
-            for top_left_h in range(0, h, h_step):
-                for top_left_w in range(0, w, w_step):
-                    bot_right_h = min(top_left_h + h_step - 1, h - 1)
-                    bot_right_w = min(top_left_w + w_step - 1, w - 1)
-                    executor.submit(
-                        DecoderService.yuv_to_rgb_conv_subtask, yuv, rgb,
-                        top_left_h, top_left_w, bot_right_h, bot_right_w
-                    )
-        return rgb

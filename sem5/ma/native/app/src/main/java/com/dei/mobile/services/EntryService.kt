@@ -9,7 +9,7 @@ import javax.inject.Singleton
 class EntryService constructor(private val repository: Repository)
 {
     private var entry: EntryDTO = EntryDTO(null, null, null, null, null)
-    public var isCreate = true
+    var isCreate = true
 
     val entries: List<Entry>
         get() = repository.getEntries()

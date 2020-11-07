@@ -31,7 +31,7 @@ class IOService:
             next(f)
             next(f)
 
-            height, width = [int(v) for v in f.readline().split()]
+            width, height = [int(v) for v in f.readline().split()]
             image = [[None for _ in range(width)] for _ in range(height)]
             # Skip max value of pixels - assumed 255
             next(f)
@@ -48,7 +48,7 @@ class IOService:
         with open(f"ups_rgb_{idx}.ppm", "w+") as f:
             f.write("P3\n")
             f.write("# WRITTEN BY MY DUMBASS VIDEO DECODER\n")
-            f.write(f"{h} {w}\n")
+            f.write(f"{w} {h}\n")
             f.write(f"{255}\n")
             for i in range(h):
                 for j in range(w):
