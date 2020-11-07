@@ -4,11 +4,11 @@ import com.dei.mobile.domain.Entry
 
 interface Repository
 {
-    fun getEntries(): MutableList<Entry>
+    suspend fun getEntries(): MutableList<Entry>
 
-    fun addEntry(entry: Entry)
+    suspend fun addEntry(entry: Entry): Long
 
-    fun deleteEntry(idx: Int)
+    suspend fun deleteEntry(idx: Int)
 
-    fun editEntry(idx: Int, editedEntry: Entry)
+    suspend fun editEntry(idx: Int, editedEntry: Entry)
 }

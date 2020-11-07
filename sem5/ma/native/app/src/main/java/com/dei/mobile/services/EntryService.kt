@@ -11,10 +11,12 @@ class EntryService constructor(private val repository: Repository)
     private var entry: EntryDTO = EntryDTO(null, null, null, null, null)
     var isCreate = true
 
-    val entries: List<Entry>
-        get() = repository.getEntries()
+    suspend fun getEntries(): List<Entry>
+    {
+        return repository.getEntries()
+    }
 
-    fun deleteEntry(idx: Int)
+    suspend fun deleteEntry(idx: Int)
     {
         repository.deleteEntry(idx)
     }
@@ -29,13 +31,15 @@ class EntryService constructor(private val repository: Repository)
         return this.entry
     }
 
-    fun submitEntry(currEntry: EntryDTO)
+    suspend fun submitEntry(currEntry: EntryDTO): Long
     {
-        if (this.isCreate)
+        var id: Long
+        if (isCreate)
         {
-            this.repository.addEntry(
+            val size = repository.getEntries().size
+            id = repository.addEntry(
                 Entry(
-                    0,
+                    size,
                     currEntry.entryTitle!!,
                     currEntry.entryText!!,
                     currEntry.entryDate!!,
@@ -44,7 +48,8 @@ class EntryService constructor(private val repository: Repository)
         }
         else
         {
-            this.repository.editEntry(currEntry.position!!, Entry(
+            id = currEntry.position!!.toLong()
+            repository.editEntry(currEntry.position!!, Entry(
                 null,
                 currEntry.entryTitle!!,
                 currEntry.entryText!!,
@@ -52,5 +57,6 @@ class EntryService constructor(private val repository: Repository)
                 currEntry.color!!
             ))
         }
+        return id
     }
 }

@@ -6,23 +6,35 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.dei.mobile.BuildConfig
 import com.dei.mobile.R
 import com.dei.mobile.dagger.DIApplication
+import com.dei.mobile.domain.Entry
 import com.dei.mobile.services.ColorService
 import com.dei.mobile.services.EntryService
+import com.dei.mobile.services.NetworkService
 import com.madrapps.pikolo.ColorPicker
 import com.madrapps.pikolo.listeners.SimpleColorSelectionListener
+import io.ktor.util.*
+import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 
-class AddEditEntryActivity : AppCompatActivity()
+@KtorExperimentalAPI
+class AddEditEntryActivity : AppCompatActivity(), CoroutineScope
 {
     @Inject lateinit var entryService: EntryService
+    @Inject lateinit var networkService: NetworkService
+    private lateinit var job: Job
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
+        job = Job()
         setContentView(R.layout.activity_add_edit_entry)
 
         val applicationRef = applicationContext as DIApplication
@@ -53,6 +65,8 @@ class AddEditEntryActivity : AppCompatActivity()
         layoutTitle.text = if (isCreate) "Add entry" else "Edit entry"
         submitButton.text = if (isCreate) "Create" else "Edit"
 
+        entryService.getCurrentEntry()!!.color?.let { colorPicker.setColor(it) }
+
         colorPicker.setColorSelectionListener(object :
             SimpleColorSelectionListener() {
             override fun onColorSelected(color: Int)
@@ -72,15 +86,51 @@ class AddEditEntryActivity : AppCompatActivity()
         })
 
         submitButton.setOnClickListener {
-            val currEntry = entryService.getCurrentEntry()!!
-            currEntry.entryTitle = entryTitle.text.toString()
-            currEntry.entryText = entryText.text.toString()
-            currEntry.color = currentColor
-            currEntry.entryDate = Calendar.getInstance()
-            entryService.submitEntry(currEntry)
-            val intent = Intent()
-            setResult(RESULT_OK, intent)
-            finish()
+            runBlocking {
+                job = launch(Dispatchers.IO){
+                    val currEntry = entryService.getCurrentEntry()!!
+                    currEntry.entryTitle = entryTitle.text.toString()
+                    currEntry.entryText = entryText.text.toString()
+                    currEntry.color = currentColor
+                    currEntry.entryDate = Calendar.getInstance()
+                    val id = entryService.submitEntry(currEntry)
+                    if (entryService.isCreate)
+                    {
+                        if(networkService.isServerUp())
+                        {
+                            networkService.postEntry(Entry(
+                                uid = id.toInt(),
+                                entryText = currEntry.entryText!!,
+                                entryTitle = currEntry.entryTitle!!,
+                                entryDate = currEntry.entryDate!!,
+                                color = currEntry.color!!
+                            ))
+                        }
+                    }
+                    else
+                    {
+                        if (BuildConfig.DEBUG && !networkService.isServerUp()) {
+                            error("Assertion failed")
+                        }
+                        networkService.updateEntry(Entry(
+                            uid = id.toInt(),
+                            entryText = currEntry.entryText!!,
+                            entryTitle = currEntry.entryTitle!!,
+                            entryDate = currEntry.entryDate!!,
+                            color = currEntry.color!!
+                        ))
+                    }
+                }
+                job.join()
+                val intent = Intent()
+                setResult(RESULT_OK, intent)
+                finish()
+            }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 }

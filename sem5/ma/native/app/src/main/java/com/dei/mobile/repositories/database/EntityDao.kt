@@ -13,7 +13,7 @@ interface EntityDao
     fun update(entry: Entry)
 
     @Insert
-    fun insertAll(vararg entries: Entry)
+    fun insertAll(vararg entries: Entry): List<Long>
 
     @Query("UPDATE entries SET entry_title = :entry_title, entry_text = :entry_text, color_mask = :color_mask WHERE uid = :id")
     fun update(id: Int, entry_title: String, entry_text: String, color_mask: Int)

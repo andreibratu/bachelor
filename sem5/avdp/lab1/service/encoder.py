@@ -86,8 +86,11 @@ class EncoderService:
             ))
             for future in as_completed(futures):
                 result.append(future.result())
+<<<<<<< Updated upstream
         # Executor seems not to guarantee order of the futures; that or I messed up somewhere above
         # Anyways, big sort incoming
+=======
+>>>>>>> Stashed changes
         result.sort(key=lambda ch: {'y': 0, 'u': 1, 'v': 2}[ch[0].channel])
         assert result[0][0].channel == 'y' and result[1][0].channel == 'u' and result[2][0].channel == 'v'
         return tuple(result)

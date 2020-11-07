@@ -87,6 +87,30 @@ class DecoderService:
                 )
         return yuv
 
+<<<<<<< Updated upstream
+=======
+    @staticmethod
+    def yuv_to_rgb_conv_subtask(yuv: YUVImage, rgb: RGBImage, top_left_h: int,
+                                top_left_w: int, bottom_right_h: int, bottom_right_w: int):
+        """Convert coordinates defined subregion of YUV image to RGB in parallel."""
+        for i in range(top_left_h, bottom_right_h + 1):
+            for j in range(top_left_w, bottom_right_w + 1):
+                y, u, v = yuv[i][j]
+
+                def _round_to_rgb_interval(x: float) -> int:
+                    if x < 0:
+                        return 0
+                    if x > 255:
+                        return 255
+                    return math.floor(x)
+
+                rgb[i][j] = (
+                    _round_to_rgb_interval(y + 1.140 * v),
+                    _round_to_rgb_interval(y - 0.395 * u - 0.581 * v),
+                    _round_to_rgb_interval(y + 2.032 * u)
+                )
+
+>>>>>>> Stashed changes
     # noinspection DuplicatedCode
     @staticmethod
     def _yuv_to_rgb(yuv: YUVImage) -> RGBImage:

@@ -1,0 +1,25 @@
+stmtlist    ::= stm | stm{stmtlist}
+stm         ::= decllist | ifstmt | forstmt | assignstmt | lenstmt
+
+decllist    ::= decl | decl{decllist}
+decl        ::= identifier{ }":"{ }type";"
+
+type_simp   ::= "bool" | "int" | "real" | "str"
+type_arr    ::= type_simp"["numconst"]"
+type        ::= type_simp | type_arr
+
+forstmt     ::= "for" identifier "<-" term,condition,term "do" stmtlist "rof"
+
+ifstmt      ::= "if" condition "do" stmtlist "fi" ["else" "do" stmtlist "esle"]
+condition   ::= expression relation expression
+relation    ::= "<" | "<=" | "==" | ">" | ">="
+
+iostmt      ::= ("read" | "write") identifier ";"
+assignstmt  ::= identifier{ }"<-"{ }expression{ }";"
+lenstmt     ::= "len" identifier{ }";"
+
+const       ::= numconst | str
+term        ::= const | identifier | identifier"["term"]"
+sym         ::= "+" | "-" | "*" | "//" | "/" | "%"
+op          ::= term{ }sym{ }term | "("{ }term{ }sym{ }term{ }")"
+expres      ::= term | op | op sym expres

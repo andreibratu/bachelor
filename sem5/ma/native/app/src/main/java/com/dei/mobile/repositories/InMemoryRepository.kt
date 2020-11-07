@@ -1,27 +1,30 @@
 package com.dei.mobile.repositories
 
 import com.dei.mobile.domain.Entry
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Singleton
 
 @Singleton
 class InMemoryRepository constructor(private val entries: MutableList<Entry>) : Repository
 {
-    override fun getEntries(): MutableList<Entry>
+    override suspend fun getEntries(): MutableList<Entry>
     {
-        return entries
+        return entries;
     }
 
-    override fun addEntry(entry: Entry)
+    override suspend fun addEntry(entry: Entry): Long
     {
         entries.add(entry)
+        return (entries.size - 1).toLong()
     }
 
-    override fun deleteEntry(idx: Int)
+    override suspend fun deleteEntry(idx: Int)
     {
         entries.removeAt(idx)
     }
 
-    override fun editEntry(idx: Int, editedEntry: Entry) {
+    override suspend fun editEntry(idx: Int, editedEntry: Entry) {
         entries[idx] = editedEntry
     }
 }

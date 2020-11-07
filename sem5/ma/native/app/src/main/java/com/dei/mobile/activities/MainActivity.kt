@@ -17,16 +17,21 @@ import com.dei.mobile.adapters.OnBindCallback
 import com.dei.mobile.dagger.DIApplication
 import com.dei.mobile.domain.EntryDTO
 import com.dei.mobile.services.EntryService
+import com.dei.mobile.services.NetworkService
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import io.ktor.util.*
 import kotlinx.android.synthetic.main.entry_card_view.view.*
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
+@KtorExperimentalAPI
 class MainActivity : AppCompatActivity()
 {
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: EntryAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
     @Inject lateinit var entryService: EntryService
+    @Inject lateinit var networkService: NetworkService
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -36,6 +41,20 @@ class MainActivity : AppCompatActivity()
         val applicationRef = applicationContext as DIApplication
         applicationRef.dependencyGraph.inject(this)
 
+        if (!networkService.isServerUp())
+        {
+            Toast.makeText(applicationContext, "Server is not available", Toast.LENGTH_SHORT).show()
+        }
+        else
+        {
+            runBlocking {
+                launch(Dispatchers.IO) {
+                    val entries = entryService.getEntries()
+                    networkService.synchronise(entries)
+                }
+            }
+        }
+
         viewManager = LinearLayoutManager(this)
         viewAdapter = EntryAdapter(entryService)
         viewAdapter.onBind = object : OnBindCallback {
@@ -43,7 +62,7 @@ class MainActivity : AppCompatActivity()
                 viewHolder?.itemView?.setOnClickListener {
                     // Get card color
                     val layout = findViewById<CardView>(R.id.entry_card_layout)
-                    val cardColor = layout.cardBackgroundColor.defaultColor
+                    val cardColor = viewHolder.entryLayout.cardBackgroundColor.defaultColor
 
                     val intent = Intent(applicationContext, EntryDetailsActivity::class.java)
                     entryService.setCurrentEntry(
@@ -75,6 +94,9 @@ class MainActivity : AppCompatActivity()
             entryService.isCreate = true
             startActivityForResult(intent, 2)
         }
+
+        findViewById<TextView>(R.id.empty_list_text).visibility =
+            if(viewAdapter.itemCount == 0) VISIBLE else INVISIBLE
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
