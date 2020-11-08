@@ -1,13 +1,14 @@
+import os
 from concurrent.futures.thread import ThreadPoolExecutor
 from typing import List
 
 from domain.types import RGBImage
-from repository.ppm_repository import PPMRepository
+from repository.repository import Repository
 
 
 class IOService:
 
-    def __init__(self, repo: PPMRepository, filenames: List[str]):
+    def __init__(self, repo: Repository, filenames: List[str]):
         self.repository = repo
         self.input_filenames = filenames
 
@@ -19,7 +20,7 @@ class IOService:
     def write_results_to_ppm(self):
         with ThreadPoolExecutor(max_workers=4) as executor:
             for idx, rgb in enumerate(self.repository.ups_rgbs):
-                IOService._write_file(idx, rgb)
+                IOService.write_rgb_image(idx, rgb)
                 # executor.submit(IOService._write_file, idx, rgb)
 
     @staticmethod
@@ -43,7 +44,7 @@ class IOService:
         return image
 
     @staticmethod
-    def _write_file(idx: int, rgb: RGBImage):
+    def write_rgb_image(idx: int, rgb: RGBImage):
         h, w = len(rgb), len(rgb[0])
         with open(f"ups_rgb_{idx}.ppm", "w+") as f:
             f.write("P3\n")

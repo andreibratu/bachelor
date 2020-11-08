@@ -2,16 +2,18 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List
 
 from domain.sample import Sample, SampledYUV
-from domain.types import RGBImage, YUVImage, Convolution
-from repository.ppm_repository import PPMRepository
+from domain.types import RGBImage, YUVImage, Convolution, Matrix
+from helper.walk import zig_zag_walk
+from repository.repository import Repository
 from helper.convolutions import identity, average_2d, up_sample
 from helper.math import forward_dct, component_wise_division
 from helper.quants import Q
+from service.io import IOService
 
 
 class EncoderService:
 
-    def __init__(self, repo: PPMRepository):
+    def __init__(self, repo: Repository):
         self.repository = repo
 
     def convert_rgb_yuv(self):
@@ -22,17 +24,69 @@ class EncoderService:
 
     def quantisize(self):
         # 8x8 blocks are required for DCT - upsample Cb and Cr channels
-        for sampled_yuv in self.repository.samples:
-            for channel in range(1, 3):
-                for sample in sampled_yuv[channel]:
-                    sample.values = sample.get_upsample()
-                    # Sample is now in 8x8 format, no need to upsample again in decoder
-                    sample.upsample = identity
-            for channel in sampled_yuv:
-                for sample in channel:
-                    quant_values = forward_dct(sample.values)
-                    quant_values = component_wise_division(quant_values, Q)
-                    sample.values = quant_values
+        with ThreadPoolExecutor(max_workers=8) as executor:
+            for sampled_yuv in self.repository.samples:
+                for channel in range(1, 3):
+                    for sample in sampled_yuv[channel]:
+                        sample.values = sample.get_upsample()
+                        # Sample is now in 8x8 format, no need to upsample again in decoder
+                        sample.upsample = identity
+                for channel in sampled_yuv:
+                    for sample in channel:
+                        executor.submit(EncoderService._quant_sample_subtask, sample)
+
+    def encode(self):
+        with ThreadPoolExecutor(max_workers=8) as executor:
+            for idx, sampled_yuv in enumerate(self.repository.samples):
+                encoded_bytes = bytes(0)
+                for y_sample, u_sample, v_sample in sampled_yuv:
+                    EncoderService._encode_sample_subtask(encoded_bytes, y_sample)
+                    EncoderService._encode_sample_subtask(encoded_bytes, u_sample)
+                    EncoderService._encode_sample_subtask(encoded_bytes, v_sample)
+                assert len(encoded_bytes) != 0
+                self.repository.bytes.append(encoded_bytes)
+
+    @staticmethod
+    def _get_amplitude_size(amplitude: int) -> int:
+        """Get number of bits necessary to represent amplitude."""
+        assert isinstance(amplitude, int)
+        pw = 1
+        while True:
+            if amplitude <= (2 ** pw) - 1:
+                break
+            pw += 1
+        return pw
+
+    @staticmethod
+    def _encode_sample_subtask(encoded_bytes: str, sample: Matrix):
+        walk = zig_zag_walk(sample)
+        sample_entropy_encoding = []
+        sample_entropy_encoding.extend([
+            EncoderService._get_amplitude_size(walk[0]),
+            walk[0]
+        ])
+        count_zeros = 0
+        for value in walk:
+            if value == 0:
+                count_zeros += 1
+                continue
+            else:
+                sample_entropy_encoding.extend([
+                    count_zeros,
+                    EncoderService._get_amplitude_size(value),
+                    value
+                ])
+                count_zeros = 0
+        sample_entropy_encoding = [x.to_bytes(2, byteorder='big') for x in sample_entropy_encoding]
+        sample_entropy_encoding.extend([0, 0])
+        encoded_bytes += ''.join(sample_entropy_encoding)
+
+    @staticmethod
+    def _quant_sample_subtask(sample: Sample):
+        """Quantizize sample in-place."""
+        quant_values = forward_dct(sample.values)
+        quant_values = component_wise_division(quant_values, Q)
+        sample.values = quant_values
 
     # noinspection DuplicatedCode
     @staticmethod
