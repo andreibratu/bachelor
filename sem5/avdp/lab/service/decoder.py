@@ -20,23 +20,29 @@ class DecoderService:
         for sampled_yuv_chns in self.repository.samples:
             self.repository.upsamples.append(
                 (
-                    list(map(DecoderService._get_upsample_info, sampled_yuv_chns[0])),
-                    list(map(DecoderService._get_upsample_info, sampled_yuv_chns[1])),
-                    list(map(DecoderService._get_upsample_info, sampled_yuv_chns[2]))
+                    list(map(DecoderService._get_upsample_info,
+                             sampled_yuv_chns[0])),
+                    list(map(DecoderService._get_upsample_info,
+                             sampled_yuv_chns[1])),
+                    list(map(DecoderService._get_upsample_info,
+                             sampled_yuv_chns[2]))
                 )
             )
 
     def reconstruct_yuvs(self):
-        self.repository.ups_yuvs = list(map(DecoderService._reconstruct_yuv, self.repository.upsamples))
+        self.repository.ups_yuvs = list(
+            map(DecoderService._reconstruct_yuv, self.repository.upsamples))
 
     def yuvs_to_rgbs(self):
-        self.repository.ups_rgbs = list(map(DecoderService._yuv_to_rgb, self.repository.ups_yuvs))
+        self.repository.ups_rgbs = list(
+            map(DecoderService._yuv_to_rgb, self.repository.ups_yuvs))
 
     def dequantisize(self):
         for quant_yuv in self.repository.samples:
             for channel in quant_yuv:
                 for sample in channel:
-                    dequant_values = component_wise_multiplication(sample.values, Q)
+                    dequant_values = component_wise_multiplication(
+                        sample.values, Q)
                     dequant_values = inverse_dct(dequant_values)
                     sample.values = dequant_values
 
@@ -70,7 +76,6 @@ class DecoderService:
         # Encoding will not include ending zeros, add them if needed
         decoded_walk.extend([0 for _ in range(64 - len(decoded_walk))])
         assert len(decoded_walk) == 64
-
 
     @staticmethod
     def _read_integer(bytes_iter: iter, int_size: int) -> int:
@@ -118,7 +123,8 @@ class DecoderService:
         # min_h, max_h are obviously equal to zero but whatever
         min_h, min_w, max_h, max_w = DecoderService._find_image_coords(y)
         assert min_w == min_h == 0
-        yuv = [[(0, 0, 0) for _ in range(min_w, max_w + 1)] for _ in range(min_h, max_h + 1)]
+        yuv = [[(0, 0, 0) for _ in range(min_w, max_w + 1)]
+               for _ in range(min_h, max_h + 1)]
         with ThreadPoolExecutor(max_workers=4) as executor:
             for idx in range(len(y)):
                 executor.submit(
@@ -127,30 +133,6 @@ class DecoderService:
                 )
         return yuv
 
-<<<<<<< Updated upstream
-=======
-    @staticmethod
-    def yuv_to_rgb_conv_subtask(yuv: YUVImage, rgb: RGBImage, top_left_h: int,
-                                top_left_w: int, bottom_right_h: int, bottom_right_w: int):
-        """Convert coordinates defined subregion of YUV image to RGB in parallel."""
-        for i in range(top_left_h, bottom_right_h + 1):
-            for j in range(top_left_w, bottom_right_w + 1):
-                y, u, v = yuv[i][j]
-
-                def _round_to_rgb_interval(x: float) -> int:
-                    if x < 0:
-                        return 0
-                    if x > 255:
-                        return 255
-                    return math.floor(x)
-
-                rgb[i][j] = (
-                    _round_to_rgb_interval(y + 1.140 * v),
-                    _round_to_rgb_interval(y - 0.395 * u - 0.581 * v),
-                    _round_to_rgb_interval(y + 2.032 * u)
-                )
-
->>>>>>> Stashed changes
     # noinspection DuplicatedCode
     @staticmethod
     def _yuv_to_rgb(yuv: YUVImage) -> RGBImage:

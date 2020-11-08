@@ -17,10 +17,12 @@ class EncoderService:
         self.repository = repo
 
     def convert_rgb_yuv(self):
-        self.repository.yuvs = list(map(self._rgb_image_to_yuv_image, self.repository.rgbs))
+        self.repository.yuvs = list(
+            map(self._rgb_image_to_yuv_image, self.repository.rgbs))
 
     def subsample(self):
-        self.repository.samples = list(map(EncoderService._subsample_yuv, self.repository.yuvs))
+        self.repository.samples = list(
+            map(EncoderService._subsample_yuv, self.repository.yuvs))
 
     def quantisize(self):
         # 8x8 blocks are required for DCT - upsample Cb and Cr channels
@@ -33,16 +35,20 @@ class EncoderService:
                         sample.upsample = identity
                 for channel in sampled_yuv:
                     for sample in channel:
-                        executor.submit(EncoderService._quant_sample_subtask, sample)
+                        executor.submit(
+                            EncoderService._quant_sample_subtask, sample)
 
     def encode(self):
         with ThreadPoolExecutor(max_workers=8) as executor:
             for idx, sampled_yuv in enumerate(self.repository.samples):
                 encoded_bytes = bytes(0)
                 for y_sample, u_sample, v_sample in sampled_yuv:
-                    EncoderService._encode_sample_subtask(encoded_bytes, y_sample)
-                    EncoderService._encode_sample_subtask(encoded_bytes, u_sample)
-                    EncoderService._encode_sample_subtask(encoded_bytes, v_sample)
+                    EncoderService._encode_sample_subtask(
+                        encoded_bytes, y_sample)
+                    EncoderService._encode_sample_subtask(
+                        encoded_bytes, u_sample)
+                    EncoderService._encode_sample_subtask(
+                        encoded_bytes, v_sample)
                 assert len(encoded_bytes) != 0
                 self.repository.bytes.append(encoded_bytes)
 
@@ -77,7 +83,8 @@ class EncoderService:
                     value
                 ])
                 count_zeros = 0
-        sample_entropy_encoding = [x.to_bytes(2, byteorder='big') for x in sample_entropy_encoding]
+        sample_entropy_encoding = [x.to_bytes(
+            2, byteorder='big') for x in sample_entropy_encoding]
         sample_entropy_encoding.extend([0, 0])
         encoded_bytes += ''.join(sample_entropy_encoding)
 
@@ -123,8 +130,8 @@ class EncoderService:
     def _subsample_yuv(image: YUVImage) -> SampledYUV:
         EncoderService._add_padding(image, 8)
         futures, result = [], []
-        avg_conv = lambda img: average_2d(img, 2)
-        up_conv = lambda img: up_sample(img, 2)
+        def avg_conv(img): return average_2d(img, 2)
+        def up_conv(img): return up_sample(img, 2)
         with ThreadPoolExecutor(max_workers=3) as executor:
             # Extract Y channel
             futures.append(executor.submit(
@@ -140,11 +147,8 @@ class EncoderService:
             ))
             for future in as_completed(futures):
                 result.append(future.result())
-<<<<<<< Updated upstream
         # Executor seems not to guarantee order of the futures; that or I messed up somewhere above
         # Anyways, big sort incoming
-=======
->>>>>>> Stashed changes
         result.sort(key=lambda ch: {'y': 0, 'u': 1, 'v': 2}[ch[0].channel])
         assert result[0][0].channel == 'y' and result[1][0].channel == 'u' and result[2][0].channel == 'v'
         return tuple(result)
