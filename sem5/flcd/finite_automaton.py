@@ -2,7 +2,6 @@ from os import curdir
 from typing import List, Optional, Dict
 from copy import deepcopy
 import json
-import string
 
 
 class AutomatonNode:
@@ -34,7 +33,7 @@ class AutomatonNode:
     def matches(self, attempt: str) -> bool:
         return attempt[0] in self.edges
 
-    def isEndNode() -> bool:
+    def isEndNode(self) -> bool:
         return self.is_end
 
     def to_dict(self) -> Dict[str, str]:
