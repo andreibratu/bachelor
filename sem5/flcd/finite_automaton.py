@@ -1,3 +1,4 @@
+from os import curdir
 from typing import List, Optional, Dict
 from copy import deepcopy
 import json
@@ -10,14 +11,14 @@ class AutomatonNode:
 
     def __init__(
         self,
-        matching_chars: List[str],
+        edges: List[str],
         next_nodes: List["AutomatonNode"],
         n_id: Optional[int] = None,
         is_end: bool = False,
         is_start: bool = False,
         to_self: bool = False,
     ):
-        self.matching_chars = matching_chars
+        self.edges = edges
         self.next_nodes = next_nodes
         self.is_end = is_end
         self.is_start = is_start
@@ -25,11 +26,13 @@ class AutomatonNode:
             # Not read from file, issue an n_id for it
             self.n_id = AutomatonNode.curr_id
             AutomatonNode.curr_id += 1
+        else:
+            self.n_id = n_id
         if to_self:
             self.next_nodes.append(self)
 
     def matches(self, attempt: str) -> bool:
-        return attempt[0] in self.matching_chars
+        return attempt[0] in self.edges
 
     def isEndNode() -> bool:
         return self.is_end
@@ -40,7 +43,7 @@ class AutomatonNode:
             "is_start": self.is_start,
             "is_end": self.is_end,
             "next_nodes": [node.n_id for node in self.next_nodes],
-            "matching_chars": deepcopy(self.matching_chars),
+            "edges": deepcopy(self.edges),
         }
 
     @staticmethod
@@ -49,7 +52,7 @@ class AutomatonNode:
             AutomatonNode.curr_id, dict_rep["n_id"] + 1
         )
         return AutomatonNode(
-            matching_chars=dict_rep["matching_chars"],
+            edges=dict_rep["edges"],
             next_nodes=dict_rep["next_nodes"],
             n_id=dict_rep["n_id"],
             is_start=dict_rep["is_start"],
@@ -85,67 +88,62 @@ class FiniteAutomaton:
         )
 
     def to_json(self, fn: str):
-        lists = [self.start_nodes, self.intermediary_nodes, self.end_nodes]
+        lists = [self.start_nodes, self.intermediary_nodes]
         json_nodes = [node.to_dict() for subl in lists for node in subl]
 
         with open(fn, "w+") as fp:
-            json.dump(json_nodes, fp)
+            json.dump(json_nodes, fp, indent=4, sort_keys=True)
 
     @staticmethod
     def from_json(fn: str) -> "FiniteAutomaton":
         with open(fn, "r") as fp:
-            nodes = json.load(fn)
+            nodes = json.load(fp)
         nodes = [AutomatonNode.from_dict(n_repr) for n_repr in nodes]
         for n in nodes:
             # For each node, replace ids of its next_nodes with ref to obj
             n.next_nodes = [
                 neigh for neigh in nodes if neigh.n_id in n.next_nodes
             ]
+        return FiniteAutomaton(nodes=nodes)
 
 
-end = AutomatonNode(matching_chars=[], next_nodes=[], is_end=True)
+# end = AutomatonNode(edges=[], next_nodes=[], is_end=True)
+# node2 = AutomatonNode(
+#     edges=list(string.ascii_letters) + list(string.digits) + ["_"],
+#     next_nodes=[end],
+#     to_self=True,
+# )
+# node1 = AutomatonNode(
+#     edges=list(string.ascii_letters),
+#     next_nodes=[end, node2],
+#     is_start=True,
+# )
+# variable_automaton = FiniteAutomaton(nodes=[node1, node2, end])
+# variable_automaton.to_json("variable_automaton.json")
 
-node2 = AutomatonNode(
-    matching_chars=list(string.ascii_letters) + list(string.digits) + ["_"],
-    next_nodes=[end],
-    to_self=True,
-)
-
-node1 = AutomatonNode(
-    matching_chars=list(string.ascii_letters),
-    next_nodes=[end, node2],
-    is_start=True,
-)
-
-variable_automaton = FiniteAutomaton(nodes=[node1, node2, end])
+variable_automaton = FiniteAutomaton.from_json("variable_automaton.json")
 print("VARIABLE")
 print(variable_automaton.match("a"))
 print(variable_automaton.match(""))
 print(variable_automaton.match("_dfg"))
 print(variable_automaton.match("asd_45"))
 
+# end_2 = AutomatonNode(edges=[], next_nodes=[], is_end=True)
+# node1 = AutomatonNode(edges=["0"], next_nodes=[end_2], is_start=True)
+# node4 = AutomatonNode(
+#     edges=list("0123456789"), next_nodes=[end_2], to_self=True
+# )
+# node3 = AutomatonNode(
+#     edges=list("123456789"),
+#     next_nodes=[node4],
+#     is_start=True,
+#     to_self=True,
+# )
+# node2 = AutomatonNode(edges=list("+-"), next_nodes=[node3], is_start=True)
+# integer_automaton = FiniteAutomaton(nodes=[node1, node2, node3, node4, end_2])
+# integer_automaton.to_json("integer_automaton.json")
 
-end_2 = AutomatonNode(matching_chars=[], next_nodes=[], is_end=True)
-
-node1 = AutomatonNode(matching_chars=["0"], next_nodes=[end_2], is_start=True)
-
-node4 = AutomatonNode(
-    matching_chars=list("0123456789"), next_nodes=[end_2], to_self=True
-)
-
-node3 = AutomatonNode(
-    matching_chars=list("123456789"),
-    next_nodes=[node4],
-    is_start=True,
-    to_self=True,
-)
-
-node2 = AutomatonNode(
-    matching_chars=list("+-"), next_nodes=[node3], is_start=True
-)
-
-integer_automaton = FiniteAutomaton(nodes=[node1, node2, node3, node4, end_2])
-
+integer_automaton = FiniteAutomaton.from_json("integer_automaton.json")
 print("\n\nINTEGER")
 print(integer_automaton.match("+122131"))
 print(integer_automaton.match("0"))
