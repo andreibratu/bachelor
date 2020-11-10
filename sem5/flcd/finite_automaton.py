@@ -120,7 +120,9 @@ class FiniteAutomaton:
 # variable_automaton = FiniteAutomaton(nodes=[node1, node2, end])
 # variable_automaton.to_json("variable_automaton.json")
 
-variable_automaton = FiniteAutomaton.from_json("variable_automaton.json")
+variable_automaton = FiniteAutomaton.from_json(
+    "automatons/variable_automaton.json"
+)
 print("VARIABLE")
 print(variable_automaton.match("a"))
 print(variable_automaton.match(""))
@@ -142,7 +144,9 @@ print(variable_automaton.match("asd_45"))
 # integer_automaton = FiniteAutomaton(nodes=[node1, node2, node3, node4, end_2])
 # integer_automaton.to_json("integer_automaton.json")
 
-integer_automaton = FiniteAutomaton.from_json("integer_automaton.json")
+integer_automaton = FiniteAutomaton.from_json(
+    "automatons/integer_automaton.json"
+)
 print("\n\nINTEGER")
 print(integer_automaton.match("+122131"))
 print(integer_automaton.match("0"))

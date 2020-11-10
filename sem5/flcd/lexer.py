@@ -4,7 +4,7 @@ import os
 from hash_table import HashTable
 
 reserved_tokens = []
-file_input = "pr3"
+file_input = "language/pr3"
 
 VARIABLE_RE = r"^[A-Za-z][a-zA-Z\_0-9]{0,}$"
 CHAR_RE = r"^\'[A-Za-z0-9\ ]\'$"
@@ -17,7 +17,7 @@ if os.path.exists("ST.out"):
 if os.path.exists("PIF.out"):
     os.remove("PIF.out")
 
-with open("token.in", "r") as fp:
+with open("language/token.in", "r") as fp:
     read_tokens = [x for x in fp.read().split("\n") if len(x) != 0]
     for tok in read_tokens:
         reserved_tokens.append(tok)
