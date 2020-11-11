@@ -2,6 +2,7 @@ from os import curdir
 from typing import List, Optional, Dict
 from copy import deepcopy
 import json
+import string
 
 
 class AutomatonNode:
@@ -36,6 +37,11 @@ class AutomatonNode:
     def isEndNode(self) -> bool:
         return self.is_end
 
+    def __str__(self):
+        return str(self.to_dict())
+
+    __repr__ = __str__
+
     def to_dict(self) -> Dict[str, str]:
         return {
             "n_id": self.n_id,
@@ -44,6 +50,15 @@ class AutomatonNode:
             "next_nodes": [node.n_id for node in self.next_nodes],
             "edges": deepcopy(self.edges),
         }
+
+    def __eq__(self, o: object) -> bool:
+        try:
+            return self.n_id == o.n_id
+        except:
+            return False
+
+    def __hash__(self) -> int:
+        return hash(frozenset(self.to_dict()))
 
     @staticmethod
     def from_dict(dict_rep) -> "AutomatonNode":
@@ -65,6 +80,14 @@ class FiniteAutomaton:
         self.intermediary_nodes = [
             n for n in nodes if not n.is_start or not n.is_end
         ]
+        for n in nodes:
+            if (
+                len(set([n2.n_id for n2 in n.next_nodes if n.n_id != n2.n_id]))
+                > 1
+            ):
+                raise ValueError(
+                    f"Finite automaton is nondeterministic due to node {n}"
+                )
 
     def _match_subalg(self, match_str: str, node: AutomatonNode) -> bool:
         if len(match_str) == 0:
@@ -85,6 +108,31 @@ class FiniteAutomaton:
                 for start_n in self.start_nodes
             ]
         )
+
+    def write_ebnf(self, fn):
+        alphabet = [
+            n.edges for n in self.start_nodes + self.intermediary_nodes
+        ]
+        alphabet = set([e for sl in alphabet for e in sl])
+        start_nodes = set(deepcopy(self.start_nodes))
+        end_nodes = set([n for n in self.intermediary_nodes if n.is_end])
+        transitions = [
+            f"{n1.n_id} -> {n2.n_id} | {e}"
+            for n1 in self.start_nodes + self.intermediary_nodes
+            for n2 in n1.next_nodes
+            for e in n1.edges
+        ]
+        with open(fn, "w+") as fp:
+            json.dump(
+                {
+                    "alphabet": [x for x in alphabet],
+                    "start_nodes": [n.n_id for n in start_nodes],
+                    "end_nodes": [n.n_id for n in end_nodes],
+                    "transitions": transitions,
+                },
+                fp,
+                indent=4,
+            )
 
     def to_json(self, fn: str):
         lists = [self.start_nodes, self.intermediary_nodes]
@@ -114,20 +162,23 @@ class FiniteAutomaton:
 # )
 # node1 = AutomatonNode(
 #     edges=list(string.ascii_letters),
-#     next_nodes=[end, node2],
+#     next_nodes=[node2],
 #     is_start=True,
 # )
-# variable_automaton = FiniteAutomaton(nodes=[node1, node2, end])
-# variable_automaton.to_json("variable_automaton.json")
+# node3 = AutomatonNode(
+#     edges=list(string.ascii_letters), next_nodes=[end], is_start=True
+# )
+# variable_automaton = FiniteAutomaton(nodes=[node1, node2, node3, end])
+# variable_automaton.to_json("automatons/variable_automaton.json")
 
 variable_automaton = FiniteAutomaton.from_json(
     "automatons/variable_automaton.json"
 )
-print("VARIABLE")
-print(variable_automaton.match("a"))
-print(variable_automaton.match(""))
-print(variable_automaton.match("_dfg"))
-print(variable_automaton.match("asd_45"))
+assert variable_automaton.match("a")
+assert not variable_automaton.match("")
+assert not variable_automaton.match("_dfg")
+assert variable_automaton.match("asd_45")
+variable_automaton.write_ebnf("automatons/variable_ebnf")
 
 # end_2 = AutomatonNode(edges=[], next_nodes=[], is_end=True)
 # node1 = AutomatonNode(edges=["0"], next_nodes=[end_2], is_start=True)
@@ -140,16 +191,24 @@ print(variable_automaton.match("asd_45"))
 #     is_start=True,
 #     to_self=True,
 # )
+# node5 = AutomatonNode(
+#     edges=list("123456789"),
+#     next_nodes=[end_2],
+#     is_start=True,
+#     to_self=True,
+# )
 # node2 = AutomatonNode(edges=list("+-"), next_nodes=[node3], is_start=True)
-# integer_automaton = FiniteAutomaton(nodes=[node1, node2, node3, node4, end_2])
-# integer_automaton.to_json("integer_automaton.json")
+# integer_automaton = FiniteAutomaton(
+#     nodes=[node1, node2, node3, node4, end_2, node5]
+# )
+# integer_automaton.to_json("automatons/integer_automaton.json")
 
 integer_automaton = FiniteAutomaton.from_json(
     "automatons/integer_automaton.json"
 )
-print("\n\nINTEGER")
-print(integer_automaton.match("+122131"))
-print(integer_automaton.match("0"))
-print(integer_automaton.match("-123"))
-print(integer_automaton.match("-045"))
-print(integer_automaton.match("0000"))
+integer_automaton.write_ebnf("automatons/integer_ebnf")
+assert integer_automaton.match("+122131")
+assert integer_automaton.match("4")
+assert integer_automaton.match("-123")
+assert not integer_automaton.match("-045")
+assert not integer_automaton.match("0000")

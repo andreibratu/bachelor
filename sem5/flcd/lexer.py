@@ -1,16 +1,22 @@
+from re import match
+from finite_automaton import FiniteAutomaton
 import re
 import os
 
 from hash_table import HashTable
 
 reserved_tokens = []
-file_input = "language/pr3"
+file_input = "language/pr1"
 
-VARIABLE_RE = r"^[A-Za-z][a-zA-Z\_0-9]{0,}$"
 CHAR_RE = r"^\'[A-Za-z0-9\ ]\'$"
-NUM_CONST_RE = r"^(([0]|[+-]?[1-9][0-9]*)|[+-]?(0|[1-9][0-9]*)\.[0-9]+)"
+DOUBLE_CONST_RE = r"^([+-]?(0|[1-9][0-9]*)\.[0-9]+)$"
 STR_CONST_RE = r"^\"[a-zA-Z\ 0-9]{0,}\"$"
-VALID_PATTERNS = [VARIABLE_RE, NUM_CONST_RE, STR_CONST_RE, CHAR_RE]
+VALID_PATTERNS = [DOUBLE_CONST_RE, STR_CONST_RE, CHAR_RE]
+INT_AUTOMATON = FiniteAutomaton.from_json("automatons/integer_automaton.json")
+VARIABLE_AUTOMATON = FiniteAutomaton.from_json(
+    "automatons/variable_automaton.json"
+)
+VALID_AUTOMATONS = [INT_AUTOMATON, VARIABLE_AUTOMATON]
 
 if os.path.exists("ST.out"):
     os.remove("ST.out")
@@ -63,7 +69,9 @@ while idx < len(tokens):
         if x[2] == "<" and y[2] == "-":
             final_tokens.append((x[0], y[1], "<-"))
             idx += 2
-        elif x[2] in ["-", "+"] and re.match(NUM_CONST_RE, y[2]):
+        elif x[2] in ["-", "+"] and (
+            INT_AUTOMATON.match(y[2]) or re.match(DOUBLE_CONST_RE, y[2])
+        ):
             if final_tokens[-1][2] in [
                 "<-",
                 "+",
@@ -94,7 +102,9 @@ for enm, tok_tuple in enumerate(final_tokens):
     if tok in reserved_tokens:
         pif.append((tok, 0))
     else:
-        if any([re.match(pattern, tok) for pattern in VALID_PATTERNS]):
+        if any([re.match(pattern, tok) for pattern in VALID_PATTERNS]) or any(
+            [automaton.match(tok) for automaton in VALID_AUTOMATONS]
+        ):
             if table[tok] is None:
                 table[tok] = idx
                 pif.append((tok, idx))

@@ -1,6 +1,6 @@
 BEGIN
 
-a: int[100];
+a: int[04];
 b: int;
 c: int;
 d: str;
