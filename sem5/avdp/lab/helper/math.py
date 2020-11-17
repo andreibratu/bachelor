@@ -28,6 +28,9 @@ def forward_dct(g: Matrix) -> Matrix:
             G[u][v] = (0.25 * alpha(u) * alpha(v) * double_sum)
             assert not isinstance(G[u][v], complex)
 
+    for i in range(8):
+        print(G[i])
+
     return G
 
 
