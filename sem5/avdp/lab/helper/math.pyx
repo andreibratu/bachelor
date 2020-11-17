@@ -3,7 +3,6 @@ from collections import Callable
 
 from domain.types import Matrix
 
-
 alpha = lambda val: (1 / sqrt(2)) if val == 0 else 1
 
 
@@ -27,9 +26,6 @@ def forward_dct(g: Matrix) -> Matrix:
                                   cos(((2 * y + 1) * v * pi) / 16)
             G[u][v] = (0.25 * alpha(u) * alpha(v) * double_sum)
             assert not isinstance(G[u][v], complex)
-
-    for i in range(8):
-        print(G[i])
 
     return G
 
