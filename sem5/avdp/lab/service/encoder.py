@@ -2,8 +2,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List
 
 from domain.sample import Sample, SampledYUV
-from domain.types import RGBImage, YUVImage, Convolution, Matrix
-from helper.walk import zig_zag_walk
+from domain.types import RGBImage, YUVImage, Convolution
 from helper.convolutions import identity, average_2d, up_sample
 from helper.math import forward_dct, component_wise_division
 from helper.quants import Q
@@ -29,8 +28,6 @@ def rgb_image_to_yuv_image(rgb: RGBImage) -> YUVImage:
 def subsample_yuv(image: YUVImage) -> SampledYUV:
     _add_padding(image, 8)
     futures, result = [], []
-    def avg_conv(img): return average_2d(img, 2)
-    def up_conv(img): return up_sample(img, 2)
     with ThreadPoolExecutor(max_workers=3) as executor:
         # Extract Y channel
         futures.append(executor.submit(
@@ -38,11 +35,11 @@ def subsample_yuv(image: YUVImage) -> SampledYUV:
         ))
         # Extract U channel
         futures.append(executor.submit(
-            _extract_channel, image, 1, 8, avg_conv, up_conv
+            _extract_channel, image, 1, 8, average_2d, up_sample
         ))
         # Extract V channel
         futures.append(executor.submit(
-            _extract_channel, image, 2, 8, avg_conv, up_conv
+            _extract_channel, image, 2, 8, average_2d, up_sample
         ))
         for future in as_completed(futures):
             result.append(future.result())
@@ -98,15 +95,14 @@ def _extract_channel(image: YUVImage, channel: int, dim: int,
 
 def quantisize(sampled_channels):
     # 8x8 blocks are required for DCT - upsample Cb and Cr channels
-    with ThreadPoolExecutor(max_workers=8) as executor:
-        for channel in range(1, 3):
-            for sample in sampled_channels[channel]:
-                sample.values = sample.get_upsample()
-                # Sample is now in 8x8 format, no need to upsample again in decoder
-                sample.upsample = identity
-        for channel in sampled_channels:
-            for sample in channel:
-                executor.submit(_quantisize_subtask, sample)
+    for channel in range(0, 3):
+        for sample in sampled_channels[channel]:
+            sample.values = sample.get_upsample()
+            # Sample is now in 8x8 format, no need to upsample again in decoder
+            sample.upsample = identity
+    for channel in sampled_channels:
+        for sample in channel:
+            _quantisize_subtask(sample)
     return sampled_channels
 
 
@@ -118,8 +114,6 @@ def _quantisize_subtask(sample: Sample):
 
 
 # class EncoderService:
-#
-
 #
 #     def encode(self):
 #         with ThreadPoolExecutor(max_workers=8) as executor:

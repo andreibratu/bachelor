@@ -7,40 +7,29 @@ def identity(init: Matrix) -> Matrix:
     return deepcopy(init)
 
 
-def average_2d(init: Matrix, convSize: int) -> Matrix:
+def average_2d(matrix: Matrix) -> Matrix:
     """Reduce each convSize by convSize area from init Matrix into one square by averaging.
-
-    Effectively condenses init matrix by a factor of `convSize`.
     """
-    h, w = len(init), len(init[0])
-    result = []
+    n = 8
+    result = [[0 for _ in range(n // 2)] for _ in range(n // 2)]
 
-    for up_left_h in range(0, h, convSize):
-        new_row = []
-        for up_left_w in range(0, w, convSize):
-            down_right_h = up_left_h + convSize - 1
-            down_right_w = up_left_w + convSize - 1
-            s = 0.0
-            for i in range(up_left_h, down_right_h + 1):
-                for j in range(up_left_w, down_right_w + 1):
-                    # If outside assume 0 padding
-                    s += 0 if (i >= h or j >= w) else init[i][j]
-            new_row.append(s / (convSize ** 2))
-        result.append(new_row)
+    for i in range(0, n, 2):
+        for j in range(0, n, 2):
+            avg = (matrix[i][j] + matrix[i][j+1] + matrix[i+1][j] + matrix[i+1][j+1]) / 4
+            result[i // 2][j // 2] = avg
     return result
 
 
-def up_sample(init: Matrix, factor: int) -> Matrix:
+def up_sample(init: Matrix) -> Matrix:
     """Expand each value from init Matrix into `factor` by `factor` sized area in final result."""
-    h, w = len(init), len(init[0])
-    result = []
+    n = 4
+    result = [[0 for _ in range(2 * n)] for _ in range(2 * n)]
 
-    for i in range(h):
-        newRows = [[] for _ in range(factor)]
-        for j in range(w):
-            for row in newRows:
-                for k in range(factor):
-                    row.append(init[i][j])
-        result.extend(newRows)
+    for i in range(0, 2 * n, 2):
+        for j in range(0, 2 * n, 2):
+            result[i][j] = init[i // 2][j // 2]
+            result[i][j + 1] = init[i // 2][j // 2]
+            result[i + 1][j] = init[i // 2][j // 2]
+            result[i + 1][j + 1] = init[i // 2][j // 2]
 
     return result

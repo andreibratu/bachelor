@@ -1,9 +1,9 @@
 from re import match
-from finite_automaton import FiniteAutomaton
+from scanner.finite_automaton import FiniteAutomaton
 import re
 import os
 
-from hash_table import HashTable
+from scanner.hash_table import HashTable
 
 reserved_tokens = []
 file_input = "language/pr1"

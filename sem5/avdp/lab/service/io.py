@@ -23,7 +23,7 @@ def read_rgb_image(filename):
 
 def write_rgb_image(rgb: RGBImage):
     h, w = len(rgb), len(rgb[0])
-    with open(f"result.ppm", "w+") as f:
+    with open(f"result-other.ppm", "w+") as f:
         f.write("P3\n")
         f.write("# WRITTEN BY VIDEO DECODER\n")
         f.write(f"{w} {h}\n")

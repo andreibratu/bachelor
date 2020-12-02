@@ -1,5 +1,6 @@
 stmtlist    ::= stm | stm{stmtlist}
 stm         ::= decllist | ifstmt | forstmt | assignstmt | lenstmt
+program     ::= start[stmtlist]end;
 
 decllist    ::= decl | decl{decllist}
 decl        ::= identifier{ }":"{ }type";"

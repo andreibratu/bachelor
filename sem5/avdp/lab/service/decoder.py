@@ -107,7 +107,7 @@ def dequantisize(quant_channels):
     for channel in quant_channels:
         for sample in channel:
             dequant_values = component_wise_multiplication(sample.values, Q)
-            dequant_values = inverse_dct(dequant_values)
+            dequant_values = inverse_dct(sample.values)
             sample.values = dequant_values
     return quant_channels
 
