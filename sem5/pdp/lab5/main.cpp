@@ -8,8 +8,8 @@ int main() {
     double time = 0;
     double mean;
     int trials = 1000;
-    Polynomial p0 = getRandomPolynomial(4, 1, 60);
-    Polynomial p1 = getRandomPolynomial(4, 1, 60);
+    Polynomial p0 = getRandomPolynomial(12, 1, 60);
+    Polynomial p1 = getRandomPolynomial(12, 1, 60);
     Polynomial result;
 
     for(int thread_count = 1; thread_count <= 10; thread_count++) {
@@ -47,19 +47,21 @@ int main() {
     std::cout << "AVERAGE " << mean << " VARIANCE " << calculate_variance(timings, mean) << '\n';
     printPolynomial(result);
 
-    std::cout << "KARATSUBA PARALLEL\n";
-    executionTime = 0;
     timings.resize(0);
-    for(int i = 0; i < trials; i++) {
-        time = time_execution_seconds([&p0, &p1, &result](){
-            result = karatsubaParallelMultiplication(p0, p1, 5);
-        });
-        executionTime += time;
-        timings.push_back(time);
+    for (int num_threads = 2; num_threads < 10; num_threads++) {
+        std::cout << "KARATSUBA PARALLEL " << num_threads << "\n";
+        executionTime = 0;
+        for(int i = 0; i < trials; i++) {
+            time = time_execution_seconds([&p0, &p1, &result](){
+                result = karatsubaParallelMultiplication(p0, p1, 6);
+            });
+            executionTime += time;
+            timings.push_back(time);
+        }
+        mean = executionTime / trials;
+        std::cout << "AVERAGE " << mean << " VARIANCE " << calculate_variance(timings, mean) << '\n';
+        printPolynomial(result);
+        timings.resize(0);
     }
-    mean = executionTime / trials;
-    std::cout << "AVERAGE " << mean << " VARIANCE " << calculate_variance(timings, mean) << '\n';
-    printPolynomial(result);
-
     return 0;
 }

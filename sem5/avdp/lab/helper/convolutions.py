@@ -21,7 +21,6 @@ def average_2d(matrix: Matrix) -> Matrix:
 
 
 def up_sample(init: Matrix) -> Matrix:
-    """Expand each value from init Matrix into `factor` by `factor` sized area in final result."""
     n = 4
     result = [[0 for _ in range(2 * n)] for _ in range(2 * n)]
 

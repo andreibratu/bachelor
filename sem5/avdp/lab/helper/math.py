@@ -1,5 +1,5 @@
 from copy import deepcopy
-from math import sqrt, cos, pi
+from math import sqrt, cos, pi, floor, ceil
 from collections import Callable
 
 from domain.types import Matrix
@@ -55,7 +55,11 @@ def component_wise_division(a: Matrix, b: Matrix) -> Matrix:
     result = [[0 for _ in range(8)] for _ in range(8)]
     for i in range(8):
         for j in range(8):
-            result[i][j] = a[i][j] // b[i][j]
+            result[i][j] = a[i][j] / b[i][j]
+            if result[i][j] > 0:
+                result[i][j] = floor(result[i][j])
+            else:
+                result[i][j] = ceil(result[i][j])
     return result
 
 def component_wise_multiplication(a: Matrix, b: Matrix) -> Matrix:

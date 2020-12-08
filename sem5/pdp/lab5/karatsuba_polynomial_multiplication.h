@@ -7,8 +7,8 @@
 
 #include <memory>
 #include <thread>
+#include <future>
 #include "Polynomial.h"
-#include "thread_pool.h"
 #include "karatsuba_aux.h"
 
 std::vector<int> karatsubaSequential(const std::vector<int> &A, const std::vector<int> &B) {
@@ -91,82 +91,61 @@ Polynomial karatsubaSequentialMultiplication(const Polynomial &A, const Polynomi
 void numberProdSequentialAux(
     const std::shared_ptr<std::vector<int>>& a, int startA, int stopA,
     const std::shared_ptr<std::vector<int>>& b, int startB, int stopB,
-    std::shared_ptr<std::vector<int>> &result)
-{
+    std::shared_ptr<std::vector<int>> &result) {
 
     std::vector<int> res = std::vector<int>((stopA - startA) * 2, 0);
 
-    for (int i = startB; i < stopB; i++)
-    {
+    for (int i = startB; i < stopB; i++) {
         int carry = 0;
-        for (int j = startA; j < stopA; j++)
-        {
+        for (int j = startA; j < stopA; j++) {
             int prod = (*a)[j] * (*b)[i] + carry;
 
-            res[i + j - startA - startB] += prod;
+            (*result)[i + j - startA - startB] += prod;
         }
     }
-
-    result = std::make_shared<std::vector<int>>(res);
 }
 
 void multiplyKaratsubaParallelAux(
-        const std::unique_ptr<ThreadPool> &poolPtr,
         std::shared_ptr<std::vector<int>> a, int startA, int stopA,
         std::shared_ptr<std::vector<int>> b, int startB,int stopB,
-        std::shared_ptr<std::vector<int>> result
+        std::shared_ptr<std::vector<int>> result,
+        std::atomic<int> &num_threads
 ) {
-    // If the lengths are short enough, apply the sequential method
-    if(stopA - startA < 5 || stopB - stopA < 5 || poolPtr->available_threads() == 0) {
+    // If the lengths are short enough
+    if(stopA - startA < 5 || stopB - stopA < 5 || num_threads == 0) {
         numberProdSequentialAux(a, startA, stopA, b, startB, stopB, result);
         return;
     }
 
-    // Else we split into independent subproblems
+    // Else we split into independent sub-problems
     int middleA = (stopA + startA)/2;
     int middleB = (stopB + startB)/2;
 
     // 1. Add A0 * B0, with 2 * (n/2) offset
-    std::shared_ptr<std::atomic<bool>> stepOneFlag;
     auto stepOneResult = std::make_shared<std::vector<int>>((stopA - middleA) * 2, 0);
-    if (poolPtr->available_threads() > 0) {
-        stepOneFlag = poolPtr->enqueue([&a, middleA, stopA, &b, middleB, stopB, &stepOneResult, &poolPtr](){
-            multiplyKaratsubaParallelAux(
-                    poolPtr,
-                    a, middleA, stopA,
-                    b, middleB, stopB,
-                    stepOneResult);
-        });
+    auto strategy = std::launch::deferred;
+    if (num_threads != 0) {
+        num_threads -= 1;
+        strategy = std::launch::async;
     }
-    else {
-        multiplyKaratsubaParallelAux(
-           poolPtr,
-        a, middleA, stopA,
-        b, middleB, stopB,
-        stepOneResult);
-    }
+    auto stepOneFuture = std::async(
+            strategy, [&a, middleA, stopA, &b, middleB, stopB, &num_threads, &stepOneResult]() {
+                multiplyKaratsubaParallelAux(a, middleA, stopA, b, middleB, stopB, stepOneResult, num_threads);
+            }
+    );
 
+    strategy = std::launch::deferred;
+    if (num_threads != 0) {
+        num_threads -= 1;
+        strategy = std::launch::async;
+    }
     // 3. Add A1 * B1, with no offset
-    std::shared_ptr<std::atomic<bool>> stepThreeFlag;
     auto stepThreeResult = std::make_shared<std::vector<int>>((middleA - startA) * 2, 0);
-    if (poolPtr->available_threads() > 0) {
-        stepThreeFlag = poolPtr->enqueue([&poolPtr, &a, startA, middleA, &b, startB, middleB, &stepThreeResult](){
-            multiplyKaratsubaParallelAux(
-                    poolPtr,
-                    a, startA, middleA,
-                    b, startB, middleB,
-                    stepThreeResult
-            );
-        });
-    }
-    else {
-        multiplyKaratsubaParallelAux(
-                poolPtr,
-                a, startA, middleA,
-                b, startB, middleB,
-                stepThreeResult
-        );
-    }
+    auto stepThreeFuture = std::async(
+        strategy, [&a, startA, middleA, &b, startB, middleB, &stepThreeResult, &num_threads] () {
+        multiplyKaratsubaParallelAux(a, startA, middleA, b, startB, middleB, stepThreeResult, num_threads);
+    });
+
 
     // Step 2:
     //A1 + A0
@@ -176,33 +155,20 @@ void multiplyKaratsubaParallelAux(
     //(A1 + A0) * (B1 + B0)
     auto productStepTwo = std::make_shared<std::vector<int>>(2 * std::max(a1plus0->size(), b1plus0->size()), 0);
 
-    std::shared_ptr<std::atomic<bool>> stepTwoFlag = nullptr;
-    if (poolPtr->available_threads() > 0) {
-        stepTwoFlag = poolPtr->enqueue([&poolPtr, &a1plus0, b1plus0, &productStepTwo](){
-            multiplyKaratsubaParallelAux(
-                poolPtr,
+    strategy = std::launch::deferred;
+    if (num_threads != 0) {
+        num_threads -= 1;
+        strategy = std::launch::async;
+    }
+    auto stepTwoFuture = std::async(strategy, [&a1plus0, &b1plus0, &productStepTwo, &num_threads] () {
+        multiplyKaratsubaParallelAux(
                 a1plus0, 0, a1plus0->size(),
                 b1plus0, 0, b1plus0->size(),
-                productStepTwo
-            );
-        });
-    }
-    else {
-        multiplyKaratsubaParallelAux(
-            poolPtr,
-            a1plus0, 0, a1plus0->size(),
-            b1plus0, 0, b1plus0->size(),
-            productStepTwo
-        );
-    }
-    // result = productStepTwo - (A0 * B0 + A1 * B1)
-    // Wait for step one and step three to finish
-    bool checkOne = false;
-    bool checkThree = false;
-    while(!checkOne && !checkThree) {
-        checkOne = (!stepOneFlag) || (stepOneFlag->load());
-        checkThree = (!stepThreeFlag)  || (stepThreeFlag->load());
-    }
+                productStepTwo, num_threads);
+    });
+    stepOneFuture.get();
+    stepTwoFuture.get();
+    stepThreeFuture.get();
 
     numberDifference(productStepTwo, stepOneResult);
     numberDifference(productStepTwo, stepThreeResult);
@@ -231,23 +197,24 @@ void multiplyKaratsubaParallelAux(
 void multiplyKaratsubaParallel(
         const std::shared_ptr<std::vector<int>>& a,
         const std::shared_ptr<std::vector<int>>& b,
-        const std::shared_ptr<std::vector<int>>& result, int threads
+        const std::shared_ptr<std::vector<int>>& result,
+        std::atomic<int> &thread_count
 ) {
     auto intermediary = std::make_shared<std::vector<int>>(a->size() * 2, 0);
-    auto poolPtr = std::make_unique<ThreadPool>(threads);
 
-    multiplyKaratsubaParallelAux(poolPtr, a, 0, a->size(), b, 0, b->size(), intermediary);
+    multiplyKaratsubaParallelAux(a, 0, a->size(), b, 0, b->size(), intermediary, thread_count);
 
     for(int i=0; i < intermediary->size(); i++) {
         (*result)[i] = (*intermediary)[i];
     }
 }
 
-Polynomial karatsubaParallelMultiplication(const Polynomial& A, const Polynomial& B, int numThreads) {
+Polynomial karatsubaParallelMultiplication(const Polynomial& A, const Polynomial& B, int num_threads) {
     auto result = std::make_shared<std::vector<int>>(A.getCoefficients().size() * 2, 0);
     auto a = std::make_shared<std::vector<int>>(A.getCoefficients());
     auto b = std::make_shared<std::vector<int>>(B.getCoefficients());
-    multiplyKaratsubaParallel(a, b, result, numThreads);
+    std::atomic<int> value(num_threads);
+    multiplyKaratsubaParallel(a, b, result, value);
     result->pop_back();
     return Polynomial(*result);
 }
