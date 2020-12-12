@@ -1,13 +1,13 @@
-BEGIN
+start
 
-a: int;
+var: int;
 count: int;
 
-read a;
+read var;
 read count;
 
 for i <- 1, a, 1 do
-    if a % i == 0 do
+    if var % i == 0 do
         count <- count + 1;
     fi
 rof
@@ -19,4 +19,4 @@ else do
     write "NO";
 esle
 
-END
+stop

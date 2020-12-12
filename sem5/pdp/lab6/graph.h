@@ -33,6 +33,17 @@ public:
     bool is_neighbour(int node, int neighbour) {
         return this->edges[node]->find(neighbour) != this->edges[node]->end();
     }
+
+    void printGraph() {
+        for(auto& pair: edges) {
+            std::cout << pair.first << " [";
+            for(auto& neigh: (*pair.second)) {
+                std::cout << neigh << ' ';
+            }
+            std::cout << "]\n";
+        }
+        std::cout << '\n';
+    }
 };
 
 #endif //LAB6_GRAPH_H

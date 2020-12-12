@@ -172,13 +172,13 @@ class FiniteAutomaton:
 # variable_automaton.to_json("automatons/variable_automaton.json")
 
 variable_automaton = FiniteAutomaton.from_json(
-    "automatons/variable_automaton.json"
+    "../automatons/variable_automaton.json"
 )
 assert variable_automaton.match("a")
 assert not variable_automaton.match("")
 assert not variable_automaton.match("_dfg")
 assert variable_automaton.match("asd_45")
-variable_automaton.write_ebnf("automatons/variable_ebnf")
+variable_automaton.write_ebnf("../automatons/variable_ebnf")
 
 # end_2 = AutomatonNode(edges=[], next_nodes=[], is_end=True)
 # node1 = AutomatonNode(edges=["0"], next_nodes=[end_2], is_start=True)
@@ -204,9 +204,9 @@ variable_automaton.write_ebnf("automatons/variable_ebnf")
 # integer_automaton.to_json("automatons/integer_automaton.json")
 
 integer_automaton = FiniteAutomaton.from_json(
-    "automatons/integer_automaton.json"
+    "../automatons/integer_automaton.json"
 )
-integer_automaton.write_ebnf("automatons/integer_ebnf")
+integer_automaton.write_ebnf("../automatons/integer_ebnf")
 assert integer_automaton.match("+122131")
 assert integer_automaton.match("4")
 assert integer_automaton.match("-123")

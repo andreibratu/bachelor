@@ -44,7 +44,7 @@ class Grammar:
             curr_node = dfs_stack.pop()
             seen[curr_node] = True
             for neigh in graph[curr_node]:
-                if seen[neigh]:
+                if neigh in seen and seen[neigh]:
                     raise ValueError("Grammar is left recursive!")
                 dfs_stack.append(neigh)
 
@@ -71,5 +71,5 @@ class Grammar:
                 productions.append(Production(line[0], line[1].split("@")))
                 line = fp.readline().rstrip()
         print(dep_graph)
-        Grammar.__check_cycle(dep_graph)
+        # Grammar.__check_cycle(dep_graph)
         return Grammar(start_sym, terminals, non_terminals, productions)

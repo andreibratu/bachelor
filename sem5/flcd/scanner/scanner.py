@@ -1,29 +1,29 @@
 from re import match
-from scanner.finite_automaton import FiniteAutomaton
+from finite_automaton import FiniteAutomaton
 import re
 import os
 
-from scanner.hash_table import HashTable
+from hash_table import HashTable
 
 reserved_tokens = []
-file_input = "language/pr1"
+file_input = "../language/pr2"
 
 CHAR_RE = r"^\'[A-Za-z0-9\ ]\'$"
 DOUBLE_CONST_RE = r"^([+-]?(0|[1-9][0-9]*)\.[0-9]+)$"
 STR_CONST_RE = r"^\"[a-zA-Z\ 0-9]{0,}\"$"
 VALID_PATTERNS = [DOUBLE_CONST_RE, STR_CONST_RE, CHAR_RE]
-INT_AUTOMATON = FiniteAutomaton.from_json("automatons/integer_automaton.json")
+INT_AUTOMATON = FiniteAutomaton.from_json("../automatons/integer_automaton.json")
 VARIABLE_AUTOMATON = FiniteAutomaton.from_json(
-    "automatons/variable_automaton.json"
+    "../automatons/variable_automaton.json"
 )
 VALID_AUTOMATONS = [INT_AUTOMATON, VARIABLE_AUTOMATON]
 
 if os.path.exists("ST.out"):
     os.remove("ST.out")
-if os.path.exists("PIF.out"):
-    os.remove("PIF.out")
+if os.path.exists("../parser/PIF.out"):
+    os.remove("../parser/PIF.out")
 
-with open("language/token.in", "r") as fp:
+with open("../language/token.in", "r") as fp:
     read_tokens = [x for x in fp.read().split("\n") if len(x) != 0]
     for tok in read_tokens:
         reserved_tokens.append(tok)
@@ -117,7 +117,7 @@ for enm, tok_tuple in enumerate(final_tokens):
             )
             exit(1)
 
-with open("PIF.out", "w+") as fp:
+with open("../parser/PIF.out", "w+") as fp:
     for tok, idx in pif:
         fp.write(f"{tok} {idx}\n")
 

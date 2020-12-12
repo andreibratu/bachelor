@@ -57,4 +57,12 @@ double calculate_variance(const std::vector<double>& samples, double mean) {
     return variance / (samples.size() - 1); // NOLINT(cppcoreguidelines-narrowing-conversions)
 }
 
+void print_hamiltonian_path(const std::vector<int> &permutation) {
+    std::cout << "HAMILTONIAN PATH ";
+    for(auto& x: permutation) {
+        std::cout << x << ' ';
+    }
+    std::cout << '\n';
+}
+
 #endif //LAB6_HELPER_H
