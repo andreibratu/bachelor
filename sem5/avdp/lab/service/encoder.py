@@ -1,11 +1,15 @@
+import json
+import pickle
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import List
+from typing import List, Tuple
 
 from domain.sample import Sample, SampledYUV
 from domain.types import RGBImage, YUVImage, Convolution
+from helper.bits import precompute_representations
 from helper.convolutions import identity, average_2d, up_sample
 from helper.math import forward_dct, component_wise_division
 from helper.quants import Q
+from helper.walk import zig_zag_walk
 
 
 def rgb_image_to_yuv_image(rgb: RGBImage) -> YUVImage:
@@ -113,55 +117,41 @@ def _quantisize_subtask(sample: Sample):
     sample.values = quant_values
 
 
-# class EncoderService:
-#
-#     def encode(self):
-#         with ThreadPoolExecutor(max_workers=8) as executor:
-#             for idx, sampled_yuv in enumerate(self.repository.samples):
-#                 encoded_bytes = bytes(0)
-#                 for y_sample, u_sample, v_sample in sampled_yuv:
-#                     EncoderService._encode_sample_subtask(
-#                         encoded_bytes, y_sample)
-#                     EncoderService._encode_sample_subtask(
-#                         encoded_bytes, u_sample)
-#                     EncoderService._encode_sample_subtask(
-#                         encoded_bytes, v_sample)
-#                 assert len(encoded_bytes) != 0
-#                 self.repository.bytes.append(encoded_bytes)
-#
-#     @staticmethod
-#     def _get_amplitude_size(amplitude: int) -> int:
-#         """Get number of bits necessary to represent amplitude."""
-#         assert isinstance(amplitude, int)
-#         pw = 1
-#         while True:
-#             if amplitude <= (2 ** pw) - 1:
-#                 break
-#             pw += 1
-#         return pw
-#
-#     @staticmethod
-#     def _encode_sample_subtask(encoded_bytes: str, sample: Matrix):
-#         walk = zig_zag_walk(sample)
-#         sample_entropy_encoding = []
-#         sample_entropy_encoding.extend([
-#             EncoderService._get_amplitude_size(walk[0]),
-#             walk[0]
-#         ])
-#         count_zeros = 0
-#         for value in walk:
-#             if value == 0:
-#                 count_zeros += 1
-#                 continue
-#             else:
-#                 sample_entropy_encoding.extend([
-#                     count_zeros,
-#                     EncoderService._get_amplitude_size(value),
-#                     value
-#                 ])
-#                 count_zeros = 0
-#         sample_entropy_encoding = [x.to_bytes(
-#             2, byteorder='big') for x in sample_entropy_encoding]
-#         sample_entropy_encoding.extend([0, 0])
-#         encoded_bytes += ''.join(sample_entropy_encoding)
+def encode_entropy(quant_channels: Tuple[List[Sample], List[Sample], List[Sample]]):
+    output = ""
+    precompute_representations(12)
+    with open("precompute_bit.json") as fp:
+        int_to_bit, _ = json.load(fp)
 
+    def int_to_bin(x: int) -> str:
+        bin_str = '{0:b}'.format(x)
+        while len(bin_str) < 8:
+            bin_str = '0' + bin_str
+        return bin_str
+
+    amp_size = lambda x: len(int_to_bit[str(x)]) if x != 0 else 0
+
+    for channel in range(3):
+        for sample in quant_channels[channel]:
+            matrix_values = sample.values
+            matrix_entropy = ''
+            matrix_walk = zig_zag_walk(matrix_values)
+            matrix_entropy += int_to_bin(amp_size(matrix_walk[0]))
+            if matrix_walk[0] != 0:
+                matrix_entropy += int_to_bit[str(matrix_walk[0])]
+            count_zeros = 0
+            matrix_walk = matrix_walk[1:]
+            for v in matrix_walk:
+                if v == 0:
+                    count_zeros += 1
+                    continue
+                matrix_entropy += int_to_bin(count_zeros)
+                count_zeros = 0
+                matrix_entropy += int_to_bin(amp_size(v))
+                matrix_entropy += int_to_bit[str(v)]
+            matrix_entropy += int_to_bin(0)
+            matrix_entropy += int_to_bin(0)
+            output += matrix_entropy
+
+    with open("output", 'wb+') as fp:
+        pickle.dump(output, fp)

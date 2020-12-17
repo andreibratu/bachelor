@@ -3,6 +3,8 @@ from typing import List, Dict, Tuple
 
 from domain.types import Matrix
 
+# The positions in walk are invariant to matrix values.
+# Use dicts to memorise position of any coord
 walk, reverse_walk = {}, {}
 
 

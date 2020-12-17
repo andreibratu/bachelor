@@ -1,4 +1,6 @@
+import json
 import math
+import pickle
 from concurrent.futures.thread import ThreadPoolExecutor
 from typing import Tuple, List
 
@@ -6,7 +8,7 @@ from domain.sample import Sample, SampledYUV
 from domain.types import Matrix, YUVImage, RGBImage
 from helper.math import component_wise_multiplication, inverse_dct
 from helper.quants import Q
-
+from helper.walk import reverse_zig_zag_walk
 
 Upsample = Tuple[Matrix, int, int, int, int]
 
@@ -112,45 +114,81 @@ def dequantisize(quant_channels):
     return quant_channels
 
 
-# class DecoderService:
-#
-#
-#     def decode(self):
-#         for encoded_img in self.repository.bytes:
-#             y_samples, u_samples, v_samples = [], [], []
-#             bytes_iter = iter(encoded_img)
-#             flag = 0
-#             try:
-#                 while True:
-#                     values = DecoderService._decode_sample(bytes_iter)
-#
-#             except StopIteration:
-#                 # Iterator was exhausted, as did my patience
-#                 pass
-#
-#     @staticmethod
-#     def _decode_sample(bytes_iter: iter) -> Matrix:
-#         decoded_walk = []
-#         # Read first number
-#         first_size = DecoderService._read_integer(bytes_iter, 1)
-#         decoded_walk.append(DecoderService._read_integer(bytes, first_size))
-#         while True:
-#             # Read until two zero bytes are reached
-#             count_zero = DecoderService._read_integer(bytes_iter, 1)
-#             size = DecoderService._read_integer(bytes_iter, 1)
-#             if count_zero == 0 and size == 0:
-#                 break
-#             decoded_walk.extend([0 for _ in range(count_zero)])
-#             decoded_walk.append(DecoderService._read_integer(bytes_iter, size))
-#         # Encoding will not include ending zeros, add them if needed
-#         decoded_walk.extend([0 for _ in range(64 - len(decoded_walk))])
-#         assert len(decoded_walk) == 64
-#
-#     @staticmethod
-#     def _read_integer(bytes_iter: iter, int_size: int) -> int:
-#         """Read int_size bytes from iterator and """
-#         int_bytes = bytes(0)
-#         for _ in range(int_size):
-#             int_bytes += next(bytes_iter)
-#         return int.from_bytes(int_bytes, "big", signed=True)
+def decode_entropy(quant_channels) -> Tuple[List[Sample], List[Sample], List[Sample]]:
+    with open("precompute_bit.json") as fp:
+        _, bit_to_int = json.load(fp)
+    with open("output", 'rb') as fp:
+        output = pickle.load(fp)
+    samples = []
+    sample = []
+    first_byte = True
+    while len(output) != 0:
+        if first_byte:
+            first_byte = False
+            byts = output[:8]
+            output = output[8:]
+            how_many = int(byts, base=2)
+            if how_many == 0:
+                # DC coefficient is somehow 0, append and whatever
+                sample.append(0)
+                continue
+            # Else we are going to read DC coefficient
+            byts = output[:how_many]
+            assert (len(byts) == how_many)
+            old_len = len(output)
+            output = output[how_many:]
+            assert len(output) == old_len - how_many
+            value = int(bit_to_int[byts])
+            sample.append(value)
+        else:
+            byts = output[:8]
+            output = output[8:]
+            how_many = int(byts, base=2)
+            print('HOW_MANY', how_many)
+            byts = output[:8]
+            output = output[8:]
+            next_how_many = int(byts, base=2)
+            # Check if next byte is also 0 - if yes, we finished a sample
+            if how_many == 0 and next_how_many == 0:
+                # Sample is finished
+                while len(sample) != 64:
+                    sample.append(0)
+                first_byte = True
+                samples.append(reverse_zig_zag_walk(sample))
+                sample = []
+                continue
+            else:
+                # Not finished, append zeros before AC coefficient
+                for _ in range(how_many):
+                    sample.append(0)
+                # Now append the AC coefficient
+                byts = output[:next_how_many]
+                output = output[next_how_many:]
+                sample.append(int(bit_to_int[byts]))
 
+    assert(len(samples) % 3 == 0)
+    size_ch = len(samples) // 3
+    y_samples = samples[:size_ch]
+    samples = samples[size_ch:]
+    u_samples = samples[:size_ch]
+    samples = samples[size_ch:]
+    v_samples = samples[:]
+
+    assert len(y_samples) == len(quant_channels[0])
+    for y_s_r, y_s in zip(y_samples, quant_channels[0]):
+        assert len(y_s_r) == 8
+        assert len(y_s_r[0]) == 8
+        for i in range(8):
+            for j in range(8):
+                assert y_s.values[i][j] == y_s_r[i][j]
+        y_s.values = y_s_r
+
+    assert len(u_samples) == len(quant_channels[1])
+    for u_s_r, u_s in zip(u_samples, quant_channels[1]):
+        u_s.values = u_s_r
+
+    assert len(v_samples) == len(quant_channels[2])
+    for v_s_r, v_s in zip(v_samples, quant_channels[2]):
+        v_s.values = v_s_r
+
+    return quant_channels

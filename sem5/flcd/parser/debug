@@ -1,0 +1,87 @@
+################
+INPUT ['program']
+WORK []
+STATUS q
+INDEX 0
+EXPAND program
+################
+INPUT ['start', 'stmlist', 'stop']
+WORK [('program', ['start', 'stmlist', 'stop'])]
+STATUS q
+INDEX 0
+################
+INPUT ['stmlist', 'stop']
+WORK [('program', ['start', 'stmlist', 'stop']), 'start']
+STATUS q
+INDEX 1
+EXPAND stmlist
+################
+INPUT ['stm', 'stop']
+WORK [('program', ['start', 'stmlist', 'stop']), 'start', ('stmlist', ['stm'])]
+STATUS q
+INDEX 1
+EXPAND stm
+################
+INPUT ['decllist', 'stop']
+WORK [('program', ['start', 'stmlist', 'stop']), 'start', ('stmlist', ['stm']), ('stm', ['decllist'])]
+STATUS q
+INDEX 1
+EXPAND decllist
+################
+INPUT ['decl', 'stop']
+WORK [('program', ['start', 'stmlist', 'stop']), 'start', ('stmlist', ['stm']), ('stm', ['decllist']), ('decllist', ['decl'])]
+STATUS q
+INDEX 1
+EXPAND decl
+################
+INPUT ['identifier', ':', 'type', ';', 'stop']
+WORK [('program', ['start', 'stmlist', 'stop']), 'start', ('stmlist', ['stm']), ('stm', ['decllist']), ('decllist', ['decl']), ('decl', ['identifier', ':', 'type', ';'])]
+STATUS q
+INDEX 1
+################
+INPUT [':', 'type', ';', 'stop']
+WORK [('program', ['start', 'stmlist', 'stop']), 'start', ('stmlist', ['stm']), ('stm', ['decllist']), ('decllist', ['decl']), ('decl', ['identifier', ':', 'type', ';']), 'identifier']
+STATUS q
+INDEX 2
+################
+INPUT ['type', ';', 'stop']
+WORK [('program', ['start', 'stmlist', 'stop']), 'start', ('stmlist', ['stm']), ('stm', ['decllist']), ('decllist', ['decl']), ('decl', ['identifier', ':', 'type', ';']), 'identifier', ':']
+STATUS q
+INDEX 3
+EXPAND type
+################
+INPUT ['type_simp', ';', 'stop']
+WORK [('program', ['start', 'stmlist', 'stop']), 'start', ('stmlist', ['stm']), ('stm', ['decllist']), ('decllist', ['decl']), ('decl', ['identifier', ':', 'type', ';']), 'identifier', ':', ('type', ['type_simp'])]
+STATUS q
+INDEX 3
+EXPAND type_simp
+################
+INPUT ['bool', ';', 'stop']
+WORK [('program', ['start', 'stmlist', 'stop']), 'start', ('stmlist', ['stm']), ('stm', ['decllist']), ('decllist', ['decl']), ('decl', ['identifier', ':', 'type', ';']), 'identifier', ':', ('type', ['type_simp']), ('type_simp', ['bool'])]
+STATUS q
+INDEX 3
+################
+INPUT ['bool', ';', 'stop']
+WORK [('program', ['start', 'stmlist', 'stop']), 'start', ('stmlist', ['stm']), ('stm', ['decllist']), ('decllist', ['decl']), ('decl', ['identifier', ':', 'type', ';']), 'identifier', ':', ('type', ['type_simp']), ('type_simp', ['bool'])]
+STATUS b
+INDEX 3
+################
+INPUT ['int', ';', 'stop']
+WORK [('program', ['start', 'stmlist', 'stop']), 'start', ('stmlist', ['stm']), ('stm', ['decllist']), ('decllist', ['decl']), ('decl', ['identifier', ':', 'type', ';']), 'identifier', ':', ('type', ['type_simp']), ('type_simp', ['int'])]
+STATUS q
+INDEX 3
+################
+INPUT [';', 'stop']
+WORK [('program', ['start', 'stmlist', 'stop']), 'start', ('stmlist', ['stm']), ('stm', ['decllist']), ('decllist', ['decl']), ('decl', ['identifier', ':', 'type', ';']), 'identifier', ':', ('type', ['type_simp']), ('type_simp', ['int']), 'int']
+STATUS q
+INDEX 4
+################
+INPUT ['stop']
+WORK [('program', ['start', 'stmlist', 'stop']), 'start', ('stmlist', ['stm']), ('stm', ['decllist']), ('decllist', ['decl']), ('decl', ['identifier', ':', 'type', ';']), 'identifier', ':', ('type', ['type_simp']), ('type_simp', ['int']), 'int', ';']
+STATUS q
+INDEX 5
+################
+INPUT []
+WORK [('program', ['start', 'stmlist', 'stop']), 'start', ('stmlist', ['stm']), ('stm', ['decllist']), ('decllist', ['decl']), ('decl', ['identifier', ':', 'type', ';']), 'identifier', ':', ('type', ['type_simp']), ('type_simp', ['int']), 'int', ';', 'stop']
+STATUS q
+INDEX 6

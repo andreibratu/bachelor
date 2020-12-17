@@ -1,33 +1,7 @@
 start
 
-a: int[4];
-b: int;
-c: int;
-d: str;
-
-d <- "abc";
-
-read a;
-read b;
-read c;
-
-max1 <- 0;
-max2 <- -1;
-
-if a < (-10 + 5 ) do
+if a < (10 + 5) do
     max1 <- b;
 fi
-else do
-    max1 <- a;
-esle
-
-if max1 < c do
-    max2 <- c;
-fi
-else do
-    max2 <- max1;
-esle
-
-write max2;
 
 stop

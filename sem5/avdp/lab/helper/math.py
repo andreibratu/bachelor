@@ -1,6 +1,4 @@
-from copy import deepcopy
 from math import sqrt, cos, pi, floor, ceil
-from collections import Callable
 
 from domain.types import Matrix
 

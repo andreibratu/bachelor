@@ -1,22 +1,13 @@
 start
 
-var: int;
+a: int;
 count: int;
 
-read var;
+read a;
 read count;
 
-for i <- 1, a, 1 do
-    if var % i == 0 do
-        count <- count + 1;
-    fi
+for i <- 1, a < (10 + 5), 1 do
+    a <- a + 5;
 rof
-
-if count == 2 do
-    write "YES";
-fi
-else do
-    write "NO";
-esle
 
 stop

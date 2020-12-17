@@ -12,6 +12,8 @@ class Production:
         right_str = "[" + ", ".join(self.right_term) + "]"
         return f"{self.left_term} -> {right_str}"
 
+    __repr__ = __str__
+
     def __eq__(self, other):
         return (
             self.right_term == other.right_term

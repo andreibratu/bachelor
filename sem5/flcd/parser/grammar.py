@@ -1,5 +1,6 @@
 from production import Production
 from typing import Dict
+from collections import defaultdict
 
 
 class Grammar:
@@ -8,6 +9,12 @@ class Grammar:
         self.terminals = terminals
         self.non_terminals = non_terminals
         self.productions = productions
+
+    def get_productions(self):
+        prods = defaultdict(list)
+        for p in self.productions:
+            prods[p.left_term].append(" ".join(p.right_term))
+        return prods
 
     def get_productions_of(self, symbol):
         return list(filter(lambda x: x.left_term == symbol, self.productions))
@@ -49,10 +56,10 @@ class Grammar:
                 dfs_stack.append(neigh)
 
     @staticmethod
-    def from_file(filename: str) -> "Grammar":
-        dep_graph = {}
+    def from_file(filename):
+        dep_graph = defaultdict(list)
         with open(filename) as fp:
-            non_terminals = fp.readline().rstrip()
+            non_terminals = fp.readline().rstrip().split(" ")
             terminals = fp.readline().rstrip().split(" ")
             start_sym = fp.readline().rstrip()
             productions = []
@@ -71,5 +78,5 @@ class Grammar:
                 productions.append(Production(line[0], line[1].split("@")))
                 line = fp.readline().rstrip()
         print(dep_graph)
-        # Grammar.__check_cycle(dep_graph)
+        Grammar.__check_cycle(dep_graph)
         return Grammar(start_sym, terminals, non_terminals, productions)
