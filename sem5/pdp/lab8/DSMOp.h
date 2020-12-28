@@ -5,7 +5,7 @@
 #ifndef LAB8_DSMOP_H
 #define LAB8_DSMOP_H
 
-enum DSM_OP {
+enum DSM_OP: int {
     WRITE = 0,
     SUBSCRIBE = 1,
     UPDATE = 2,

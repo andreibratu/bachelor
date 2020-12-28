@@ -1,28 +1,42 @@
+#include <boost/mpi/environment.hpp>
+#include <boost/mpi/communicator.hpp>
+// Include below is actually required
+#include <boost/serialization/utility.hpp>
 #include <iostream>
-#include <mpl.hpp>
 #include "DSMSupervisor.h"
 #include "DSMListener.h"
 #include <unistd.h>
+#include <future>
+
+namespace mpi = boost::mpi;
 
 int main() {
+    mpi::environment env;
+    mpi::communicator comm_world;
     srand(0); // NOLINT(cert-msc51-cpp)
-    const mpl::communicator &comm_world(mpl::environment::comm_world());
 
-    if(comm_world.size() != 3) return 1;
+    if(comm_world.size() != 3 && comm_world.rank() == 0) {
+        std::cout << "Expected process count to be equal to 3, found " << comm_world.size() << '\n';
+        return 1;
+    }
 
     if(comm_world.rank() == 0) {
-        DSMSupervisor<int> supervisor{comm_world, 2};
+        DSMSupervisor supervisor{2};
+        while(!supervisor.finished);
     }
     else if (comm_world.rank() == 1) {
-        DSMListener<int> listener{comm_world};
-        listener.write("foo", 5);
-        for(int i = 0; i < 1000; i++) {
-            listener.write("foo", rand() % 1000); // NOLINT(cert-msc50-cpp)
-            sleep(1);
-        }
-    } else {
-        DSMListener<int> listener{comm_world};
         sleep(10);
-        listener.subscribe("foo");
+        DSMListener listener;
+        listener.write("foo", 5);
+        for(int i = 0; i < 50; i++) {
+            listener.update("foo", rand() % 1000); // NOLINT(cert-msc50-cpp)
+            sleep(5);
+        }
+        while (true) {}
+    } else {
+        sleep(3);
+//        DSMListener listener;
+//        listener.subscribe("foo");
+        while (true) {}
     }
 }

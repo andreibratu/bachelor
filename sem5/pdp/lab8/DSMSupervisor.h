@@ -6,30 +6,31 @@
 #define LAB8_DSMSUPERVISOR_H
 
 #include <string>
+#include "thread"
 #include <unordered_map>
 #include <unordered_set>
-#include <mpl.hpp>
 #include <shared_mutex>
-#include <DSMValue.h>
+#include "DSMValue.h"
 #include "DSMOp.h"
 #include "DSMOpResult.h"
 #include "DSMChannel.h"
 #include "DSMOpResult.h"
+#include <boost/mpi/environment.hpp>
+#include <boost/mpi/communicator.hpp>
 
-template <class T>
+namespace mpi = boost::mpi;
+
 class DSMSupervisor {
 private:
     std::mutex subscribersMutex;
 
     std::mutex valuesMutex;
 
-    const mpl::communicator &comm_world;
-
     std::vector<std::thread> threads;
 
-    std::unordered_map<std::string, std::unordered_set<int>*> subscriberList;
+    std::unordered_map<std::string, std::unique_ptr<std::unordered_set<int>>> subscriberList;
 
-    std::unordered_map<std::string, T> values;
+    std::unordered_map<std::string, int> values;
 
     std::unordered_set<int> getSubscribers(const std::string& key) {
         subscribersMutex.lock();
@@ -38,88 +39,112 @@ private:
         return answer;
     }
 
-    bool write(std::string key, T value, int worker) {
+    bool write(const std::string& key, int value, int worker, mpi::communicator &comm_world) {
+        std::cout << "SUPERVISOR: WRITING KEY " << key << " WITH VALUE " << value << " FOR WORKER " << worker << '\n';
         subscribersMutex.lock();
         valuesMutex.lock();
-        if (values.find(value) != values.end()) {
+        if (values.find(key) != values.end()) {
+            valuesMutex.unlock();
+            subscribersMutex.unlock();
             return false;
         }
         values[key] = value;
-        subscriberList[key] = new std::unordered_set<int>(worker);
-        std::pair<std::string, T> updateMessage = {key, value};
-        comm_world.template send(updateMessage, worker, NOTIFY_CHANNEL);
+        subscriberList[key] = std::make_unique<std::unordered_set<int>>();
+        subscriberList[key]->insert(worker);
+        std::cout << "WROTE\n";
+        std::pair<std::string, int> updateMessage = {key, value};
+        comm_world.send(worker, NOTIFY_CHANNEL, updateMessage);
+        std::cout << "SENT\n";
         valuesMutex.unlock();
         subscribersMutex.unlock();
         return true;
     }
 
-    void subscribe(const std::string& key, int worker) {
+    void subscribe(const std::string& key, int worker, mpi::communicator &comm_world) {
+        std::cout << "SUPERVISOR: SUBSCRIBE FROM " << worker << " ON KEY " << key << '\n';
         subscribersMutex.lock();
-        subscriberList[key]->insert(worker);
-        comm_world.template send(values[key], worker, NOTIFY_CHANNEL);
+
+        if (subscriberList.find(key) != subscriberList.end()) {
+            subscriberList[key]->insert(worker);
+            std::pair<std::string, int> updateMessage = {key, values[key]};
+            std::cout << "REEEE " << updateMessage.first << " " << updateMessage.second << '\n';
+            comm_world.send(worker, NOTIFY_CHANNEL, updateMessage);
+            std::cout << "SUPERVISOR: SUBSCRIBE FROM " << worker << " ON KEY " << key << "DONE!!\n";
+        }
+        std::cout << "WOW\n";
         subscribersMutex.unlock();
     }
 
-    bool update(const std::string& key, T newValue, int worker) {
+    bool update(const std::string& key, int newValue, int worker, mpi::communicator &comm_world) {
         subscribersMutex.lock();
+        valuesMutex.lock();
         if(subscriberList[key]->find(worker) == subscriberList[key]->end()) {
+            valuesMutex.unlock();
+            subscribersMutex.unlock();
             return false;
         }
-        valuesMutex.lock();
         values[key] = newValue;
-        valuesMutex.unlock();
-        std::pair<std::string, T> updateMessage = {key, newValue};
-        for(auto& sub: *subscriberList[key]) {
-            comm_world.template send(updateMessage, sub, NOTIFY_CHANNEL);
+        std::pair<std::string, int> updateMessage = {key, newValue};
+        std::unordered_set<int> subs = *subscriberList[key];
+        for(auto& sub: subs) {
+            comm_world.send(sub, NOTIFY_CHANNEL, updateMessage);
         }
         valuesMutex.unlock();
         subscribersMutex.unlock();
+        return true;
     }
 public:
-    DSMSupervisor(const mpl::communicator &comm, int numberWorkers): comm_world{comm} {
-        for(int workerRank = 0; workerRank < numberWorkers; workerRank++) {
+    bool finished;
+
+    explicit DSMSupervisor(int numberWorkers) {
+        finished = false;
+        for(int workerRank = 1; workerRank <= numberWorkers; workerRank++) {
             this->threads.emplace_back(
                     [workerRank, this] () {
-                        int finished = false;
+                        mpi::communicator comm_world;
+                        std::cout << "SUPERVISOR: STARTED THREAD FOR WORKER " << workerRank << '\n';
+                        int operation;
+                        std::string key;
+                        int value;
+                        bool result;
                         while (!finished) {
-                            DSM_OP operation;
-                            std::string key;
-                            T value;
-                            bool result;
-                            comm_world.recv(operation, workerRank, ORDER_CHANNEL);
+                            comm_world.recv(workerRank, ORDER_CHANNEL, operation);
+                            std::cout << "SUPERVISOR: RECEIVED OP REQUEST " << operation << " FROM RANK " << workerRank << '\n';
                             switch (operation) {
                                 case WRITE:
-                                    comm_world.template recv(key, workerRank, ORDER_CHANNEL);
-                                    comm_world.template recv(value, workerRank, ORDER_CHANNEL);
-                                    result = this->write(key, value, workerRank);
-                                    comm_world.template send(result ? SUCCESS : FAIL, workerRank, ORDER_CHANNEL);
+                                    comm_world.recv(workerRank, ORDER_CHANNEL, key);
+                                    comm_world.recv(workerRank, ORDER_CHANNEL, value);
+                                    result = this->write(key, value, workerRank, comm_world);
+                                    comm_world.send(workerRank, ORDER_CHANNEL, result ? SUCCESS : FAIL);
                                     break;
                                 case SUBSCRIBE:
-                                    comm_world.template recv(key, workerRank, ORDER_CHANNEL);
-                                    this->subscribe(key, workerRank);
-                                    comm_world.template send(SUCCESS, workerRank, ORDER_CHANNEL);
+                                    comm_world.recv(workerRank, ORDER_CHANNEL, key);
+                                    this->subscribe(key, workerRank, comm_world);
+                                    comm_world.send(workerRank, ORDER_CHANNEL, SUCCESS);
                                     break;
                                 case UPDATE:
-                                    comm_world.recv(key, workerRank, ORDER_CHANNEL);
-                                    comm_world.recv(value, workerRank, ORDER_CHANNEL);
-                                    result = this->update(key, value, workerRank);
-                                    comm_world.template send(result ? SUCCESS : FAIL, workerRank, ORDER_CHANNEL);
+                                    comm_world.recv(workerRank, ORDER_CHANNEL, key);
+                                    comm_world.recv(workerRank, ORDER_CHANNEL, value);
+                                    result = this->update(key, value, workerRank, comm_world);
+                                    comm_world.send(workerRank, ORDER_CHANNEL, result ? SUCCESS : FAIL);
                                     break;
                                 case EXIT:
                                     finished = true;
-                                    comm_world.template send(SUCCESS, workerRank, ORDER_CHANNEL);
+                                    comm_world.send(workerRank, ORDER_CHANNEL, SUCCESS);
                                     break;
                                 default:
-                                    comm_world.template send(FAIL, workerRank, ORDER_CHANNEL);
+                                    comm_world.send(workerRank, ORDER_CHANNEL, FAIL);
                                     break;
                             }
                         }
                     }
             );
         }
+        sleep(2);
     }
 
     ~DSMSupervisor() {
+        std::cout << "SUPERVISOR: EXIT\n";
         for (auto &t: threads) t.join();
     }
 };

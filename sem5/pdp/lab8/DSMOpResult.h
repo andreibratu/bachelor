@@ -5,7 +5,7 @@
 #ifndef LAB8_DSMOPRESULT_H
 #define LAB8_DSMOPRESULT_H
 
-enum DS_OP_RESULT {
+enum DS_OP_RESULT: int {
     SUCCESS = 0,
     FAIL = 1
 };
