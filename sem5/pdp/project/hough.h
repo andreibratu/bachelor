@@ -22,7 +22,27 @@ inline double euclidean_distance(int x_one, int y_one, int x_two, int y_two) {
 
 inline bool point_on_line(int x, int y, double theta, double r) {
     double accepted_region = std::abs(x * std::cos(theta) + y * std::sin(theta) - r);
-    return accepted_region < 0.005;
+    return accepted_region < 1.7;
+}
+
+std::vector<double> calculate_theta_divisions(int count) {
+    std::vector<double> thetas;
+    thetas.reserve(count);
+    double theta_gradient = 2 * M_PI / count;
+    for (int i = 0; i <= count; i++) {
+        thetas.push_back(theta_gradient * i);
+    }
+    return thetas;
+}
+
+std::vector<double> calculate_r_divisions(double count, double r_max) {
+    double r_gradient = r_max / count;
+    std::vector<double> rs;
+    rs.reserve(count + 1);
+    for(int i = 0; i <= count; i++) {
+        rs.push_back(r_gradient * i);
+    }
+    return rs;
 }
 
 std::vector<std::pair<int, int>> collect_white_pixels(const Mat &image) {
@@ -38,55 +58,24 @@ std::vector<std::pair<int, int>> collect_white_pixels(const Mat &image) {
     return collector;
 }
 
-std::vector<std::vector<int>>
+line_to_points_dict
 hough_line_bins(const Mat &image, const vector<std::pair<int, int>> &white_pixels, int theta_divisions,
                 int r_divisions) {
     int max_y = image.rows - 1;
     int max_x = image.cols - 1;
-    double max_r = euclidean_distance(0, 0, max_x, max_y);
-    double max_theta = 90.0;
-    double theta_gradient = max_theta / (double) theta_divisions;
-    double r_gradient = max_r / r_divisions;
-    std::vector<std::vector<int>> bins(theta_divisions, vector<int>(r_divisions, 0));
-    for (int theta_idx = 0; theta_idx < theta_divisions; theta_idx++) {
-        for (int r_idx = 0; r_idx < r_divisions; r_idx++) {
-            double theta = theta_gradient * (theta_idx + 1);
-            double r = r_gradient * (r_idx + 1);
+    double r_max = euclidean_distance(0, 0, max_x, max_y);
+    auto r_vector = calculate_r_divisions(r_divisions, r_max);
+    auto theta_vector = calculate_theta_divisions(theta_divisions);
+
+    line_to_points_dict count;
+    for (int theta_idx = 0; theta_idx < theta_vector.size(); theta_idx++) {
+        for (int r_idx = 0; r_idx <= r_vector.size(); r_idx++) {
             for (auto &p: white_pixels) {
                 int y = p.first;
                 int x = p.second;
                 // Add a border region
-                if (point_on_line(x, y, theta, r)) {
-                    bins[theta_idx][r_idx]++;
-                }
-            }
-        }
-    }
-    return bins;
-}
-
-
-line_to_points_dict
-extract_lines(const Mat &image, const std::vector<std::vector<int>> &bins,
-              const vector<std::pair<int, int>> &white_pixels, int threshold) {
-    int theta_divisions = bins.size();
-    int r_divisions = bins[0].size();
-    int max_y = image.rows - 1;
-    int max_x = image.cols - 1;
-    double max_r = euclidean_distance(0, 0, max_x, max_y);
-    double max_theta = 90.0;
-    double theta_gradient = max_theta / (double) theta_divisions;
-    double r_gradient = max_r / r_divisions;
-
-    line_to_points_dict count;
-
-    for (int theta_idx = 0; theta_idx < bins.size(); theta_idx++) {
-        for (int r_idx = 0; r_idx < bins[0].size(); r_idx++) {
-            double theta = theta_gradient * (theta_idx + 1);
-            double r = r_gradient * (r_idx + 1);
-            for (auto &p: white_pixels) {
-                int x = p.second;
-                int y = p.first;
+                double theta = theta_vector[theta_idx];
+                double r = r_vector[r_idx];
                 if (point_on_line(x, y, theta, r)) {
                     std::pair<double, double> key = {theta, r};
                     if (count[key] == nullptr) {
@@ -101,7 +90,7 @@ extract_lines(const Mat &image, const std::vector<std::vector<int>> &bins,
 }
 
 Mat process_image(const line_to_points_dict &dict, const std::vector<std::pair<int, int>> &white_pixels,
-                  const Mat &original_image) {
+                  const Mat &original_image, int minimum_number_pixels) {
     RNG rng(42);
     Mat result(original_image.rows, original_image.cols, CV_8UC3, Scalar(0, 0, 0));
     for(auto &p: white_pixels) {
@@ -111,6 +100,7 @@ Mat process_image(const line_to_points_dict &dict, const std::vector<std::pair<i
         rgb_pixel[2] = 255;
     }
     for(auto &line_points: dict) {
+        if (line_points.second->size() < minimum_number_pixels) continue;
         // Generate random pixel color
         int random_color_r = rng.uniform(0, 255);
         int random_color_g = rng.uniform(0, 255);
@@ -126,11 +116,10 @@ Mat process_image(const line_to_points_dict &dict, const std::vector<std::pair<i
     return result;
 }
 
-Mat hough_transform(const Mat& input, int theta_divisions, int r_divisions) {
+Mat hough_transform(const Mat& input, int theta_divisions, int r_divisions, int minimum_number_pixels) {
     auto white_pixels = collect_white_pixels(input);
-    auto bins = hough_line_bins(input, white_pixels, theta_divisions, r_divisions);
-    auto lines = extract_lines(input, bins, white_pixels, 50);
-    return process_image(lines, white_pixels, input);
+    auto count = hough_line_bins(input, white_pixels, theta_divisions, r_divisions);
+    return process_image(count, white_pixels, input, minimum_number_pixels);
 }
 
 

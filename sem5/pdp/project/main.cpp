@@ -1,9 +1,12 @@
+#include <cv.h>
 #include "canny.h"
 #include "hough.h"
 #include "iostream"
 
 int main() {
-    Mat img = imread("/Users/andreibratu/bachelor/sem5/pdp/project/city.jpg", IMREAD_GRAYSCALE);
+    Mat init = imread("/Users/andreibratu/bachelor/sem5/pdp/project/grey8.jpg", IMREAD_GRAYSCALE);
+    Mat img;
+    cv::resize(init, img, cv::Size(), 1, 1);
     if (img.empty()) {
         std::cout << "Could not read the image" << std::endl;
         return 1;
@@ -14,10 +17,10 @@ int main() {
     auto pair = apply_sobel(img);
     img = apply_non_max_suppresion(pair.first, pair.second);
     img = get_binary_canny_image(img, 10, 40);
-    img = hough_transform(img, 10, 10);
-    namedWindow("Grayscale", WINDOW_AUTOSIZE);
-    resizeWindow("Grayscale", 500, 500);
-    imshow("Grayscale", img);
+    img = hough_transform(img, 180, 200, 750);
+    namedWindow("Lines", WINDOW_AUTOSIZE);
+    resizeWindow("Lines", 500, 500);
+    imshow("Lines", img);
     waitKey(0);
     destroyAllWindows();
     return 0;
