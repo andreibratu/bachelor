@@ -11,7 +11,7 @@ INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
 INCLUDE_DIRECTORIES(${OpenCV_INCLUDE_DIRS})
 
-add_executable(project main.cpp canny.h hough.h)
+add_executable(project main.cpp canny.h hough.h hough_threaded.h helper.h thread_pool.h)
 
 TARGET_LINK_LIBRARIES( project ${MPI_LIBRARIES} ${Boost_LIBRARIES} ${OpenCV_LIBS})
 
