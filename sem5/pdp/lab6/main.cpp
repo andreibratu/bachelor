@@ -60,7 +60,6 @@ int main() {
     graph->printGraph();
     sleep(5);
     for(int tr = 1; tr <= 10; tr++) {
-
         std::atomic<bool> isHamiltonian(false);
         double executionTime = 0;
         double time, mean, variance;

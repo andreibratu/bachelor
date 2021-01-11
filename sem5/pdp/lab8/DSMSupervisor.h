@@ -22,9 +22,9 @@ namespace mpi = boost::mpi;
 
 class DSMSupervisor {
 private:
-    std::mutex subscribersMutex;
+    std::mutex opMutex;
 
-    std::mutex valuesMutex;
+    mpi::communicator class_comm_world;
 
     std::vector<std::thread> threads;
 
@@ -32,66 +32,57 @@ private:
 
     std::unordered_map<std::string, int> values;
 
-    std::unordered_set<int> getSubscribers(const std::string& key) {
-        subscribersMutex.lock();
-        std::unordered_set<int> answer = *subscriberList[key];
-        subscribersMutex.unlock();
-        return answer;
-    }
-
-    bool write(const std::string& key, int value, int worker, mpi::communicator &comm_world) {
+    void write(const std::string& key, int value, int worker) {
+        opMutex.lock();
         std::cout << "SUPERVISOR: WRITING KEY " << key << " WITH VALUE " << value << " FOR WORKER " << worker << '\n';
-        subscribersMutex.lock();
-        valuesMutex.lock();
         if (values.find(key) != values.end()) {
-            valuesMutex.unlock();
-            subscribersMutex.unlock();
-            return false;
+            class_comm_world.send(worker, ORDER_TAG, FAIL);
+            opMutex.unlock();
         }
         values[key] = value;
         subscriberList[key] = std::make_unique<std::unordered_set<int>>();
         subscriberList[key]->insert(worker);
-        std::cout << "WROTE\n";
-        std::pair<std::string, int> updateMessage = {key, value};
-        comm_world.send(worker, NOTIFY_CHANNEL, updateMessage);
-        std::cout << "SENT\n";
-        valuesMutex.unlock();
-        subscribersMutex.unlock();
-        return true;
+        std::cout << "SUPERVISOR: WORKER " << worker << " IS NOW SUBSCRIBED TO " << key << '\n';
+        class_comm_world.send(worker, NOTIFY_TAG, key);
+        class_comm_world.send(worker, NOTIFY_TAG, value);
+        std::cout << "SUPERVISOR: WORKER " << worker << " WRITE SUCCESS\n";
+        class_comm_world.send(worker, ORDER_TAG, SUCCESS);
+        opMutex.unlock();
     }
 
-    void subscribe(const std::string& key, int worker, mpi::communicator &comm_world) {
+    void subscribe(const std::string& key, int worker) {
+        opMutex.lock();
         std::cout << "SUPERVISOR: SUBSCRIBE FROM " << worker << " ON KEY " << key << '\n';
-        subscribersMutex.lock();
 
         if (subscriberList.find(key) != subscriberList.end()) {
+            assert(subscriberList[key] != nullptr);
             subscriberList[key]->insert(worker);
-            std::pair<std::string, int> updateMessage = {key, values[key]};
-            std::cout << "REEEE " << updateMessage.first << " " << updateMessage.second << '\n';
-            comm_world.send(worker, NOTIFY_CHANNEL, updateMessage);
-            std::cout << "SUPERVISOR: SUBSCRIBE FROM " << worker << " ON KEY " << key << "DONE!!\n";
+            class_comm_world.send(worker, NOTIFY_TAG, key);
+            class_comm_world.send(worker, NOTIFY_TAG, values[key]);
+            std::cout << "SUPERVISOR: SUBSCRIBE FROM " << worker << " ON KEY " << key << " DONE\n";
+            class_comm_world.send(worker, ORDER_TAG, SUCCESS);
+            opMutex.unlock();
+            return;
         }
-        std::cout << "WOW\n";
-        subscribersMutex.unlock();
+        class_comm_world.send(worker, ORDER_TAG, FAIL);
+        opMutex.unlock();
     }
 
-    bool update(const std::string& key, int newValue, int worker, mpi::communicator &comm_world) {
-        subscribersMutex.lock();
-        valuesMutex.lock();
+    void update(const std::string& key, int newValue, int worker) {
+        opMutex.lock();
         if(subscriberList[key]->find(worker) == subscriberList[key]->end()) {
-            valuesMutex.unlock();
-            subscribersMutex.unlock();
-            return false;
+            class_comm_world.send(worker, ORDER_TAG, FAIL);
+            opMutex.unlock();
+            return;
         }
         values[key] = newValue;
-        std::pair<std::string, int> updateMessage = {key, newValue};
-        std::unordered_set<int> subs = *subscriberList[key];
-        for(auto& sub: subs) {
-            comm_world.send(sub, NOTIFY_CHANNEL, updateMessage);
+        std::unordered_set<int> subscribers = *subscriberList[key];
+        for(auto& sub: subscribers) {
+            class_comm_world.send(sub, NOTIFY_TAG, key);
+            class_comm_world.send(sub, NOTIFY_TAG, newValue);
         }
-        valuesMutex.unlock();
-        subscribersMutex.unlock();
-        return true;
+        class_comm_world.send(worker, ORDER_TAG, SUCCESS);
+        opMutex.unlock();
     }
 public:
     bool finished;
@@ -101,46 +92,58 @@ public:
         for(int workerRank = 1; workerRank <= numberWorkers; workerRank++) {
             this->threads.emplace_back(
                     [workerRank, this] () {
-                        mpi::communicator comm_world;
                         std::cout << "SUPERVISOR: STARTED THREAD FOR WORKER " << workerRank << '\n';
                         int operation;
                         std::string key;
                         int value;
-                        bool result;
                         while (!finished) {
-                            comm_world.recv(workerRank, ORDER_CHANNEL, operation);
-                            std::cout << "SUPERVISOR: RECEIVED OP REQUEST " << operation << " FROM RANK " << workerRank << '\n';
+                            class_comm_world.recv(workerRank, ORDER_TAG, operation);
+                            std::string op_name;
+                            switch(operation) {
+                                case 0:
+                                    op_name = "WRITE";
+                                    break;
+                                case 1:
+                                    op_name = "SUBSCRIBE";
+                                    break;
+                                case 2:
+                                    op_name = "UPDATE";
+                                    break;
+                                case 3:
+                                    op_name = "EXIT";
+                                    break;
+                                default:
+                                    op_name = "ERR_OP_UNK";
+                                    break;
+                            }
+                            std::cout << "SUPERVISOR: RECEIVED OP REQUEST " << op_name << " FROM RANK " << workerRank << '\n';
                             switch (operation) {
                                 case WRITE:
-                                    comm_world.recv(workerRank, ORDER_CHANNEL, key);
-                                    comm_world.recv(workerRank, ORDER_CHANNEL, value);
-                                    result = this->write(key, value, workerRank, comm_world);
-                                    comm_world.send(workerRank, ORDER_CHANNEL, result ? SUCCESS : FAIL);
+                                    class_comm_world.recv(workerRank, ORDER_TAG, key);
+                                    class_comm_world.recv(workerRank, ORDER_TAG, value);
+                                    this->write(key, value, workerRank);
                                     break;
                                 case SUBSCRIBE:
-                                    comm_world.recv(workerRank, ORDER_CHANNEL, key);
-                                    this->subscribe(key, workerRank, comm_world);
-                                    comm_world.send(workerRank, ORDER_CHANNEL, SUCCESS);
+                                    class_comm_world.recv(workerRank, ORDER_TAG, key);
+                                    this->subscribe(key, workerRank);
                                     break;
                                 case UPDATE:
-                                    comm_world.recv(workerRank, ORDER_CHANNEL, key);
-                                    comm_world.recv(workerRank, ORDER_CHANNEL, value);
-                                    result = this->update(key, value, workerRank, comm_world);
-                                    comm_world.send(workerRank, ORDER_CHANNEL, result ? SUCCESS : FAIL);
+                                    class_comm_world.recv(workerRank, ORDER_TAG, key);
+                                    class_comm_world.recv(workerRank, ORDER_TAG, value);
+                                    this->update(key, value, workerRank);
                                     break;
                                 case EXIT:
                                     finished = true;
-                                    comm_world.send(workerRank, ORDER_CHANNEL, SUCCESS);
+                                    class_comm_world.send(workerRank, ORDER_TAG, SUCCESS);
                                     break;
                                 default:
-                                    comm_world.send(workerRank, ORDER_CHANNEL, FAIL);
+                                    class_comm_world.send(workerRank, ORDER_TAG, FAIL);
                                     break;
                             }
                         }
                     }
             );
         }
-        sleep(2);
     }
 
     ~DSMSupervisor() {

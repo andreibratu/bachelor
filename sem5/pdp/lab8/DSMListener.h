@@ -28,59 +28,53 @@ public:
     void write(const std::string& key, int value) {
         int result;
         std::cout << "LISTENER " << comm_world.rank() << ": WRITE KEY " << key << " VALUE " << value << '\n';
-        comm_world.send(0, ORDER_CHANNEL, WRITE);
-        comm_world.send(0, ORDER_CHANNEL, key);
-        comm_world.send(0, ORDER_CHANNEL, value);
-        comm_world.recv(0, ORDER_CHANNEL, result);
-        std::cout << "LISTENER " << comm_world.rank() << ": WRITE RESULT " << result << '\n';
+        comm_world.send(0, ORDER_TAG, WRITE);
+        comm_world.send(0, ORDER_TAG, key);
+        comm_world.send(0, ORDER_TAG, value);
+        comm_world.recv(0, ORDER_TAG, result);
+        std::cout << "LISTENER " << comm_world.rank() << ": WRITE RESULT: " << result << '\n';
     }
 
     void update(const std::string& key, int newValue) {
         int result;
         std::cout << "LISTENER " << comm_world.rank() << ": UPDATE KEY " << key << " VALUE " << newValue << '\n';
-        comm_world.send(0, ORDER_CHANNEL, UPDATE);
-        comm_world.send(0, ORDER_CHANNEL, key);
-        comm_world.send(0, ORDER_CHANNEL, newValue);
-        comm_world.recv(0, ORDER_CHANNEL, result);
+        comm_world.send(0, ORDER_TAG, UPDATE);
+        comm_world.send(0, ORDER_TAG, key);
+        comm_world.send(0, ORDER_TAG, newValue);
+        comm_world.recv(0, ORDER_TAG, result);
         std::cout << "LISTENER " << comm_world.rank() << ": UPDATE RESULT: " << result << '\n';
     }
 
     void subscribe(const std::string& key) {
         std::cout << "LISTENER " << comm_world.rank() << ": SUBSCRIBE REQUESTED FOR KEY " << key << '\n';
-        comm_world.send(0, ORDER_CHANNEL, SUBSCRIBE);
-        comm_world.send(0, ORDER_CHANNEL, key);
+        int result;
+        comm_world.send(0, ORDER_TAG, SUBSCRIBE);
+        comm_world.send(0, ORDER_TAG, key);
+        comm_world.recv(0, ORDER_TAG, result);
+        std::cout << "LISTENER " << comm_world.rank() << ": SUBSCRIBE RESULT: " << result << '\n';
     }
 
     void exit() {
-        comm_world.send(0, ORDER_CHANNEL, EXIT);
-    }
-
-    int operator[] (const std::string& key) {
-        valuesMutex.lock();
-        int val = values[key];
-        valuesMutex.unlock();
-        return val;
+        comm_world.send(0, ORDER_TAG, EXIT);
     }
 
     explicit DSMListener() {
         this->notificationThread = std::move(std::thread([this] () {
-            mpi::communicator other_comm_world;
-            std::cout << "LISTENER " << other_comm_world.rank() << ": STARTED TO LISTEN FOR NOTIFICATIONS\n";
+            std::cout << "LISTENER " << comm_world.rank() << ": STARTED SECONDARY THREAD TO LISTEN FOR NOTIFICATIONS\n";
             std::string key;
             int value;
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
             while (true) {
-                other_comm_world.recv(0, NOTIFY_CHANNEL, key);
-                other_comm_world.recv(0, NOTIFY_CHANNEL, value);
-                std::cout << "NOTIFICATION " <<  other_comm_world.rank() << ": NOTIFICATION RECEIVED " << key << ' ' << value << '\n';
+                comm_world.recv(0, NOTIFY_TAG, key);
+                comm_world.recv(0, NOTIFY_TAG, value);
+                std::cout << "NOTIFICATION " <<  comm_world.rank() << ": NOTIFICATION RECEIVED " << key << ' ' << value << '\n';
                 valuesMutex.lock();
                 values[key] = value;
                 valuesMutex.unlock();
             }
 #pragma clang diagnostic pop
         }));
-        sleep(5);
     }
 
     ~DSMListener() {

@@ -27,16 +27,21 @@ int main() {
     else if (comm_world.rank() == 1) {
         sleep(10);
         DSMListener listener;
+        sleep(10);
         listener.write("foo", 5);
-        for(int i = 0; i < 50; i++) {
+        sleep(4);
+        for(int i = 0; i < 5; i++) {
             listener.update("foo", rand() % 1000); // NOLINT(cert-msc50-cpp)
-            sleep(5);
+            sleep(4);
         }
+        std::cout << "RANK 1 DONE\n";
         while (true) {}
     } else {
-        sleep(3);
-//        DSMListener listener;
-//        listener.subscribe("foo");
+        sleep(10);
+        DSMListener listener;
+//        Delayed start
+        sleep(10);
+        listener.subscribe("foo");
         while (true) {}
     }
 }

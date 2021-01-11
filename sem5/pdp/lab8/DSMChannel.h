@@ -6,8 +6,8 @@
 #define LAB8_DSMCHANNEL_H
 
 enum DSM_Channel: int {
-    NOTIFY_CHANNEL = 1,
-    ORDER_CHANNEL = 0
+    NOTIFY_TAG = 1,
+    ORDER_TAG = 0
 };
 
 #endif //LAB8_DSMCHANNEL_H

@@ -2,11 +2,16 @@
 #pragma ide diagnostic ignored "hicpp-exception-baseclass"
 #include "utils.h"
 #include "iostream"
-#include "mpl.hpp"
 #include "naive_polynomial_multiplication.h"
 
+#include <boost/mpi/environment.hpp>
+#include <boost/mpi/communicator.hpp>
+
+namespace mpi = boost::mpi;
+
 int main() {
-    const mpl::communicator &comm_world(mpl::environment::comm_world());
+    mpi::environment env;
+    mpi::communicator comm_world;
     if (comm_world.size() < 2) comm_world.abort(EXIT_FAILURE);
 
     if (comm_world.rank() == 0) {
@@ -27,15 +32,15 @@ int main() {
                 stop += 1;
                 rem -= 1;
             }
-            comm_world.send(a, i);
-            comm_world.send(b, i);
-            comm_world.send(start, i);
-            comm_world.send(stop, i);
+            comm_world.send(i, 0, a);
+            comm_world.send(i, 0, b);
+            comm_world.send(i, 0, start);
+            comm_world.send(i, 0, stop);
         }
         std::vector<int> finalCoefficients(a.size() + b.size() - 1, 0);
         for(int i = 1; i <= workerCount; i++) {
             std::vector<int> partialCoefficients;
-            comm_world.recv(partialCoefficients, i);
+            comm_world.recv(i, 0, partialCoefficients);
             for(int j = 0; j < finalCoefficients.size(); j++) {
                 finalCoefficients[j] += partialCoefficients[j];
             }
@@ -46,13 +51,13 @@ int main() {
         std::vector<int> a;
         std::vector<int> b;
         int start, stop;
-        comm_world.recv(a, 0);
-        comm_world.recv(b, 0);
-        comm_world.recv(start, 0);
-        comm_world.recv(stop, 0);
+        comm_world.recv(0, 0, a);
+        comm_world.recv(0, 0, b);
+        comm_world.recv(0, 0, start);
+        comm_world.recv(0, 0, stop);
         std::vector<int> result(a.size() + b.size() - 1, 0);
         multiplicationTask(a, b, result, start, stop);
-        comm_world.send(result, 0);
+        comm_world.send(0, 0, result);
     }
     return EXIT_SUCCESS;
 }
