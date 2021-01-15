@@ -1,0 +1,76 @@
+%{ 	 
+#include <stdio.h>
+#include <string.h>
+int lines = 0;
+%} 
+
+%option noyywrap
+%option caseless
+
+LETTER          [a-zA-Z]
+DIGIT 		    [0-9]
+EXT_LETTER      \_|{LETTER}
+NUMBER		    [+-]?[1-9][0-9]*|0$
+CHAR     	    \'[a-zA-Z0-9]\'
+STR             \"[a-zA-Z0-9]*\"
+CONST		    {STR}|{NUMBER}|{CHAR}
+IDENTIFIER 		[a-zA-Z][a-zA-Z0-9_]*
+NONZERO         [1-9]
+NUM             {NONZERO}{DIGIT}*|{NONZERO}{DIGIT}*\.{DIGIT}
+NUMCONST        \+{NUM}|\-{NUM}|{NUM}
+
+%%
+
+"["         {printf("Reserved word: %s\n", yytext);}
+"]"         {printf("Reserved word: %s\n", yytext);}
+"("         {printf("Reserved word: %s\n", yytext);}
+")"         {printf("Reserved word: %s\n", yytext);}
+":"         {printf("Reserved word: %s\n", yytext);}
+";"         {printf("Reserved word: %s\n", yytext);}
+"."         {printf("Reserved word: %s\n", yytext);}
+","         {printf("Reserved word: %s\n", yytext);}
+"<-"            {printf("Reserved word: %s\n", yytext);}
+"<"         {printf("Reserved word: %s\n", yytext);}
+"<="            {printf("Reserved word: %s\n", yytext);}
+"=="            {printf("Reserved word: %s\n", yytext);}
+">"         {printf("Reserved word: %s\n", yytext);}
+">="            {printf("Reserved word: %s\n", yytext);}
+"+"         {printf("Reserved word: %s\n", yytext);}
+"-"         {printf("Reserved word: %s\n", yytext);}
+"*"         {printf("Reserved word: %s\n", yytext);}
+"//"            {printf("Reserved word: %s\n", yytext);}
+"/"         {printf("Reserved word: %s\n", yytext);}
+"%"         {printf("Reserved word: %s\n", yytext);}
+bool            {printf("Reserved word: %s\n", yytext);}
+int         {printf("Reserved word: %s\n", yytext);}
+real            {printf("Reserved word: %s\n", yytext);}
+str         {printf("Reserved word: %s\n", yytext);}
+read            {printf("Reserved word: %s\n", yytext);}
+write           {printf("Reserved word: %s\n", yytext);}
+len         {printf("Reserved word: %s\n", yytext);}
+if          {printf("Reserved word: %s\n", yytext);}
+fi          {printf("Reserved word: %s\n", yytext);}
+else            {printf("Reserved word: %s\n", yytext);}
+esle            {printf("Reserved word: %s\n", yytext);}
+for         {printf("Reserved word: %s\n", yytext);}
+rof         {printf("Reserved word: %s\n", yytext);}
+do          {printf("Reserved word: %s\n", yytext);}
+start           {printf("Reserved word: %s\n", yytext);}
+stop            {printf("Reserved word: %s\n", yytext);}
+
+{IDENTIFIER}	{printf( "Identifier: %s\n", yytext );}
+
+{CONST}	{printf( "Constant: %s\n", yytext );}
+
+[ \t]+  	{}
+[\n]+ {lines++;}
+		 
+[+-]?0[0-9]* {printf("Illegal constant at line %d \n", lines);}
+
+[0-9~@#$%^][a-zA-Z0-9]	{printf("Illegal identifier at line %d \n", lines);}
+
+
+
+\"[a-zA-Z0-9] {printf("Expected end of string on line %d\n", lines); }
+
+%%  

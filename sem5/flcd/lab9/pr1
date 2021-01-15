@@ -1,0 +1,12 @@
+start
+
+a: int;
+max: int;
+
+read a;
+
+if a < ( 10 + 5 ) do
+    max <- 6;
+fi
+
+stop

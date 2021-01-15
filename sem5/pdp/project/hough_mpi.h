@@ -13,6 +13,12 @@
 
 namespace mpi = boost::mpi;
 
+// using line_to_points_dict = std::unordered_map<
+// std::pair<double, double>,
+// std::unique_ptr<std::vector<std::pair<int, int>>>,
+// boost::hash<std::pair<int, int>>
+// >;
+
 void send_count_dict(const mpi::communicator &comms, const line_to_points_dict &count) {
     int ok;
     int how_many = count.size();

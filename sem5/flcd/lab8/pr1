@@ -1,0 +1,10 @@
+start
+
+asdf : int;
+max1 : int;
+
+if a < (10 + 5) do
+    max1 <- b;
+fi
+
+stop
