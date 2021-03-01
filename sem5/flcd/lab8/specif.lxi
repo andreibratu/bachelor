@@ -67,10 +67,10 @@ stop            {printf("Reserved word: %s\n", yytext);}
 		 
 [+-]?0[0-9]* {printf("Illegal constant at line %d \n", lines);}
 
-[0-9~@#$%^][a-zA-Z0-9]	{printf("Illegal identifier at line %d \n", lines);}
+[0-9]*[a-zA-Z0-9]*	{printf("Illegal identifier at line %d \n", lines);}
 
+\'[a-zA-Z0-9] {printf("Expected end of character on line %d\n", lines); }
 
-
-\"[a-zA-Z0-9] {printf("Expected end of string on line %d\n", lines); }
+\"[a-zA-Z0-9]+ {printf("Expected end of string on line %d\n", lines); }
 
 %%  

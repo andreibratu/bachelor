@@ -1,7 +1,7 @@
 start
 
-asdf : int;
 max1 : int;
+123ac: str;
 
 if a < (10 + 5) do
     max1 <- b;
