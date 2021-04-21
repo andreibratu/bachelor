@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mobile/home.screen.dart';
 import 'package:mobile/loading.screen.dart';
 
@@ -17,22 +16,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
+            primarySwatch: Colors.blue,
+            textTheme: TextTheme(
+                bodyText1:
+                    TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal))),
         home: FutureBuilder(
             future: _initialization,
             builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                throw (snapshot.error.toString());
-              }
+              if (snapshot.hasError) throw (snapshot.error.toString());
 
-              if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.connectionState == ConnectionState.done)
                 return HomeScreen(title: 'Super Firebase powers!');
-              }
 
-              // Stil not done
+              // Stil loading
               return LoadingScreen();
             }));
   }
