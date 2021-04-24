@@ -3,16 +3,15 @@ import 'package:intl/intl.dart';
 import 'package:mobile/log/log.model.dart';
 
 class LogCard extends StatelessWidget {
-  final LogModel? log;
-  final DateTime someDate = DateTime.now();
-  static const TextStyle BOLD = const TextStyle(fontWeight: FontWeight.bold);
+  final LogModel _log;
+  static const TextStyle _BOLD = const TextStyle(fontWeight: FontWeight.bold);
 
-  TextStyle getBoldStyle(double? fontSize) =>
-      (fontSize == null) ? BOLD : BOLD.copyWith(fontSize: fontSize);
+  TextStyle _getBoldStyle(double? fontSize) =>
+      (fontSize == null) ? _BOLD : _BOLD.copyWith(fontSize: fontSize);
 
-  String formatDate(DateTime date) => DateFormat('MMMM d').format(date);
-
-  LogCard({Key? key, this.log}) : super(key: key);
+  LogCard({Key? key, required LogModel log})
+      : this._log = log,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) => Container(
@@ -24,7 +23,7 @@ class LogCard extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(5),
           child: Row(children: [
-            Flexible(
+            Expanded(
               flex: 4,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -39,10 +38,8 @@ class LogCard extends StatelessWidget {
                           .bodyText1!
                           .copyWith(fontSize: 20),
                       children: <TextSpan>[
-                        TextSpan(text: 'Phrase: ', style: getBoldStyle(null)),
-                        TextSpan(
-                            text:
-                                'This is really really cool This is really really cool This is really really cool This is really really cool'),
+                        TextSpan(text: 'Phrase: ', style: _getBoldStyle(null)),
+                        TextSpan(text: _log.phrase),
                       ],
                     ),
                   ),
@@ -52,19 +49,12 @@ class LogCard extends StatelessWidget {
                       // Child text spans will inherit styles from parent
                       style: Theme.of(context).textTheme.bodyText1,
                       children: <TextSpan>[
-                        TextSpan(text: 'Keywords: ', style: getBoldStyle(null)),
                         TextSpan(
-                            text: [
-                          'really',
-                          'cool',
-                          'what',
-                          'mega',
-                          'cool',
-                          'cmf',
-                          'super',
-                          'csf',
-                          'nice'
-                        ].join(", ")),
+                            text: 'Keywords: ', style: _getBoldStyle(null)),
+                        TextSpan(
+                            text: _log.keywords.length != 0
+                                ? _log.keywords.join(', ')
+                                : 'Found none'),
                       ],
                     ),
                   ),
@@ -78,15 +68,15 @@ class LogCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    DateFormat('HH').format(someDate).toUpperCase(),
-                    style: getBoldStyle(30),
+                    DateFormat('HH').format(_log.logDate).toUpperCase(),
+                    style: _getBoldStyle(30),
                   ),
                   Text(
-                    DateFormat('MM').format(someDate).toString(),
-                    style: getBoldStyle(30),
+                    DateFormat('MM').format(_log.logDate).toString(),
+                    style: _getBoldStyle(30),
                   ),
-                  Text(DateFormat('d MMMM').format(someDate).toUpperCase()),
-                  Text(someDate.year.toString())
+                  Text(DateFormat('d MMMM').format(_log.logDate).toUpperCase()),
+                  Text(_log.logDate.year.toString())
                 ],
               ),
             )
