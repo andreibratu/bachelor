@@ -3,15 +3,20 @@ import 'package:meta/meta.dart';
 
 @immutable
 class LogModel {
+  final String id;
   final String phrase;
   final List<String> keywords;
   final DateTime logDate;
 
   LogModel(
-      {required this.phrase, required this.keywords, required this.logDate});
+      {required this.id,
+      required this.phrase,
+      required this.keywords,
+      required this.logDate});
 
   LogModel.fromFirestoreDocument(QueryDocumentSnapshot document)
-      : this.phrase = document['phrase'],
+      : this.id = document.id,
+        this.phrase = document['phrase'],
         this.keywords = (document['keywords'] as List<dynamic>)
             .map((e) => e as String)
             .toList(),

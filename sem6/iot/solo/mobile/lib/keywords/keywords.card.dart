@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:mobile/firestore.service/firestore.service.dart';
 import 'package:mobile/keywords/keywords.model.dart';
 
 class KeywordCard extends StatelessWidget {
   final KeywordModel _keywordModel;
+  final FirestoreService _firestoreService;
 
-  KeywordCard(KeywordModel model) : _keywordModel = model;
+  KeywordCard(KeywordModel model)
+      : _keywordModel = model,
+        _firestoreService = GetIt.I.get<FirestoreService>();
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +45,8 @@ class KeywordCard extends StatelessWidget {
                       Icons.delete,
                       size: 30,
                     ),
-                    onPressed: () {},
+                    onPressed: () =>
+                        _firestoreService.deleteKeyword(_keywordModel.id),
                   ))
             ],
           ),

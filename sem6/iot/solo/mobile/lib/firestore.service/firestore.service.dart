@@ -28,4 +28,8 @@ class FirestoreService {
   void writeKeyword(String keyword) {
     instance.collection('keywords').add({'keyword': keyword, 'count': 0});
   }
+
+  void deleteKeyword(String id) {
+    instance.collection('keywords').doc(id).delete();
+  }
 }

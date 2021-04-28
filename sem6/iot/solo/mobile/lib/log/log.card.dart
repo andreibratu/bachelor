@@ -15,7 +15,7 @@ class LogCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-      height: 200,
+      height: 300,
       width: double.infinity,
       child: Card(
         color: Colors.white70,
