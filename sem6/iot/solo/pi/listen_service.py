@@ -9,12 +9,13 @@ from typing import List
 from random import choice
 from copy import deepcopy
 
+import wave
 import torch
-import soundfile as sf
+import pyaudio
 import firebase_admin
+import soundfile as sf
 from firebase_admin import credentials
 from firebase_admin import firestore
-from datasets import load_dataset
 from transformers import Wav2Vec2Tokenizer, Wav2Vec2ForCTC
 
 
@@ -48,7 +49,46 @@ LOGGER.addHandler(fh)
 
 # Constants
 RECOGNIZE_WORKERS_COUNT = 3
-WAIT_SECS = 120
+WAIT_SECS = 0
+FORMAT = pyaudio.paInt16
+CHANNELS = 1
+RATE = 44100
+CHUNK = 1024
+RECORD_SECONDS = 10
+
+AUDIO = pyaudio.PyAudio()
+
+
+def _record(file_path: str):
+    try:
+        stream = AUDIO.open(
+            format=FORMAT,
+            channels=CHANNELS,
+            rate=RATE,
+            input=True,
+            frames_per_buffer=CHUNK,
+            input_device_index=0,
+        )
+        frames = []
+
+        for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+            data = stream.read(CHUNK)
+            frames.append(data)
+
+        stream.stop_stream()
+        stream.close()
+
+        waveFile = wave.open(file_path, "wb")
+        waveFile.setnchannels(CHANNELS)
+        waveFile.setsampwidth(AUDIO.get_sample_size(FORMAT))
+        waveFile.setframerate(RATE)
+        waveFile.writeframes(b"".join(frames))
+        waveFile.close()
+    except Exception as e:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        lineno = exc_tb.tb_lineno
+        LOGGER.error(f"Line {lineno} [_recoord]: {e}")
+        raise e
 
 
 def _fetch_keywords() -> List[Keyword]:
@@ -82,6 +122,7 @@ def _increment_kw_occurences(transaction, kw: Keyword):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         lineno = exc_tb.tb_lineno
         LOGGER.error(f"Line {lineno} [_increment_kw_occurences]: {e}")
+        raise e
 
 
 def _generate_string(len: int) -> str:
@@ -92,6 +133,7 @@ def _generate_string(len: int) -> str:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         lineno = exc_tb.tb_lineno
         LOGGER.error(f"Line {lineno} [_generate_string]: {e}")
+        raise e
 
 
 def _upload_worker(log_queue: multiprocessing.Queue):
@@ -117,6 +159,7 @@ def _upload_worker(log_queue: multiprocessing.Queue):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         lineno = exc_tb.tb_lineno
         LOGGER.error(f"Line {lineno} [_upload_worker]: {e}")
+        raise e
 
 
 def _recognition_worker(
@@ -185,6 +228,7 @@ def _recognition_worker(
         exc_type, exc_obj, exc_tb = sys.exc_info()
         lineno = exc_tb.tb_lineno
         LOGGER.error(f"Line {lineno} [_recognition_worker]: {e}")
+        raise e
 
 
 if __name__ == "__main__":
@@ -207,21 +251,17 @@ if __name__ == "__main__":
         LOGGER.info(
             f"[__main__]: Sleeping {WAIT_SECS} seconds to wait for models"
         )
-        # time.sleep(WAIT_SECS)
+        time.sleep(WAIT_SECS)
+        LOGGER.info("[__main__]: Started to listen")
         while True:
             # Start listening
-            LOGGER.info("[__main__]: Started to listen")
-            fn_name = _generate_string(10)
-            cmd = (
-                "arecord -f cd -d 10 -t wav | ffmpeg -f wav "
-                + "-i pipe: -filter:a 'volume=2' -hide_banner "
-                + f"-loglevel error -acodec libmp3lame {fn_name}.mp3"
-            )
-            subprocess.call(cmd.split(" "))
-            path = f"{fn_name}.mp3"
+            path = f"{_generate_string(10)}.wav"
+            LOGGER.info(f"[__main__]: Recording {path}")
+            _record(path)
             LOGGER.info(f"[__main__]: Recorded {path}")
             file_queue.put(path)
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         lineno = exc_tb.tb_lineno
         LOGGER.error(f"Line {lineno} [__main__]: {e}")
+        raise e
