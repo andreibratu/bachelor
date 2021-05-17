@@ -1,0 +1,11 @@
+Name: Bratu Andrei
+Grade: 10
+Contribution: Facial Recognition System + Mobile Application
+
+Name: Horhat Razvan Catalin
+Grade: 10
+Contribution: Raspberry Pi setup & code + Documentation
+
+Name: Rusu Raul Mihai
+Grade: 10
+Contribution: Application Architecture + Cloud setup & Service code
