@@ -44,6 +44,8 @@ class _KeywordsScreenState extends State<KeywordsScreen> {
   _submitKeyword() {
     String kw = _keywordController.text;
     widget._firestoreService.writeKeyword(kw);
+    _keywordController.clear();
+    FocusScope.of(context).unfocus();
   }
 
   @override

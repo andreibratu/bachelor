@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobile/keywords/keywords.model.dart';
 import 'package:mobile/log/log.model.dart';

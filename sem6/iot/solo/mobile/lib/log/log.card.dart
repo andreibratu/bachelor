@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/log/log.model.dart';
@@ -39,7 +41,7 @@ class LogCard extends StatelessWidget {
                           .copyWith(fontSize: 20),
                       children: <TextSpan>[
                         TextSpan(text: 'Phrase: ', style: _getBoldStyle(null)),
-                        TextSpan(text: _log.phrase),
+                        TextSpan(text: _log.getPhrasePretty()),
                       ],
                     ),
                   ),

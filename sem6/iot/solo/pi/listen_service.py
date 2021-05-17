@@ -48,11 +48,11 @@ fh = logging.FileHandler("listen.service.log", mode="w+")
 LOGGER.addHandler(fh)
 
 # Constants
-RECOGNIZE_WORKERS_COUNT = 3
-WAIT_SECS = 0
+RECOGNIZE_WORKERS_COUNT = 2
+WAIT_SECS = 30
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
-RATE = 44100
+RATE = 16000
 CHUNK = 1024
 RECORD_SECONDS = 10
 
@@ -171,14 +171,13 @@ def _recognition_worker(
 
     try:
         LOGGER.info(f"[_recognition_worker {os.getpid()}]: Says hello")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         # Init models
         tokenizer = Wav2Vec2Tokenizer.from_pretrained(
-            "facebook/wav2vec2-large-960h-lv60-self"
+            "facebook/wav2vec2-base-960h"
         )
-        model = Wav2Vec2ForCTC.from_pretrained(
-            "facebook/wav2vec2-large-960h-lv60-self"
-        )
+        model = Wav2Vec2ForCTC.from_pretrained("facebook/wav2vec2-base-960h")
 
         LOGGER.info(
             f"[_recognition_worker {os.getpid()}]: Speech models are up"
@@ -253,7 +252,7 @@ if __name__ == "__main__":
         )
         time.sleep(WAIT_SECS)
         LOGGER.info("[__main__]: Started to listen")
-        while True:
+        for _ in range(5):
             # Start listening
             path = f"{_generate_string(10)}.wav"
             LOGGER.info(f"[__main__]: Recording {path}")

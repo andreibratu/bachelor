@@ -22,4 +22,11 @@ class LogModel {
             .toList(),
         this.logDate =
             DateTime.parse(document['timestamp'].toDate().toString());
+
+  String getPhrasePretty() {
+    if (this.phrase.length > 100) {
+      return this.phrase.substring(0, 100) + "...";
+    }
+    return this.phrase;
+  }
 }

@@ -1,0 +1,21 @@
+[_upload_worker 700]: Says hello
+[_increment_kw_occurences]: Incremented project to 2
+[_in[_fetch_keywords]: [{'keyword': 'hello', 'count': 1, '[_increment_kw_occurences]: Incremented interesting to 2
+ject', 'id': '8IsAQBzrQpkQxT3orA84'}, {'keyword': 'sun', 'count': 0[__main__]: Recorded TjEbDqbKdP.wav
+[__main__]: Recording eAxGWoqwxw.wav
+[__main__]: Recorded eAxGWoqwxw.wav
+[__main__]: Recording eRXAdcefAz.wav
+[__main__]: Recorded eRXAdcefAz.wav
+word': 'nice ', 'id': 'fx5lEWBdQYFRJltrZico'}, {'keyword': 'weather', 'count': 0, 'id': 'is1BQ44RCF9zn3DD8yNX'}, {'keyword': 'firebase', 'count': 0, 'id': 'jItgGucJLgvAn3gtl7N2'}, {'count': 0, 'keyword': 'flutter', 'id': 'rxQUmtbQFr6q4F8Xnyih'}]
+[_recognition_worker 10172]: Received xOCjyLyXmt.wav @ Thu Apr 29 17:06:17 2021
+[_recognition_worker 10172]: Transcription <<['more', 'words', 'im', 'unjust', 'waiting', 'eh', 'there', 'you', 'go', 'so', 'it', 'just', 'manage', 'to', 'register', 'the', 'aftermention', 'phrase', 'so', 'it', 'has']>>
+[_recognition_worker 10172]: Cleaned up xOCjyLyXmt[_fetc[_fetch_keywords]: [{'count': 1, 'keyword': 'hello', 'id': '6VDryvo062Abn3IEbqM0'}, {'keyword': 'project', 'count': 2, 'id': '8IsAQBzrQpkQxT3orA84'}, {'count': 0, 'keyword': 'sun', 'id': 'BP16jKaRhQquqV7m2glv'}, {'count': 1, 'keyword': 'interesting', 'id': 'LwLNGOkHsuSn04phq0VL'}, {'keyword': 'frontend', 'count': 0, 'id': 'aaT9kXQyaPdBUmvMXVTw'}, {'count': 0, 'keyword': 'nice ', 'id': 'fx5lEWBdQYFRJltrZico'}, {'count': 0, 'keyword': 'weather', 'id': 'is1BQ44RCF9zn3DD8yNX'}, {'keyword': 'firebase', 'count': 0, 'id': 'jItgGucJLgvAn3gtl7N2'}, {'keyword': 'flutter', 'count': 0, 'id': 'rxQUmtbQFr6q4F8Xnyih'}]
+[_recognition_worker 10172]: Received eAxGWoqwxw.wav @ Thu Apr 29 17:06:38 2021
+[_recognition_worker 10172]: Transcription <<['ofr', 'which', "doesn't", 'feit', 'on', 'a', 'rosepberry', 'pie', 'has', 'something', 'like', 'two', 'gig', 'a', 'bite', 'and', 'unusing', 'the', 'fi']>>
+[_recognition_worker 10172]: Cleaned up eAxGWoqwxw.wav
+ 'three', 'hundred', 'meg', 'up']>>
+[_recognition_worker 7708]: Cleaned up TjEbDqbKdP.wav
+[_fetch_keywords]: [{'keyword': 'hello', 'count': 1, 'id': '6VDryvo062Abn3IEbqM0'}, {'count': 2, 'keyword': 'project', 'id': '8IsAQBzrQpkQxT3orA84'}, {'keyword': 'sun', 'count': 0, 'id': 'BP16jKaRhQquqV7m2glv'}, {'count': 1, 'keyword': 'interesting', 'id': 'LwLNGOkHsuSn04phq0VL'}, {'count': 0, 'keyword': 'frontend', 'id': 'aaT9kXQyaPdBUmvMXVTw'}, {'keyword': 'nice ', 'count': 0, 'id': 'fx5lEWBdQYFRJltrZico'}, {'keyword': 'weather', 'count': 0, 'id': 'is1BQ44RCF9zn3DD8yNX'}, {'keyword': 'firebase', 'count': 0, 'id': 'jItgGucJLgvAn3gtl7N2'}, {'count': 0, 'keyword': 'flutter', 'id': 'rxQUmtbQFr6q4F8Xnyih'}]
+[_recognition_worker 7708]: Received eRXAdcefAz.wav @ Thu Apr 29 17:06:49 2021
+[_recognition_worker 7708]: Transcription <<['backand', 'which', 'gives', 'us', 'tis', 'really', 'nice', 'life', 'punctionality', 'so', 'every', 'time', 'i', 'mention', 'proper', 'interesting', 'i', "don't", 'have', 'to', 'manoly', 'refresh', 'i', 'just', 'gett', 'notifications']>>
+[_recognition_worker 7708]: Cleaned up eRXAdcefAz.wav
