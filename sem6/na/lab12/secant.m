@@ -3,6 +3,7 @@ function ret = secant(f, x0, x1, maxIter, err)
     for n = 1:maxIter
 
         if abs(x1 - x0) < err
+            fprintf('Secant; after %d iterations\n', n);
             break
         end
 

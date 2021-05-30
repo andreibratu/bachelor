@@ -4,6 +4,7 @@ function ret = newton(f, fd, x0, maxIter, err)
         x1 = x0 - f(x0) / fd(x0);
 
         if abs(x1 - x0) < err
+            fprintf('After %d iterations\n', n);
             break
         end
 

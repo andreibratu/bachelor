@@ -3,6 +3,7 @@ function ret = bisection(f, a, b, err)
     for n = 0:100
 
         if abs(a - b) < err
+            fprintf('Bisection; after %d iterations\n', n);
             break
         end
 

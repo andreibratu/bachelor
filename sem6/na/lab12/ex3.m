@@ -1,9 +1,3 @@
-f = @(x) (x - 2)^2 - log(x);
+f = @(x) x^3 - x^2 - 1;
 
-e = 0.0001;
-N = 100;
-a = 1;
-b = 2;
-
-false_position(f, a, b, e)
-bisection(f, a, b, e)
+x = secant(f, 1, 2, 100, 1e-4);

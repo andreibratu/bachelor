@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Screenshots</title>
+
+    <link rel="shortcut icon" href="favicon.ico">
+
+<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+<!--[if IE 7]>
+<link rel="stylesheet" href="font-awesome/css/font-awesome-ie7.min.css">
+<![endif]--><!-- JQuery -->
+<script type="text/javascript" src="scripts/jquery-1.11.1.min.js"></script><!-- Bootstrap -->
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script src="bootstrap/js/bootstrap.min.js"></script><link rel="stylesheet" href="css/core.css"/>
+<link rel="stylesheet" href="css/link.css"/>
+<link type="text/css" media="screen" href="css/screen.css" rel="Stylesheet"/><!-- Nivo Slider -->
+<link rel="stylesheet" href="nivo-slider/3.2/nivo-slider.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="nivo-slider/3.2/themes/default/default.css" type="text/css" media="screen" />
+<script src="nivo-slider/3.2/jquery.nivo.slider.pack.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        function getUrlVars() {
+            var vars = {};
+            var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+                vars[key] = value;
+            });
+            return vars;
+        }
+
+        var screenshotIndex = getUrlVars()["screenshot"];
+
+        $(window).load(function () {
+            $('#slider').nivoSlider({
+                startSlide: screenshotIndex,
+                effect: 'fade',
+                animSpeed: 200,
+                manualAdvance: true
+            });
+        });
+
+        $(window).keydown(function(e) {
+            switch(e.which) {
+                case 37:
+                    $('a.nivo-prevNav').click();
+                    break;
+                case 39:
+                    $('a.nivo-nextNav').click();
+                    break;
+            }
+        });
+    </script>
+
+</head>
+
+<body>
+<div id="topheader">
+    <div id="topbanner">
+        <div id="logo"><a href="index.html"><img src="images/serenity-bdd-logo.png" border="0"/></a></div>
+        <div id="projectname-banner" style="float:right">
+            <span class="projectname">Demo Project using Serenity and JUnit</span>
+        </div>
+    </div>
+</div>
+
+<div class="middlecontent">
+    <div id="contenttop">
+        <div class="middlebg">
+            <span class="breadcrumbs">
+                <a href="index.html">Home</a>
+                > <a
+                    href="06af7d721daa82e867339ff76ba5c5ff.html">My Birthday Song Story</a>
+                > <a
+                    href="fa51e7e1df7bc85f54c6e8c79a3cff25.html">Searching for my birthday song </a>
+                > Screenshots
+            </span>
+        </div>
+        <div class="rightbg"></div>
+    </div>
+
+    <div class="clr"></div>
+
+    <!--/* starts second table*/-->
+<div>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#"><i class="fa fa-check-square-o"></i> Overall Test Results</a>
+        </li>
+        <li >
+            <a href="capabilities.html"><i class="fa fa-book"></i> Requirements</a>
+        </li>
+    </ul>
+    <span class="date-and-time"><a href="build-info.html"><i class="fa fa-info-circle"></i></a> Report generated 30-05-2021 12:49</span>
+    <br style="clear:left"/>
+</div>
+
+    <div class="clr"></div>
+
+
+    <div id="contentbody">
+        <div class="titlebar">
+            <div class="story-title">
+                <table class="outcome-header">
+                    <tr>
+                        <td>
+                            <div>
+                                <h3 class="discreet-story-header">
+                                    <i class="fa fa-2x fa-comments-o"></i>
+                                    <span class="story-header-title">My Birthday Song Story</span>
+                                    <span class="badge tag-badge">Story</span>
+                                </h3>
+
+                                <div class="discreet-requirement-narrative-title">
+                                
+                                </div>
+                            </div>
+
+                        </td>
+                        <td valign="top" align="right">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="story-title">
+                <table class="outcome-header">
+                    <tr>
+                        <td colspan="2" class="test-title-bar">
+                            <span class="outcome-icon"><i class='fa fa-check-square-o success-icon fa-3x' title='SUCCESS'></i></span>
+                            <span class="test-case-title">
+                                <span class="success-color">Searching For My Birthday Song
+                                    <span class="related-issue-title"></span>
+                                </span>
+                            </span>
+
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="clr"></div>
+
+
+    <div id="beforetable"></div>
+    <div id="contenttilttle">
+        <div class="slider-wrapper theme-default">
+            <div id="slider">
+                <img src="f312c083d4c666111d1a9f379177e5c6.png" title="Open birthday songs page" width="960"/>
+                <img src="scaled_013f6ff96ae9fa2b49862c3b311bde08.png" title="Search song" width="960"/>
+                <img src="scaled_2d3f80a80b001c84a5a451c789f8b8fb.png" title="Search song" width="960"/>
+                <img src="scaled_a8af07ba8537cad6fea9012964b9b38d.png" title="Open best songs of all time page" width="960"/>
+                <img src="scaled_b19341aced28b28621ba1bcbb6555b5f.png" title="Open best songs of all time page" width="960"/>
+                <img src="scaled_8df469d0db736b043ad092226b2740c4.png" title="Look up best songs all time: If You Had My Love" width="960"/>
+                <img src="scaled_4179472c49150fb3c497f411461bf5a3.png" title="Open wikipedia page" width="960"/>
+                <img src="scaled_94f46a9878af9b5ef02b8edff6d06f3d.png" title="Open wikipedia page" width="960"/>
+                <img src="0c9251256cceb0a90c47f7a6505911c9.png" title="Look up birthday song: If You Had My Love: <span class='success-color'>SUCCESS</span>" width="960"/>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+<div id="beforefooter"></div>
+<div id="bottomfooter">
+    <span class="version">Serenity BDD version 1.2.2-rc.1</span>
+</div>
+</body>
+</html>

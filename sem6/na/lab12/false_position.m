@@ -3,6 +3,7 @@ function ret = false_position(f, a, b, err)
     for n = 0:100
 
         if abs(a - b) < err
+            fprintf('False; after %d iterations', n)
             break
         end
 

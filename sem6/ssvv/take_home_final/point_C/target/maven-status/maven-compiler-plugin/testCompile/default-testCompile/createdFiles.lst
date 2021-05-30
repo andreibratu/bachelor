@@ -1,0 +1,5 @@
+examSelenium\stories\MyBirthdaySongStory.class
+examSelenium\pages\WikipediaPage.class
+examSelenium\steps\EndUserSteps.class
+examSelenium\pages\BestSongsOfAllTimePage.class
+examSelenium\pages\BirthdaySongPage.class
