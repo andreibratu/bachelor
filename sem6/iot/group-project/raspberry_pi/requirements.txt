@@ -61,5 +61,5 @@ six==1.13.0
 sortedcontainers==2.1.0
 sseclient==0.0.27
 uritemplate==3.0.1
-urllib3==1.26.4
+urllib3==1.26.5
 wrapt==1.11.2
