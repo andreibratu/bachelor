@@ -58,7 +58,7 @@ pycparser==2.20
 pycrypto==2.6.1
 pyparsing==2.4.7
 python-dateutil==2.8.1
-python-jwt==3.3.0
+python-jwt==3.3.4
 python-Levenshtein==0.12.2
 pytz==2021.1
 regex==2021.4.4
