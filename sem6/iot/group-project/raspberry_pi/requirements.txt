@@ -51,7 +51,7 @@ pyperclip==1.7.0
 PyRect==0.1.4
 PyScreeze==0.1.25
 python-dateutil==2.8.1
-python-jwt==3.3.0
+python-jwt==3.3.4
 PyTweening==1.0.3
 pytz==2021.1
 requests==2.25.1
