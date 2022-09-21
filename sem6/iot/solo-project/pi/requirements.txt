@@ -37,7 +37,7 @@ idna==2.10
 importlib-metadata==4.0.1
 jiwer==2.2.0
 joblib==1.0.1
-jwcrypto==0.8
+jwcrypto==1.4
 Keras-Preprocessing==1.1.2
 Markdown==3.3.4
 msgpack==1.0.2
