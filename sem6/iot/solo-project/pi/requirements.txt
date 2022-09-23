@@ -49,7 +49,7 @@ opt-einsum==3.3.0
 packaging==20.9
 pandas==1.2.4
 proto-plus==1.18.1
-protobuf==3.15.8
+protobuf==3.18.3
 pyarrow==3.0.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
