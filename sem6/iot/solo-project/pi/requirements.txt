@@ -79,7 +79,7 @@ transformers==4.5.1
 typing-extensions==3.7.4.3
 uritemplate==3.0.1
 urllib3==1.26.4
-Werkzeug==1.0.1
+Werkzeug==2.2.3
 wrapt==1.12.1
 xxhash==2.0.2
 zipp==3.4.1
